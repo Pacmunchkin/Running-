@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Run Log</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1>🏃 Run Log</h1>
+  <div class="tools">
+    <label>Units
+      <select id="units"><option value="km">km</option><option value="mi">mi</option></select>
+    </label>
+    <button id="export-csv" class="ghost">Export CSV</button>
+    <button id="export-json" class="ghost">Backup JSON</button>
+    <label class="btn ghost">Import<input id="import" type="file" accept=".csv,.json" hidden></label>
+  </div>
+</header>
+
+<main>
+  <section class="stats" id="stats"></section>
+
+  <section class="card">
+    <h2 id="form-title">Add a run</h2>
+    <form id="run-form">
+      <input type="hidden" id="run-id">
+      <label>Date <input type="date" id="date" required></label>
+      <label>Distance (<span class="u">km</span>) <input type="number" id="distance" step="0.01" min="0.01" required></label>
+      <label>Time <input type="text" id="time" placeholder="mm:ss or h:mm:ss" pattern="(\d+:)?\d{1,2}:\d{2}" required></label>
+      <label>Type
+        <select id="type"><option>Easy</option><option>Long</option><option>Tempo</option><option>Intervals</option><option>Race</option><option>Other</option></select>
+      </label>
+      <label>Avg HR (optional) <input type="number" id="hr" min="30" max="250"></label>
+      <label class="wide">Notes <input type="text" id="notes" placeholder="Route, weather, how it felt…"></label>
+      <div class="actions">
+        <button type="submit" id="save">Save run</button>
+        <button type="button" id="cancel" class="ghost" hidden>Cancel</button>
+      </div>
+    </form>
+  </section>
+
+  <section class="card">
+    <h2>Weekly distance <small>(last 12 weeks)</small></h2>
+    <div id="chart"></div>
+  </section>
+
+  <section class="card">
+    <div class="row">
+      <h2>All runs</h2>
+      <input type="search" id="search" placeholder="Search notes/type…">
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr>
+          <th data-sort="date">Date</th><th data-sort="dist">Distance</th><th data-sort="secs">Time</th>
+          <th data-sort="pace">Pace</th><th>Type</th><th>HR</th><th>Notes</th><th></th>
+        </tr></thead>
+        <tbody id="rows"></tbody>
+      </table>
+    </div>
+    <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
+  </section>
+</main>
+<footer class="muted">Data is stored in this browser only. Use “Backup JSON” regularly.</footer>
+<script src="app.js"></script>
+</body>
+</html>
