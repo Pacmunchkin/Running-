@@ -8,7 +8,10 @@
 </head>
 <body>
 <header>
-  <h1>🏃 Run Log</h1>
+  <div>
+    <h1>🏃 Run Log</h1>
+    <div id="who" class="muted"></div>
+  </div>
   <div class="tools">
     <label>Units
       <select id="units"><option value="km">km</option><option value="mi">mi</option></select>
@@ -18,52 +21,126 @@
     <label class="btn ghost">Import<input id="import" type="file" accept=".csv,.json" hidden></label>
   </div>
 </header>
+<nav id="tabs">
+  <button data-tab="train">Training</button>
+  <button data-tab="plan">Plan &amp; goals</button>
+  <button data-tab="gear">Gear &amp; fuel</button>
+  <button data-tab="profile">Profile</button>
+</nav>
 
 <main>
-  <section class="stats" id="stats"></section>
+  <div data-panel="train">
+    <section class="stats" id="stats"></section>
 
-  <section class="card">
-    <h2 id="form-title">Add a run</h2>
-    <form id="run-form">
-      <input type="hidden" id="run-id">
-      <label>Date <input type="date" id="date" required></label>
-      <label>Distance (<span class="u">km</span>) <input type="number" id="distance" step="0.01" min="0.01" required></label>
-      <label>Time <input type="text" id="time" placeholder="mm:ss or h:mm:ss" pattern="(\d+:)?\d{1,2}:\d{2}" required></label>
-      <label>Type
-        <select id="type"><option>Easy</option><option>Long</option><option>Tempo</option><option>Intervals</option><option>Race</option><option>Other</option></select>
-      </label>
-      <label>Avg HR (optional) <input type="number" id="hr" min="30" max="250"></label>
-      <label class="wide">Notes <input type="text" id="notes" placeholder="Route, weather, how it felt…"></label>
-      <div class="actions">
-        <button type="submit" id="save">Save run</button>
-        <button type="button" id="cancel" class="ghost" hidden>Cancel</button>
+    <section class="card">
+      <h2>Next up</h2>
+      <ul id="next" class="plain"></ul>
+    </section>
+
+    <section class="card">
+      <h2 id="form-title">Add a run</h2>
+      <form id="run-form">
+        <input type="hidden" id="run-id">
+        <label>Date <input type="date" id="date" required></label>
+        <label>Type <select id="type"></select></label>
+        <label>Distance (<span class="u">km</span>) <input type="number" id="distance" step="0.01" min="0.01" required></label>
+        <label>Time <input type="text" id="time" placeholder="mm:ss or h:mm:ss" pattern="(\d+:)?\d{1,2}:\d{2}" required></label>
+        <label>Avg HR <input type="number" id="hr" min="30" max="250"></label>
+        <label>Max HR <input type="number" id="maxhr" min="30" max="250"></label>
+        <label>Shoes <input type="text" id="shoe" list="shoe-list"><datalist id="shoe-list"></datalist></label>
+        <label class="wide">Notes <input type="text" id="notes" placeholder="Route, reps, weather, how it felt…"></label>
+        <label class="wide">Data caveat <input type="text" id="flag" placeholder="e.g. HR strap dropout, wrong Garmin label"></label>
+        <div class="actions">
+          <button type="submit">Save run</button>
+          <button type="button" id="cancel" class="ghost" hidden>Cancel</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Weekly distance <small>(last 12 weeks, Sat–Fri)</small></h2>
+      <div id="chart"></div>
+    </section>
+
+    <section class="card">
+      <div class="row">
+        <h2>All runs</h2>
+        <input type="search" id="search" placeholder="Search notes/type…">
       </div>
-    </form>
-  </section>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-sort="date">Date</th><th>Type</th><th data-sort="dist">Distance</th><th data-sort="secs">Time</th>
+            <th data-sort="pace">Pace</th><th data-sort="hr">HR avg / max</th><th>Notes</th><th></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
+    </section>
+  </div>
 
-  <section class="card">
-    <h2>Weekly distance <small>(last 12 weeks)</small></h2>
-    <div id="chart"></div>
-  </section>
+  <div data-panel="plan" hidden>
+    <section class="card">
+      <div class="row"><h2>Goals</h2><button class="ghost" data-add="goals">+ Add</button></div>
+      <div class="table-wrap" id="c-goals"></div>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Upcoming schedule</h2><button class="ghost" data-add="plan">+ Add</button></div>
+      <div class="table-wrap" id="c-plan"></div>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Missed / changed</h2><button class="ghost" data-add="missed">+ Add</button></div>
+      <div class="table-wrap" id="c-missed"></div>
+    </section>
+  </div>
 
-  <section class="card">
-    <div class="row">
-      <h2>All runs</h2>
-      <input type="search" id="search" placeholder="Search notes/type…">
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr>
-          <th data-sort="date">Date</th><th data-sort="dist">Distance</th><th data-sort="secs">Time</th>
-          <th data-sort="pace">Pace</th><th>Type</th><th>HR</th><th>Notes</th><th></th>
-        </tr></thead>
-        <tbody id="rows"></tbody>
-      </table>
-    </div>
-    <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
-  </section>
+  <div data-panel="gear" hidden>
+    <section class="card">
+      <div class="row"><h2>Shoes</h2><button class="ghost" data-add="shoes">+ Add</button></div>
+      <div class="table-wrap" id="c-shoes"></div>
+      <p class="muted">Total = mileage stated above + runs logged after the “as of” date with that shoe name.</p>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Nutrition</h2><button class="ghost" data-add="nutrition">+ Add</button></div>
+      <div class="table-wrap" id="c-nutrition"></div>
+    </section>
+  </div>
+
+  <div data-panel="profile" hidden>
+    <section class="card">
+      <div class="row"><h2>Runner</h2><button class="ghost" data-edit-profile>Edit</button></div>
+      <dl id="profile"></dl>
+    </section>
+    <section class="card">
+      <h2>Heart-rate zones</h2>
+      <div class="table-wrap" id="zones"></div>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Personal bests &amp; prior races</h2><button class="ghost" data-add="pbs">+ Add</button></div>
+      <div class="table-wrap" id="c-pbs"></div>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Data caveats</h2><button class="ghost" data-add="caveats">+ Add</button></div>
+      <div class="table-wrap" id="c-caveats"></div>
+    </section>
+    <section class="card">
+      <h2>Data</h2>
+      <p class="muted">Everything is stored in this browser only. Use “Backup JSON” (top right) to save a full copy.</p>
+      <button class="ghost" id="reset">Reset to starter data</button>
+    </section>
+  </div>
 </main>
+
+<dialog id="dlg">
+  <form id="dlg-form">
+    <h2 id="dlg-title"></h2>
+    <div id="dlg-fields"></div>
+    <div class="actions"><button type="submit">Save</button><button type="button" class="ghost" id="dlg-cancel">Cancel</button></div>
+  </form>
+</dialog>
 <footer class="muted">Data is stored in this browser only. Use “Backup JSON” regularly.</footer>
+<script src="data.js"></script>
 <script src="app.js"></script>
 </body>
 </html>

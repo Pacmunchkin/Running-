@@ -1,13 +1,13 @@
 # Run Log
 
-A simple static site for storing and reviewing your running data. No build step, no server.
+A static site for storing and reviewing running data. No build step, no server: open `index.html`.
 
-- Log runs (date, distance, time, type, avg HR, notes); edit/delete; search and sort
-- Stats: totals, monthly distance, average/best pace, longest run, 12-week mileage chart
-- km / mi toggle (stored internally in km)
-- Import/export CSV, and JSON backup
+- **Training:** log runs (date, type, distance, time, avg/max HR, shoes, notes, data caveats), edit/delete, search, sort; stats, HR-zone badges, weekly mileage chart (weeks run Sat–Fri), next-up sessions
+- **Plan & goals:** race goals with target pace and countdown, upcoming schedule, missed/changed sessions
+- **Gear & fuel:** shoe mileage, nutrition table
+- **Profile:** runner details, HR zones, PBs and prior races, data caveats
+- km / mi toggle (stored internally in km); CSV export/import of runs; full JSON backup/restore
 
-Data lives in your browser's `localStorage`, so back up with **Backup JSON** regularly.
-
-## Use
-Open `index.html` in a browser, or host it free with GitHub Pages (Settings → Pages → deploy from branch, root).
+`data.js` holds the starter data (loaded on first open; Profile → Reset to starter data reloads it).
+Data lives in the browser's `localStorage`, so use **Backup JSON** regularly. Browsers keep separate data per
+browser/profile and per file location, so open the site from the same place each time.

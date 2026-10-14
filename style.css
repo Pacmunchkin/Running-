@@ -23,3 +23,16 @@ th,td{text-align:left;padding:8px;border-bottom:1px solid var(--line)}
 th[data-sort]{cursor:pointer;user-select:none}td.notes{white-space:normal;min-width:160px}
 #chart svg{width:100%;height:auto}#chart text{fill:var(--muted);font-size:11px}#chart rect{fill:var(--accent)}
 footer{text-align:center;padding:20px}
+nav{display:flex;gap:4px;padding:8px 16px 0;background:var(--card);border-bottom:1px solid var(--line);overflow-x:auto}
+nav button{background:none;color:var(--muted);border-radius:8px 8px 0 0;border-bottom:3px solid transparent}
+nav button.on{color:var(--text);border-bottom-color:var(--accent);font-weight:600}
+[data-panel]{display:grid;gap:16px}[hidden]{display:none!important}
+.plain{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 16px;margin:0}dt{color:var(--muted)}dd{margin:0}
+.z{display:inline-block;padding:0 6px;border-radius:6px;font-size:12px;font-weight:600;border:1px solid var(--line)}
+.z1{background:#cfe8ff;color:#123}.z2{background:#c8efd0;color:#123}.z3{background:#fff0b3;color:#123}.z4{background:#ffd0a6;color:#123}.z5{background:#ffb3b3;color:#123}
+.flag{display:block;color:var(--muted);font-size:13px}
+td.num{text-align:right}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);width:min(480px,92vw)}
+#dlg-fields{display:grid;gap:10px;margin-bottom:12px}#dlg-fields label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
+form label{align-content:start;white-space:nowrap}form input,form select{width:100%}
