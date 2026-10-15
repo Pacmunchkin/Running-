@@ -99,7 +99,8 @@ function detailHtml(r) {
     const parts = [...(below ? [[0, below]] : []), ...r.zones.map((s, i) => [i + 1, s])].filter(p => p[1] > 0);
     const name = n => n ? 'Z' + n : '<Z1';
     zones = `<div class="zbar" role="img" aria-label="Time in HR zones">${parts.map(([n, s]) => `<i class="seg z${n}" style="width:${s / tot * 100}%" title="${name(n)} ${fmtTime(s)}"></i>`).join('')}</div>` +
-      `<div class="legend">${parts.map(([n, s]) => `<span><span class="z z${n}">${name(n)}</span> ${fmtTime(s)} (${Math.round(s / tot * 100)}%)</span>`).join('')}</div>`;
+      `<div class="legend">${parts.map(([n, s]) => `<span><span class="z z${n}">${name(n)}</span> ${fmtTime(s)} (${Math.round(s / tot * 100)}%)</span>`).join('')}</div>`
+      + (r.zoneNote ? `<div class="muted legend">${esc(r.zoneNote)}</div>` : '');
   }
   const laps = r.laps ? `<table class="laps"><thead><tr><th>Lap</th><th>Time</th><th>${units}</th><th>Pace</th><th>HR avg / max</th><th>Cadence</th></tr></thead><tbody>` +
     r.laps.map(l => `<tr><td>${esc(l.label)}</td><td>${esc(l.time)}</td><td>${fmtDist(l.km)}</td><td>${fmtPaceStr(l.pace)}/${units}</td><td>${l.hr} / ${l.max} ${zoneBadge(l.hr)}</td><td>${l.cad}</td></tr>`).join('') + '</tbody></table>' : '';
