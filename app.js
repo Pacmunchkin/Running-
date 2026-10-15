@@ -8,7 +8,13 @@ const store = {
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 let db = store.get('rl_db') || clone(SEED);
+if (db.rev !== SEED.rev) {   // saved by an older version of the site
+  const keep = db.runs && db.runs.length && !confirm('This version adds detailed Garmin data (laps, HR zones, ascent, shoes).\n\nOK = replace your saved data with the new starter data.\nCancel = keep your current data (Profile → Reset to starter data loads it later).');
+  if (keep) db.rev = SEED.rev; else db = clone(SEED);
+  store.set('rl_db', db);
+}
 let units = store.get('rl_units') || 'km';
+const openRuns = new Set();
 let sort = { key: 'date', dir: -1 };
 
 // ---------- helpers ----------
@@ -54,7 +60,7 @@ function renderStats() {
     ['This month', fmtDist(sum(r => r.date.startsWith(mo))) + ' ' + units],
     ['Avg pace', fmtPace(secs, km)], ['Longest', fmtDist(longest) + ' ' + units],
     ['Avg HR (time-weighted)', hrSecs ? Math.round(withHr.reduce((a, r) => a + r.hr * r.secs, 0) / hrSecs) : '–'],
-    ['Total time', fmtTime(secs)]
+    ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m']
   ];
   $('stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
 }
@@ -81,6 +87,25 @@ function renderChart() {
   }).join('') + '</svg>';
 }
 
+const fmtPaceStr = p => units === 'km' ? p : fmtTime(parseTime(p) * KM_PER_MI);
+function detailHtml(r) {
+  const meta = [['Start', r.time], ['Location', r.loc], ['Garmin title', r.title], ['Ascent', r.asc != null ? r.asc + ' m' : ''], ['Calories', r.cal],
+    ['Est. sweat loss', r.sweat ? r.sweat + ' ml' : ''], ['Cadence', r.cad ? r.cad + ' spm' : ''], ['Stride', r.stride ? r.stride + ' m' : ''],
+    ['Moving time', r.moving ? fmtTime(r.moving) : ''], ['Recovery HR', r.recHr ? r.recHr + ' bpm' : '']]
+    .filter(([, v]) => v !== '' && v != null).map(([k, v]) => `<span><b>${esc(k)}</b>${esc(v)}</span>`).join('');
+  let zones = '';
+  if (r.zones) {
+    const sum = r.zones.reduce((a, b) => a + b, 0), below = r.secs - sum > 15 ? r.secs - sum : 0, tot = sum + below;
+    const parts = [...(below ? [[0, below]] : []), ...r.zones.map((s, i) => [i + 1, s])].filter(p => p[1] > 0);
+    const name = n => n ? 'Z' + n : '<Z1';
+    zones = `<div class="zbar" role="img" aria-label="Time in HR zones">${parts.map(([n, s]) => `<i class="seg z${n}" style="width:${s / tot * 100}%" title="${name(n)} ${fmtTime(s)}"></i>`).join('')}</div>` +
+      `<div class="legend">${parts.map(([n, s]) => `<span><span class="z z${n}">${name(n)}</span> ${fmtTime(s)} (${Math.round(s / tot * 100)}%)</span>`).join('')}</div>`;
+  }
+  const laps = r.laps ? `<table class="laps"><thead><tr><th>Lap</th><th>Time</th><th>${units}</th><th>Pace</th><th>HR avg / max</th><th>Cadence</th></tr></thead><tbody>` +
+    r.laps.map(l => `<tr><td>${esc(l.label)}</td><td>${esc(l.time)}</td><td>${fmtDist(l.km)}</td><td>${fmtPaceStr(l.pace)}/${units}</td><td>${l.hr} / ${l.max} ${zoneBadge(l.hr)}</td><td>${l.cad}</td></tr>`).join('') + '</tbody></table>' : '';
+  return `<div class="meta">${meta}</div>${zones}${laps}`;
+}
+
 function renderTable() {
   const q = $('search').value.toLowerCase();
   const val = r => ({ pace: r.secs / r.km, dist: r.km, hr: r.hr ?? 0 })[sort.key] ?? r[sort.key];
@@ -91,7 +116,8 @@ function renderTable() {
     <td>${fmtDate(r.date)}</td><td>${esc(r.type)}</td><td class="num">${fmtDist(r.km)} ${units}</td><td>${fmtTime(r.secs)}</td><td>${fmtPace(r.secs, r.km)}</td>
     <td>${r.hr ?? ''}${r.maxhr ? ' / ' + r.maxhr : ''} ${zoneBadge(r.hr)}</td>
     <td class="notes">${esc(r.notes)}${r.shoe ? `<span class="flag">👟 ${esc(r.shoe)}</span>` : ''}${r.flag ? `<span class="flag">⚠ ${esc(r.flag)}</span>` : ''}</td>
-    <td><button class="link" data-edit="${r.id}">Edit</button><button class="link" data-del="${r.id}">Delete</button></td></tr>`).join('');
+    <td><button class="link" data-more="${r.id}">${openRuns.has(r.id) ? 'Hide' : 'Details'}</button><button class="link" data-edit="${r.id}">Edit</button><button class="link" data-del="${r.id}">Delete</button></td></tr>` +
+    (openRuns.has(r.id) ? `<tr class="detail"><td colspan="8">${detailHtml(r)}</td></tr>` : '')).join('');
 }
 
 function setTypeOptions(selected) {
@@ -112,7 +138,7 @@ $('run-form').addEventListener('submit', e => {
   const run = { id: $('run-id').value || uid(), date: $('date').value, km, secs, type: $('type').value,
     hr: n('hr'), maxhr: n('maxhr'), shoe: $('shoe').value.trim(), notes: $('notes').value.trim(), flag: $('flag').value.trim() };
   const i = db.runs.findIndex(r => r.id === run.id);
-  i >= 0 ? db.runs[i] = run : db.runs.push(run);
+  i >= 0 ? db.runs[i] = { ...db.runs[i], ...run } : db.runs.push(run);
   resetForm(); persist();
 });
 $('cancel').onclick = resetForm;
@@ -123,7 +149,8 @@ document.querySelector('thead').addEventListener('click', e => {
   sort = { key: k, dir: sort.key === k ? -sort.dir : -1 }; renderTable();
 });
 $('rows').addEventListener('click', e => {
-  const { edit, del } = e.target.dataset;
+  const { edit, del, more } = e.target.dataset;
+  if (more) { openRuns.has(more) ? openRuns.delete(more) : openRuns.add(more); renderTable(); }
   if (del && confirm('Delete this run?')) { db.runs = db.runs.filter(r => r.id !== del); persist(); }
   if (edit) {
     const r = db.runs.find(r => r.id === edit);

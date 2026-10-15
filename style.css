@@ -36,3 +36,9 @@ td.num{text-align:right}
 dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--text);width:min(480px,92vw)}
 #dlg-fields{display:grid;gap:10px;margin-bottom:12px}#dlg-fields label{display:grid;gap:4px;font-size:13px;color:var(--muted)}
 form label{align-content:start;white-space:nowrap}form input,form select{width:100%}
+.detail td{background:var(--bg);white-space:normal}
+.meta{display:flex;flex-wrap:wrap;gap:4px 18px;margin-bottom:8px}.meta b{color:var(--muted);font-weight:500;margin-right:4px}
+.zbar{display:flex;height:14px;border-radius:7px;overflow:hidden;border:1px solid var(--line)}
+.seg{display:block;padding:0;border:0}.z0{background:var(--line);color:var(--text)}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;margin:6px 0 10px;font-size:13px}
+.laps{width:auto;font-size:13px;margin-top:6px}.laps th,.laps td{padding:3px 12px 3px 0}

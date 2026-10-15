@@ -2,7 +2,7 @@
 
 A static site for storing and reviewing running data. No build step, no server: open `index.html`.
 
-- **Training:** log runs (date, type, distance, time, avg/max HR, shoes, notes, data caveats), edit/delete, search, sort; stats, HR-zone badges, weekly mileage chart (weeks run Sat–Fri), next-up sessions
+- **Training:** log runs (date, type, distance, time, avg/max HR, shoes, notes, data caveats), edit/delete, search, sort; per-run Details (laps, time in HR zones, ascent, cadence, calories, sweat loss); stats, HR-zone badges, weekly mileage chart (weeks run Sat–Fri), next-up sessions
 - **Plan & goals:** race goals with target pace and countdown, upcoming schedule, missed/changed sessions
 - **Gear & fuel:** shoe mileage, nutrition table
 - **Profile:** runner details, HR zones, PBs and prior races, data caveats
