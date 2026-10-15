@@ -226,6 +226,34 @@ const estOf = (gid, back = 0) => { const l = sortedEsts().filter(e => e.est && e
 const fmtRange = r => `${fmtTime(r[0])}–${fmtTime(r[1])}`;
 const mid = r => (r[0] + r[1]) / 2;
 const secPerUnit = secPerKm => secPerKm * (units === 'mi' ? KM_PER_MI : 1);
+const shortName = g => g.event.replace('Half marathon', 'HM');
+const signed = x => (x > 0 ? '+' : x < 0 ? '−' : '') + fmtTime(Math.abs(x));
+let paceView = 'race';
+
+// Daniels VDOT equations (same model used to build the estimates)
+const dVo2 = v => -4.60 + 0.182258 * v + 0.000104 * v * v;
+const dPct = t => 0.8 + 0.1894393 * Math.exp(-0.012778 * t) + 0.2989558 * Math.exp(-0.1932605 * t);
+const dVdot = (m, s) => { const t = s / 60; return dVo2(m / t) / dPct(t); };
+function predictTime(vdot, m) {
+  let lo = 60, hi = 21600;
+  for (let i = 0; i < 60; i++) { const x = (lo + hi) / 2; dVdot(m, x) > vdot ? lo = x : hi = x; }
+  return (lo + hi) / 2;
+}
+
+// Projected race-day pace: VDOT rises towards +vdotGain, endurance factor eases to its floor. Anchored on the latest estimate.
+function projectionFor(g) {
+  const e = estOf(g.id), P = db.projection; if (!e || !P) return null;
+  const t0 = parseD(e.date).getTime(), end = parseD(g.date).getTime(); if (end <= t0) return null;
+  const m = g.distKm * 1000, mid0 = mid(e.est[g.id]), gap0 = (e.gap || {})[g.id] || 1, floor = Math.min(P.gapFloor[g.id] || gap0, gap0);
+  const base = predictTime(e.vdot, m) * gap0, rt = g.distKm > 15 ? 10 : g.distKm > 8 ? 5 : 1;
+  const at = t => {
+    const w = (t - t0) / (7 * 864e5);
+    const v = e.vdot + P.vdotGain * (1 - Math.exp(-w / P.vdotWeeks)), gap = floor + (gap0 - floor) * Math.exp(-w / P.gapWeeks);
+    return Math.round(mid0 * predictTime(v, m) * gap / base / rt) * rt;
+  };
+  const ts = []; for (let t = t0; t < end; t += 28 * 864e5) ts.push(t); ts.push(end);
+  return ts.map(t => ({ t, time: at(t) }));
+}
 
 function reviewHtml(r) {
   return `<h3>${esc(r.title)}</h3><p class="muted">${fmtDate(r.date)}</p>` +
@@ -235,70 +263,90 @@ function reviewHtml(r) {
 function renderEstimates() {
   const goals = [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1);
   const last = sortedEsts().slice(-1)[0];
-  $('est-table').innerHTML = '<table><thead><tr><th>Race</th><th>Date</th><th>Goal</th><th>Estimate</th><th>Gap to goal (mid)</th><th>Since last update</th></tr></thead><tbody>' +
+  $('est-table').innerHTML = '<table><thead><tr><th>Race</th><th>Date</th><th>Goal</th><th>Estimate now</th><th>Gap to goal</th><th>Projected on race day</th><th>Since last update</th></tr></thead><tbody>' +
     goals.map(g => {
       const e = estOf(g.id), p = estOf(g.id, 1); if (!e) return '';
-      const target = parseTime(g.target), gap = mid(e.est[g.id]) - target;
-      const d = p ? mid(e.est[g.id]) - mid(p.est[g.id]) : null;
-      const sign = x => (x > 0 ? '+' : x < 0 ? '−' : '') + fmtTime(Math.abs(x));
+      const gap = mid(e.est[g.id]) - parseTime(g.target), d = p ? mid(e.est[g.id]) - mid(p.est[g.id]) : null;
+      const pr = projectionFor(g), pt = pr && pr[pr.length - 1].time, pg = pt && pt - parseTime(g.target);
       return `<tr><td>${esc(g.event)} <span class="muted">${esc(g.race)}</span></td><td>${fmtDate(g.date)}</td><td>${esc(g.target)}</td>
-        <td><b>${fmtRange(e.est[g.id])}</b></td><td>${gap > 0 ? sign(gap) + ' slower' : sign(gap) + ' faster'}</td>
-        <td>${d == null ? '' : d === 0 ? 'no change' : sign(d) + (d < 0 ? ' (faster)' : ' (slower)')}</td></tr>`;
+        <td><b>${fmtRange(e.est[g.id])}</b></td><td>${signed(gap)} ${gap > 0 ? 'slower' : 'faster'}</td>
+        <td>${pt ? `<b>${fmtTime(pt)}</b> <span class="muted">(${signed(pg)} vs goal)</span>` : ''}</td>
+        <td>${d == null ? '' : d === 0 ? 'no change' : signed(d) + (d < 0 ? ' (faster)' : ' (slower)')}</td></tr>`;
     }).join('') + '</tbody></table>';
   $('est-note').textContent = last ? `Last updated ${fmtDate(last.date)}. VDOT ${last.vdot}. Basis: ${last.basis}.` : 'No estimates yet.';
 }
 
-// simple SVG line chart. series: [{name, cls, pts:[{t, v, tip}], dashed, noEnd}]
+// SVG line chart. series kinds: line, proj (dotted projection), goal (dashed), ref (grey dashed reference)
 function lineChart(el, series, o) {
   const pts = series.flatMap(s => s.pts);
   if (!pts.length) { el.innerHTML = '<p class="muted">No data yet.</p>'; return; }
-  const W = 640, H = 250, m = { l: 50, r: 92, t: 12, b: 30 };
-  const t0 = parseD(db.block.start).getTime(), t1 = Math.max(...pts.map(p => p.t)) + 7 * 864e5;
+  const W = 640, H = 270, m = { l: 50, r: 132, t: 16, b: 30 };
+  const t0 = parseD(db.block.start).getTime(), t1 = o.t1 || Math.max(...pts.map(p => p.t)) + 7 * 864e5;
   let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v)); const pad = (hi - lo || 1) * 0.1; lo -= pad; hi += pad;
   const step = o.steps.find(s => (hi - lo) / s <= 6) || o.steps[o.steps.length - 1];
   const yTicks = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) yTicks.push(v);
   const x = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r);
   const y = v => o.faster === 'down' ? m.t + (v - lo) / (hi - lo) * (H - m.t - m.b) : m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);   // 'down': lower values are better and plot higher
-  const xTicks = []; const d = parseD(iso(new Date(t0))); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);   // Saturdays
-  const every = (t1 - t0) / 864e5 > 90 ? 28 : 14; for (; d.getTime() <= t1; d.setDate(d.getDate() + every)) xTicks.push(new Date(d));
-  let g = '';
+  const spanDays = (t1 - t0) / 864e5, xTicks = [];
+  if (spanDays > 120) { const d = parseD(iso(new Date(t0))); d.setDate(1); d.setMonth(d.getMonth() + 1); for (; d.getTime() <= t1; d.setMonth(d.getMonth() + (spanDays > 300 ? 2 : 1))) xTicks.push([new Date(d), d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })]); }
+  else { const d = parseD(iso(new Date(t0))); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7); for (; d.getTime() <= t1; d.setDate(d.getDate() + 14)) xTicks.push([new Date(d), d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })]); }
+  let g = '', labels = '';
   yTicks.forEach(v => { g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.fmt(v)}</text>`; });
-  xTicks.forEach(t => { g += `<text x="${x(t.getTime())}" y="${H - 8}" text-anchor="middle">${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</text>`; });
+  xTicks.forEach(([t, l]) => { g += `<text x="${x(t.getTime())}" y="${H - 8}" text-anchor="middle">${l}</text>`; });
   series.forEach(s => {
-    const p = s.pts.map(q => `${x(q.t).toFixed(1)},${y(q.v).toFixed(1)}`).join(' ');
-    if (s.ref) { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="ref"/><text class="reflbl" x="${m.l + 4}" y="${yy - 4}">${esc(s.name)}</text>`; return; }
-    if (s.dashed) { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="goal ${s.cls}"/>`; return; }
-    g += `<polyline points="${p}" class="ln ${s.cls}"/>` + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
+    if (s.kind === 'ref') { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="ref"/><text class="reflbl" x="${m.l + 4}" y="${yy - 4}">${esc(s.name)}</text>`; return; }
+    if (s.kind === 'goal') { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="goal ${s.cls}"/>`; return; }
+    const poly = s.pts.map(q => `${x(q.t).toFixed(1)},${y(q.v).toFixed(1)}`).join(' ');
     const l = s.pts[s.pts.length - 1];
-    g += `<text class="end ${s.cls}" x="${x(l.t) + 8}" y="${y(l.v) + 4}">${esc(s.name)} ${o.fmt(l.v)}</text>`;
+    if (s.kind === 'proj') {
+      g += `<polyline points="${poly}" class="proj ${s.cls}"/><circle cx="${x(l.t)}" cy="${y(l.v)}" r="5" class="pend ${s.cls}"><title>${esc(l.tip)}</title></circle>`;
+    } else {
+      g += `<polyline points="${poly}" class="ln ${s.cls}"/>` + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
+      if (s.topLabel) labels += `<text class="now ${s.cls}" x="${x(l.t)}" y="${y(l.v) - 10}" text-anchor="middle">${esc(s.topLabel)}</text>`;
+    }
+    if (s.endLabel) labels += `<text class="end ${s.cls}" x="${x(l.t) + 9}" y="${y(l.v) + 4}">${esc(s.endLabel)}</text>`;
   });
-  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${g}</svg>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${g}${labels}</svg>`;
 }
 
 function renderCharts() {
   const ests = sortedEsts(), dt = e => parseD(e.date).getTime();
-  const pb = (name, vdot) => ({ name: `${name} ${vdot}`, ref: true, pts: [{ t: 0, v: vdot }] });
+  const pb = (name, vdot) => ({ kind: 'ref', name: `${name} ${vdot}`, pts: [{ t: 0, v: vdot }] });
   lineChart($('chart-vo2'), [pb('5K PB', 46.8), pb('10K PB', 43.3), pb('HM PB', 41.8),
-    { name: 'VO2 max', cls: 'c0', pts: ests.map(e => ({ t: dt(e), v: e.vdot, tip: `${fmtDate(e.date)}: VDOT ${e.vdot}. ${e.basis}` })) }],
+    { kind: 'line', cls: 'c0', endLabel: `VO2 max ${ests.length ? ests[ests.length - 1].vdot.toFixed(1) : ''}`, pts: ests.map(e => ({ t: dt(e), v: e.vdot, tip: `${fmtDate(e.date)}: VDOT ${e.vdot}. ${e.basis}` })) }],
     { steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Estimated VO2 max over time' });
+
   const goals = [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1), cls = ['c1', 'c2', 'c3'];
-  const pace = (g, e) => secPerUnit(mid(e.est[g.id]) / g.distKm);
-  const series = [];
+  const pace = (g, secs) => secPerUnit(secs / g.distKm), series = [], tiles = [];
+  let lastRace = 0;
   goals.forEach((g, i) => {
-    const es = ests.filter(e => e.est && e.est[g.id]), short = g.event.replace('Half marathon', 'HM');
-    series.push({ name: short, cls: cls[i % 3], pts: es.map(e => ({ t: dt(e), v: pace(g, e), tip: `${fmtDate(e.date)}: ${short} ${fmtRange(e.est[g.id])} (${fmtTime(pace(g, e))}/${units})` })) });
-    series.push({ name: short + ' goal', cls: cls[i % 3], dashed: true, pts: [{ t: 0, v: secPerUnit(parseTime(g.target) / g.distKm) }] });
+    const c = cls[i % 3], es = ests.filter(e => e.est && e.est[g.id]), n = shortName(g), latest = es[es.length - 1];
+    if (!latest) return;
+    const now = mid(latest.est[g.id]), pr = projectionFor(g), pend = pr && pr[pr.length - 1];
+    series.push({ kind: 'line', cls: c, topLabel: fmtTime(now), endLabel: paceView === 'now' ? `${n} ${fmtTime(pace(g, now))}/${units}` : '',
+      pts: es.map(e => ({ t: dt(e), v: pace(g, mid(e.est[g.id])), tip: `${fmtDate(e.date)}: ${n} ${fmtRange(e.est[g.id])} (${fmtTime(pace(g, mid(e.est[g.id])))}/${units})` })) });
+    series.push({ kind: 'goal', cls: c, pts: [{ t: 0, v: pace(g, parseTime(g.target)) }] });
+    if (paceView === 'race' && pr) {
+      lastRace = Math.max(lastRace, pend.t);
+      series.push({ kind: 'proj', cls: c, endLabel: `${n} ${parseD(g.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })} ${fmtTime(pend.time)}`,
+        pts: pr.map(q => ({ t: q.t, v: pace(g, q.time), tip: `${fmtDate(iso(new Date(q.t)))}: projected ${n} ${fmtTime(q.time)} (${fmtTime(pace(g, q.time))}/${units})` })) });
+    }
+    tiles.push(`<div class="stat"><b class="${c}">${fmtRange(latest.est[g.id])}</b><span>${esc(g.event)} now. ` +
+      `${pend ? `Projected ${fmtTime(pend.time)} on ${fmtDate(g.date)}. ` : ''}Goal ${esc(g.target)}</span></div>`);
   });
-  // goal lines count towards the y-range
-  lineChart($('chart-pace'), series, { steps: [5, 10, 15, 30, 60], fmt: fmtTime, faster: 'down', label: 'Estimated race pace over time, with goal pace' });
+  $('pace-tiles').innerHTML = tiles.join('');
+  document.querySelectorAll('[data-pv]').forEach(b => b.classList.toggle('on', b.dataset.pv === paceView));
+  lineChart($('chart-pace'), series, { steps: [5, 10, 15, 30, 60], fmt: fmtTime, faster: 'down', t1: paceView === 'race' && lastRace ? lastRace + 14 * 864e5 : null,
+    label: 'Estimated race pace over time, with projection to race day and goal pace' });
 }
 
 function renderBlock() {
-  const start = db.block.start, runs = db.runs.filter(r => r.date >= start && r.type !== 'Other');
-  $('block-title').textContent = `${fmtDate(start)} to ${fmtDate(runs.map(r => r.date).sort().pop() || start)} (excludes runs typed “Other”)`;
+  const start = db.block.start, runs = db.runs.filter(r => r.date >= start);
+  const range = `${fmtDate(start)} to ${fmtDate(runs.map(r => r.date).sort().pop() || start)}`;
+  $('block-title').textContent = range; $('zones-title').textContent = range;
   const km = runs.reduce((a, r) => a + r.km, 0), secs = runs.reduce((a, r) => a + r.secs, 0);
   const weeks = {};
-  runs.forEach(r => { const k = weekStart(r.date), w = weeks[k] ||= { n: 0, km: 0, secs: 0, long: 0 }; w.n++; w.km += r.km; w.secs += r.secs; w.long = Math.max(w.long, r.km); });
+  runs.forEach(r => { const k = weekStart(r.date), w = weeks[k] ||= { n: 0, km: 0, secs: 0, long: 0, runs: [] }; w.n++; w.km += r.km; w.secs += r.secs; w.long = Math.max(w.long, r.km); w.runs.push(r); });
   const wk = Object.entries(weeks).sort();
   const ok = wk.filter(([, w]) => w.km > 10);
   const items = [['Runs', runs.length], [`Total ${units}`, fmtDist(km)], ['Total time', fmtTime(secs)], [`Avg per week (${units})`, ok.length ? fmtDist(ok.reduce((a, [, w]) => a + w.km, 0) / ok.length) : '–'],
@@ -307,13 +355,21 @@ function renderBlock() {
   $('block-weeks').innerHTML = '<table><thead><tr><th>Week from</th><th>Runs</th><th>' + units + '</th><th>Time</th><th>Longest</th></tr></thead><tbody>' +
     wk.map(([k, w]) => `<tr><td>${fmtDate(k)}</td><td>${w.n}</td><td class="num">${fmtDist(w.km)}</td><td>${fmtTime(w.secs)}</td><td class="num">${fmtDist(w.long)}</td></tr>`).join('') + '</tbody></table>';
 
-  // time in zones across runs that have zone data
-  const z = [0, 0, 0, 0, 0]; let below = 0, tot = 0;
-  runs.filter(r => r.zones).forEach(r => { r.zones.forEach((s, i) => z[i] += s); below += Math.max(0, r.secs - r.zones.reduce((a, b) => a + b, 0)); tot += r.secs; });
-  const parts = [[0, below], ...z.map((s, i) => [i + 1, s])].filter(p => p[1] > 0), pct = s => Math.round(s / tot * 100);
-  $('block-zones').innerHTML = tot ? `<div class="zbar" role="img" aria-label="Time in HR zones">${parts.map(([n, s]) => `<i class="seg z${n}" style="width:${s / tot * 100}%"></i>`).join('')}</div>` +
-    `<div class="legend">${parts.map(([n, s]) => `<span><span class="z z${n}">${n ? 'Z' + n : '<Z1'}</span> ${fmtTime(s)} (${pct(s)}%)</span>`).join('')}</div>` +
-    `<p class="muted">Z1–Z2 and below ${pct(below + z[0] + z[1])}%, Z3 ${pct(z[2])}%, Z4–Z5 ${pct(z[3] + z[4])}%. Includes warm-ups, cool-downs and recoveries.</p>` : '<p class="muted">No zone data.</p>';
+  // time in zones: whole block, then week by week
+  const zoneParts = rs => {
+    const z = [0, 0, 0, 0, 0]; let below = 0, tot = 0;
+    rs.filter(r => r.zones).forEach(r => { r.zones.forEach((s, i) => z[i] += s); below += Math.max(0, r.secs - r.zones.reduce((a, b) => a + b, 0)); tot += r.secs; });
+    return { z, below, tot, parts: [[0, below], ...z.map((s, i) => [i + 1, s])].filter(p => p[1] > 0) };
+  };
+  const bar = zp => `<div class="zbar" role="img" aria-label="Time in HR zones">${zp.parts.map(([n, s]) => `<i class="seg z${n}" style="width:${s / zp.tot * 100}%" title="${n ? 'Z' + n : '<Z1'} ${fmtTime(s)}"></i>`).join('')}</div>`;
+  const all = zoneParts(runs), pct = s => Math.round(s / all.tot * 100);
+  $('block-zones').innerHTML = all.tot ? bar(all) +
+    `<div class="legend">${all.parts.map(([n, s]) => `<span><span class="z z${n}">${n ? 'Z' + n : '<Z1'}</span> ${fmtTime(s)} (${pct(s)}%)</span>`).join('')}</div>` +
+    `<p class="muted">Z1–Z2 and below ${pct(all.below + all.z[0] + all.z[1])}%, Z3 ${pct(all.z[2])}%, Z4–Z5 ${pct(all.z[3] + all.z[4])}%. Includes warm-ups, cool-downs and recoveries.</p>` +
+    '<h3>Week by week</h3><div class="zweeks">' + wk.map(([k, w]) => { const zp = zoneParts(w.runs); if (!zp.tot) return '';
+      const hard = Math.round((zp.z[2] + zp.z[3] + zp.z[4]) / zp.tot * 100);
+      return `<div class="zweek"><span>${fmtDate(k).replace(/^\w+, /, '').replace(/ 20\d\d$/, '')}</span>${bar(zp)}<span class="muted">Z3+ ${hard}%</span></div>`; }).join('') + '</div>'
+    : '<p class="muted">No zone data.</p>';
 
   // quality work: rep/effort laps
   const lt = l => l.time.split(':').reduce((a, n) => a * 60 + +n, 0);
@@ -337,6 +393,7 @@ function renderReview() {
   $('review-older').innerHTML = rv.length > 1 ? rv.slice(1).map(r => `<details><summary>${fmtDate(r.date)}: ${esc(r.title)}</summary>${reviewHtml(r)}</details>`).join('') : '<p class="muted">None yet.</p>';
   renderEstimates(); renderCharts(); renderBlock();
 }
+document.addEventListener('click', e => { const v = e.target.dataset && e.target.dataset.pv; if (v) { paceView = v; renderCharts(); } });
 
 // ---------- tabs ----------
 function showTab(name) {

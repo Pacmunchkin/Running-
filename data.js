@@ -13,13 +13,14 @@ const run = (date, time, type, km, dur, hr, maxhr, notes = '', flag = '', shoe =
 const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 
 const SEED = {
-  v: 1, rev: 6,
+  v: 1, rev: 7,
+  projection: { vdotGain: 1.5, vdotWeeks: 26, gapWeeks: 20, gapFloor: { g1: 1.09, g2: 1.04, g3: 1.005 } },
   block: { start: '2026-09-01', name: 'Phase 1: base building' },
   profile: {
     name: 'Philip Coote', location: 'Bath, UK', phase: 'Phase 1 (Base Building)',
     longDay: 'Saturday = long/tempo day',
     week: 'Sat / Sun / Mon / Tue (rest) / Wed / Thu (rest) / Fri (yoga)',
-    maxHr: 188, maxHrNote: 'possible sensor spike',
+    maxHr: 201, maxHrNote: 'Redcar 5K PB, 19 Apr 2025 (Garmin). Bristol HM max was 196. To be reviewed as new data comes in',
     z1: 85, z2: 102, z3: 135, z4: 155, z5: 160,
     zoneNote: 'Zone 2/3 boundary is 134/135 bpm'
   },
@@ -95,9 +96,6 @@ const SEED = {
     run('2026-10-11', '07:58', 'Recovery', 6.07, '50:17', 112, 135, '8:17/km', '', TOR,
       { title: 'Recovery', asc: 55, cal: 436, sweat: 496, cad: 160, stride: 0.75, moving: '50:17', best: '5:32', zones: Z('4:59', '44:55', '0:01', '', ''), laps: [
         lap('Run 1', '25:05', 3.00, '8:22', 109, 128, 161), lap('Run 2', '24:39', 3.00, '8:13', 115, 135, 159), lap('Cool down', '0:33.2', 0.07, '7:29', 107, 110, 167)] }),
-    run('2026-10-11', '15:38', 'Other', 6.61, '1:55:47', 79, 125,
-      'Second Garmin activity that day, not in the original log. Moving pace 13:56/km (moving time 1:32:02), cadence 73 spm. Looks like a walk, please confirm', 'Logged by Garmin as "Running"; avg HR 79 is below Z1', TOR,
-      { title: 'Running', asc: 65, cal: 514, sweat: 807, cad: 73, stride: 0.78, moving: '1:32:02', best: '7:10', zones: Z('24:53', '4:05', '', '', '') }),
     run('2026-10-14', '19:13', 'Repeats', 9.46, '1:04:49', 134, 184,
       '1k repeats: 4:04, 4:03, 4:05, 3:58/km. 1 min recovery. Garmin flagged a new personal record', 'Reps 3-4 HR (avg 145 and 150) looks low for pace, possible strap issue. The 184 max was in the first recovery lap (avg 174), not a rep', TOR,
       { title: '1k repeats', asc: 101, cal: 719, sweat: 763, cad: 154, stride: 0.92, moving: '1:04:15', best: '3:38', zones: Z('0:13', '37:12', '17:23', '3:07', '6:45'), laps: [
@@ -147,7 +145,7 @@ const SEED = {
   reviews: [
     { id: 'v1', date: '2026-10-14', title: 'Block review: 1 Sep - 14 Oct 2026 (Phase 1, base building)', sections: [
       { heading: 'What went well', items: [
-        'Volume: 125 km in 17 runs (15 h 55 min) over six weeks, excluding the 11 Oct 3:38 PM activity. Weekly km: 28, 22, 5 (illness), 21, 24, 24. The five healthy weeks averaged 24 km.',
+        'Volume: 125 km in 17 runs (15 h 55 min) over six weeks, excluding an 11 Oct walk. Weekly km: 28, 22, 5 (illness), 21, 24, 24. The five healthy weeks averaged 24 km.',
         'Speed is back quickly. Average rep pace went 4:20 (9 Sep), 4:26 (30 Sep, just after illness), 4:13 (7 Oct), 4:03 (14 Oct). The last three sessions had almost the same average HR (153, 152, 153), so you ran about 24 s/km faster at the same heart rate in two weeks.',
         'Estimated VO2 max (VDOT) rose 41.8, 44.5, 46.8. That equals your 5K PB fitness (46.8, Apr 2025) from the 14 Oct reps alone.',
         'Easy-run efficiency: 7 Sep 9:16/km at HR 128, 5 Oct 7:18/km at HR 127. That is nearly 2 min/km faster at the same HR (the 7 Sep run was soon after the HM and hillier, so some of this is recovery).',
@@ -183,8 +181,8 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 103.2, asOf: '2026-10-14', notes: 'In use since 11 Sep. Garmin: 14 activities, 103.2 km at 14 Oct (Garmin limit 1,000)' },
-    { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin gear "Primus lite" / "Vivobarefoot": 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 103.2, asOf: '2026-10-14', notes: 'In use since 11 Sep. Garmin: 14 activities, 103.2 km at 14 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
   ],
@@ -199,10 +197,10 @@ const SEED = {
     { id: 'c1', note: '19 Sep: HR spike (incoming respiratory illness)' },
     { id: 'c2', note: '14 Oct reps 3-4: possible strap dropout, HR looks low for pace' },
     { id: 'c3', note: '9 Sep: Garmin label says "Tempo" but the session was 3 x 3 min intervals' },
-    { id: 'c4', note: 'Max HR 188 may be a sensor spike' },
+    { id: 'c4', note: 'Max HR set to 201 (Redcar 5K PB, Apr 2025). Review as new data comes in; 188 on 19 Sep 2026 was during illness' },
     { id: 'c5', note: 'Zone 2/3 boundary is 134/135 bpm' },
-    { id: 'c6', note: '11 Oct 3:38 PM: extra Garmin activity (6.61 km, 17:32/km, avg HR 79) added to the log, probably a walk. Confirm' },
-    { id: 'c8', note: 'Max HR on Garmin: 201 (5K Apr 2025), 196 (HM May 2025), 190 (10K Jun 2026), 186 (HM Aug 2026), 188 (19 Sep 2026). The profile max HR of 188 is lower than the 2025 race values' },
+    { id: 'c6', note: '11 Oct 3:38 PM: a 6.61 km walk. Not logged as a run, but it is in Garmin\'s Torin 9 total (103.2 km)' },
+    { id: 'c8', note: 'Max HR on Garmin: 201 (5K Apr 2025), 196 (HM May 2025), 190 (10K Jun 2026), 186 (HM Aug 2026). HR zones start Z5 at 160 bpm, about 80% of 201 (85% of the old 188). Revisit zone boundaries once max HR is confirmed' },
     { id: 'c9', note: 'Garmin summary data was edited on the 2025 PBs and the 7 Jun 2026 10K. Lap distances do not match the summary on the Bristol HM (21.25 vs 21.10 km) or the 10K (9.63 vs 10.00 km)' },
     { id: 'c7', note: 'Garmin "best pace" values (e.g. 2:08/km on 3 Oct trail run) are GPS artefacts, ignore them' }
   ]
