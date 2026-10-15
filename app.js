@@ -411,56 +411,6 @@ function render() {
   Object.keys(COLS).forEach(renderCol);
 }
 
-// ---------- import / export ----------
-function download(name, text, mime) {
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([text], { type: mime })); a.download = name; a.click();
-  setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-}
-const csvCell = v => /[",\n]/.test(v = String(v ?? '')) ? '"' + v.replace(/"/g, '""') + '"' : v;
-$('export-csv').onclick = () => download('runs.csv',
-  ['date,distance_km,time_seconds,type,avg_hr,max_hr,shoe,notes,flag', ...[...db.runs].sort((a, b) => a.date < b.date ? -1 : 1)
-    .map(r => [r.date, r.km.toFixed(3), r.secs, r.type, r.hr ?? '', r.maxhr ?? '', r.shoe, r.notes, r.flag].map(csvCell).join(','))].join('\n'), 'text/csv');
-$('export-json').onclick = () => download(`run-log-backup-${today()}.json`, JSON.stringify(db, null, 2), 'application/json');
-
-function parseCSV(text) {
-  const rows = []; let row = [], cell = '', q = false;
-  for (let i = 0; i < text.length; i++) {
-    const c = text[i];
-    if (q) { if (c === '"') { if (text[i + 1] === '"') { cell += '"'; i++; } else q = false; } else cell += c; }
-    else if (c === '"') q = true;
-    else if (c === ',') { row.push(cell); cell = ''; }
-    else if (c === '\n' || c === '\r') { if (c === '\r' && text[i + 1] === '\n') i++; row.push(cell); rows.push(row); row = []; cell = ''; }
-    else cell += c;
-  }
-  if (cell || row.length) { row.push(cell); rows.push(row); }
-  return rows.filter(r => r.some(x => x.trim()));
-}
-function mergeRuns(incoming) {
-  const key = r => `${r.date}|${r.km.toFixed(2)}|${r.secs}`;
-  const ok = incoming.filter(r => /^\d{4}-\d{2}-\d{2}$/.test(r.date) && r.km > 0 && r.secs > 0)
-    .map(r => ({ id: r.id || uid(), date: r.date, km: +r.km, secs: +r.secs, type: r.type || 'Other', hr: r.hr || null, maxhr: r.maxhr || null,
-      shoe: r.shoe || '', notes: r.notes || '', flag: r.flag || '' }));
-  const seen = new Set(db.runs.map(key)), fresh = ok.filter(r => !seen.has(key(r)));
-  db.runs.push(...fresh); persist();
-  alert(`Imported ${fresh.length} runs (${incoming.length - fresh.length} skipped as invalid or duplicate).`);
-}
-$('import').onchange = async e => {
-  const file = e.target.files[0]; e.target.value = ''; if (!file) return;
-  try {
-    const text = await file.text();
-    if (file.name.endsWith('.json')) {
-      const data = JSON.parse(text);
-      if (Array.isArray(data)) return mergeRuns(data);
-      if (!Array.isArray(data.runs)) throw new Error('not a Run Log backup');
-      if (!confirm(`Replace ALL current data with this backup (${data.runs.length} runs)?`)) return;
-      db = { ...clone(SEED), ...data }; return persist();
-    }
-    const [head, ...body] = parseCSV(text), col = n => head.findIndex(h => h.trim().toLowerCase() === n);
-    const [d, k, s, t, h, m, sh, n, f] = ['date', 'distance_km', 'time_seconds', 'type', 'avg_hr', 'max_hr', 'shoe', 'notes', 'flag'].map(col);
-    mergeRuns(body.map(r => ({ date: r[d], km: parseFloat(r[k]), secs: parseFloat(r[s]), type: r[t], hr: +r[h], maxhr: +r[m], shoe: r[sh], notes: r[n], flag: r[f] })));
-  } catch (err) { alert('Could not import file: ' + err.message); }
-};
 $('reset').onclick = () => {
   if (confirm('Replace ALL data in this browser with the starter data? This cannot be undone (back up first).')) { db = clone(SEED); persist(); }
 };

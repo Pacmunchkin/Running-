@@ -7,8 +7,7 @@ A static site for storing and reviewing running data. No build step, no server: 
 - **Plan & goals:** race goals with target pace and countdown, upcoming schedule, missed/changed sessions
 - **Gear & fuel:** shoe mileage, nutrition table
 - **Profile:** runner details, HR zones, PBs and prior races, data caveats
-- km / mi toggle (stored internally in km); CSV export/import of runs; full JSON backup/restore
+- km / mi toggle (stored internally in km); dark theme
 
 `data.js` holds the starter data (loaded on first open; Profile → Reset to starter data reloads it).
-Data lives in the browser's `localStorage`, so use **Backup JSON** regularly. Browsers keep separate data per
-browser/profile and per file location, so open the site from the same place each time.
+Runs, estimates and reviews live in `data.js` (updated by Claude after each session). Edits made in the page (goals, plan, shoes, profile…) are stored in the browser's `localStorage` only and are replaced when `data.js` changes.

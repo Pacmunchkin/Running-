@@ -16,9 +16,6 @@
     <label>Units
       <select id="units"><option value="km">km</option><option value="mi">mi</option></select>
     </label>
-    <button id="export-csv" class="ghost">Export CSV</button>
-    <button id="export-json" class="ghost">Backup JSON</button>
-    <label class="btn ghost">Import<input id="import" type="file" accept=".csv,.json" hidden></label>
   </div>
 </header>
 <nav id="tabs">
@@ -151,7 +148,7 @@
     </section>
     <section class="card">
       <h2>Data</h2>
-      <p class="muted">Everything is stored in this browser only. Use “Backup JSON” (top right) to save a full copy.</p>
+      <p class="muted">Runs, estimates and reviews come from the site's data file, which Claude updates. Changes made on the Plan, Gear and Profile tabs are saved in this browser only and are replaced when the data file is updated.</p>
       <button class="ghost" id="reset">Reset to starter data</button>
     </section>
   </div>
@@ -164,7 +161,7 @@
     <div class="actions"><button type="submit">Save</button><button type="button" class="ghost" id="dlg-cancel">Cancel</button></div>
   </form>
 </dialog>
-<footer class="muted">Data is stored in this browser only. Use “Backup JSON” regularly.</footer>
+<footer class="muted">Run Log</footer>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
