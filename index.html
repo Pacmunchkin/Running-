@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 <div class="layout">
@@ -134,34 +134,34 @@
 
   <div data-panel="plan" hidden>
     <section class="card">
-      <div class="row"><h2>Goals</h2><button class="ghost" data-add="goals">+ Add</button></div>
+      <h2>Goals</h2>
       <div class="table-wrap" id="c-goals"></div>
     </section>
     <section class="card">
-      <div class="row"><h2>Upcoming schedule</h2><button class="ghost" data-add="plan">+ Add</button></div>
+      <h2>Upcoming schedule</h2>
       <div class="table-wrap" id="c-plan"></div>
     </section>
     <section class="card">
-      <div class="row"><h2>Missed / changed</h2><button class="ghost" data-add="missed">+ Add</button></div>
+      <h2>Missed / changed</h2>
       <div class="table-wrap" id="c-missed"></div>
     </section>
   </div>
 
   <div data-panel="gear" hidden>
     <section class="card">
-      <div class="row"><h2>Shoes</h2><button class="ghost" data-add="shoes">+ Add</button></div>
+      <h2>Shoes</h2>
       <div class="table-wrap" id="c-shoes"></div>
       <p class="muted">Total = mileage stated above + runs logged after the “as of” date with that shoe name.</p>
     </section>
     <section class="card">
-      <div class="row"><h2>Nutrition</h2><button class="ghost" data-add="nutrition">+ Add</button></div>
+      <h2>Nutrition</h2>
       <div class="table-wrap" id="c-nutrition"></div>
     </section>
   </div>
 
   <div data-panel="profile" hidden>
     <section class="card">
-      <div class="row"><h2>Runner</h2><button class="ghost" data-edit-profile>Edit</button></div>
+      <h2>Runner</h2>
       <dl id="profile"></dl>
     </section>
     <section class="card">
@@ -169,31 +169,19 @@
       <div class="table-wrap" id="zones"></div>
     </section>
     <section class="card">
-      <div class="row"><h2>Personal bests &amp; prior races</h2><button class="ghost" data-add="pbs">+ Add</button></div>
+      <h2>Personal bests &amp; prior races</h2>
       <div class="table-wrap" id="c-pbs"></div>
     </section>
     <section class="card">
-      <div class="row"><h2>Data caveats</h2><button class="ghost" data-add="caveats">+ Add</button></div>
+      <h2>Data caveats</h2>
       <div class="table-wrap" id="c-caveats"></div>
-    </section>
-    <section class="card">
-      <h2>Data</h2>
-      <p class="muted">Runs, estimates and reviews come from the site's data file, which Claude updates. Changes made on the Plan, Gear and Profile tabs are saved in this browser only and are replaced when the data file is updated.</p>
-      <button class="ghost" id="reset">Reset to starter data</button>
     </section>
   </div>
 </main>
 
-<dialog id="dlg">
-  <form id="dlg-form">
-    <h2 id="dlg-title"></h2>
-    <div id="dlg-fields"></div>
-    <div class="actions"><button type="submit">Save</button><button type="button" class="ghost" id="dlg-cancel">Cancel</button></div>
-  </form>
-</dialog>
 </div>
 </div>
-<script src="data.js?v=13"></script>
-<script src="app.js?v=13"></script>
+<script src="data.js?v=14"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>

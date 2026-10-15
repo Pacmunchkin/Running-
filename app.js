@@ -9,19 +9,9 @@ window.addEventListener('error', e => {
 });
 // Missing elements (e.g. a cached older page) are ignored rather than crashing the whole script
 const $ = id => document.getElementById(id) || document.createElement('div');
-const store = {
-  get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
-  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
-};
 const clone = o => JSON.parse(JSON.stringify(o));
-let db = store.get('rl_db') || clone(SEED);
-for (const k of Object.keys(SEED)) if (db[k] == null) db[k] = clone(SEED[k]);   // fill anything missing from older saved data
-db.profile = { ...SEED.profile, ...db.profile };
-if (db.rev !== SEED.rev) {   // saved by an older version of the site
-  const keep = db.runs && db.runs.length && !confirm('This version adds detailed Garmin data (laps, HR zones, ascent, shoes).\n\nOK = replace your saved data with the new starter data.\nCancel = keep your current data (Profile → Reset to starter data loads it later).');
-  if (keep) db.rev = SEED.rev; else db = clone(SEED);
-  store.set('rl_db', db);
-}
+let db = clone(SEED);   // data.js is the only source of data
+try { localStorage.removeItem('rl_db'); localStorage.removeItem('rl_units'); } catch { /* ignore */ }
 const units = 'km';
 const openRuns = new Set();
 let sort = { key: 'date', dir: -1 };
@@ -54,7 +44,6 @@ const zoneOf = hr => {
   return 0;
 };
 const zoneBadge = hr => { const z = zoneOf(hr); return z == null ? '' : `<span class="z z${z}">${z ? 'Z' + z : '<Z1'}</span>`; };
-const persist = () => { store.set('rl_db', db); render(); };
 
 // ---------- training tab ----------
 function renderStats() {
@@ -169,47 +158,15 @@ const COLS = {
   pbs: { single: 'result', fields: [['event', 'Event', 'text', 1], ['time', 'Time', 'text', 1], ['place', 'Place', 'text'], ['when', 'When', 'text'], ['notes', 'Notes', 'text']] },
   caveats: { single: 'caveat', fields: [['note', 'Caveat', 'text', 1]] }
 };
-const PROFILE_FIELDS = [['name', 'Name', 'text'], ['location', 'Location', 'text'], ['phase', 'Training phase', 'text'], ['longDay', 'Long/tempo day', 'text'],
-  ['week', 'Running week', 'text'], ['maxHr', 'Max HR seen (bpm)', 'number'], ['maxHrNote', 'Max HR note', 'text'],
-  ['z1', 'Zone 1 starts at (bpm)', 'number'], ['z2', 'Zone 2 starts at', 'number'], ['z3', 'Zone 3 starts at', 'number'],
-  ['z4', 'Zone 4 starts at', 'number'], ['z5', 'Zone 5 starts at', 'number'], ['zoneNote', 'Zone note', 'text']];
-
 function renderCol(key) {
   const c = COLS[key], shown = c.fields.filter(f => !(c.hide || []).includes(f[0]));
   const items = [...db[key]]; if (c.sort) items.sort(c.sort);
   $('c-' + key).innerHTML = items.length
-    ? `<table><thead><tr>${shown.map(f => `<th>${esc(f[1])}</th>`).join('')}${(c.extra || []).map(x => `<th>${esc(x[0])}</th>`).join('')}<th></th></tr></thead><tbody>` +
+    ? `<table><thead><tr>${shown.map(f => `<th>${esc(f[1])}</th>`).join('')}${(c.extra || []).map(x => `<th>${esc(x[0])}</th>`).join('')}</tr></thead><tbody>` +
       items.map(it => `<tr>${shown.map(([k, , t]) => `<td${t === 'number' ? ' class="num"' : ''}>${t === 'date' ? fmtDate(it[k]) : esc(it[k])}</td>`).join('')}` +
-        (c.extra || []).map(x => `<td>${x[1](it)}</td>`).join('') +
-        `<td><button class="link" data-ed="${key}:${it.id}">Edit</button></td></tr>`).join('') + '</tbody></table>'
+        (c.extra || []).map(x => `<td>${x[1](it)}</td>`).join('') + '</tr>').join('') + '</tbody></table>'
     : '<p class="muted">Nothing here yet.</p>';
 }
-
-let ctx = null;
-function openDlg(key, id) {
-  const profile = key === 'profile', fields = profile ? PROFILE_FIELDS : COLS[key].fields;
-  const item = profile ? db.profile : (id ? db[key].find(i => i.id === id) : {});
-  $('dlg-title').textContent = profile ? 'Edit runner details' : `${id ? 'Edit' : 'Add'} ${COLS[key].single}`;
-  $('dlg-fields').innerHTML = fields.map(([k, l, t, req]) =>
-    `<label>${esc(l)}<input name="${k}" type="${t}" ${t === 'number' ? 'step="any"' : ''} ${req ? 'required' : ''} value="${esc(item[k] ?? '')}"></label>`).join('');
-  ctx = { key, id, fields }; $('dlg').showModal();
-}
-$('dlg-form').addEventListener('submit', e => {
-  e.preventDefault();
-  const fd = new FormData(e.target), out = {};
-  ctx.fields.forEach(([k, , t]) => { const v = fd.get(k).trim(); out[k] = t === 'number' ? (v === '' ? null : parseFloat(v)) : v; });
-  if (ctx.key === 'profile') Object.assign(db.profile, out);
-  else if (ctx.id) Object.assign(db[ctx.key].find(i => i.id === ctx.id), out);
-  else db[ctx.key].push({ id: uid(), ...out });
-  $('dlg').close(); persist();
-});
-$('dlg-cancel').onclick = () => $('dlg').close();
-document.addEventListener('click', e => {
-  const d = e.target.dataset;
-  if (d.add) openDlg(d.add);
-  if (d.ed) openDlg(...d.ed.split(':'));
-  if (d.editProfile !== undefined) openDlg('profile');
-});
 
 // ---------- profile ----------
 function renderProfile() {
@@ -543,9 +500,5 @@ function render() {
   renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends();
   Object.keys(COLS).forEach(renderCol);
 }
-
-$('reset').onclick = () => {
-  if (confirm('Replace ALL data in this browser with the starter data? This cannot be undone (back up first).')) { db = clone(SEED); persist(); }
-};
 
 render(); showTab(location.hash.slice(1) || 'train');
