@@ -126,7 +126,7 @@ function renderTable() {
     <td>${fmtDate(r.date)}</td><td>${esc(r.type)}</td><td class="num">${fmtDist(r.km)} ${units}</td><td>${fmtTime(r.secs)}</td><td>${fmtPace(r.secs, r.km)}</td>
     <td>${r.hr ?? ''}${r.maxhr ? ' / ' + r.maxhr : ''} ${zoneBadge(r.hr)}</td>
     <td class="notes">${esc(r.notes)}${r.shoe ? `<span class="flag">👟 ${esc(r.shoe)}</span>` : ''}${r.flag ? `<span class="flag">⚠ ${esc(r.flag)}</span>` : ''}</td>
-    <td><button class="link" data-more="${r.id}">${openRuns.has(r.id) ? 'Hide' : 'Details'}</button><button class="link" data-del="${r.id}">Delete</button></td></tr>` +
+    <td><button class="link" data-more="${r.id}">${openRuns.has(r.id) ? 'Hide' : 'Details'}</button></td></tr>` +
     (openRuns.has(r.id) ? `<tr class="detail"><td colspan="8">${detailHtml(r)}</td></tr>` : '')).join('');
 }
 
@@ -136,9 +136,8 @@ $('search').oninput = renderTable;
   sort = { key: k, dir: sort.key === k ? -sort.dir : -1 }; renderTable();
 });
 $('rows').addEventListener('click', e => {
-  const { del, more } = e.target.dataset;
+  const { more } = e.target.dataset;
   if (more) { openRuns.has(more) ? openRuns.delete(more) : openRuns.add(more); renderTable(); }
-  if (del && confirm('Delete this run?')) { db.runs = db.runs.filter(r => r.id !== del); persist(); }
 });
 
 // ---------- generic editable lists (goals, plan, shoes, …) ----------
@@ -182,7 +181,7 @@ function renderCol(key) {
     ? `<table><thead><tr>${shown.map(f => `<th>${esc(f[1])}</th>`).join('')}${(c.extra || []).map(x => `<th>${esc(x[0])}</th>`).join('')}<th></th></tr></thead><tbody>` +
       items.map(it => `<tr>${shown.map(([k, , t]) => `<td${t === 'number' ? ' class="num"' : ''}>${t === 'date' ? fmtDate(it[k]) : esc(it[k])}</td>`).join('')}` +
         (c.extra || []).map(x => `<td>${x[1](it)}</td>`).join('') +
-        `<td><button class="link" data-ed="${key}:${it.id}">Edit</button><button class="link" data-rm="${key}:${it.id}">Delete</button></td></tr>`).join('') + '</tbody></table>'
+        `<td><button class="link" data-ed="${key}:${it.id}">Edit</button></td></tr>`).join('') + '</tbody></table>'
     : '<p class="muted">Nothing here yet.</p>';
 }
 
@@ -210,10 +209,6 @@ document.addEventListener('click', e => {
   if (d.add) openDlg(d.add);
   if (d.ed) openDlg(...d.ed.split(':'));
   if (d.editProfile !== undefined) openDlg('profile');
-  if (d.rm) {
-    const [key, id] = d.rm.split(':');
-    if (confirm('Delete this entry?')) { db[key] = db[key].filter(i => i.id !== id); persist(); }
-  }
 });
 
 // ---------- profile ----------
