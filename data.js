@@ -15,6 +15,933 @@ const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 const SEED = {
   v: 1, rev: 8,
   projection: { vdotGain: 1.5, vdotWeeks: 26, gapWeeks: 20, gapFloor: { g1: 1.09, g2: 1.04, g3: 1.005 } },
+  longPlan: {
+   "weeks": [
+    {
+     "start": "2026-10-17",
+     "phase": "found",
+     "type": "build",
+     "km": 58,
+     "long": 27.3,
+     "sat": "Z4 tempo, 20 min (10 min out, 10 min back)",
+     "sun": "Recovery 5-6 km, Z2",
+     "mon": "Steady high Z2, 8-9 km (HR 125-134)",
+     "wed": "400m pyramid, lighter (Z5)",
+     "opt": "Thu: trail run/hike 27.3 km, 3:08 h, easy Z2",
+     "note": "Biggest week of the block by far. Everything else stays easy."
+    },
+    {
+     "start": "2026-10-24",
+     "phase": "found",
+     "type": "build",
+     "km": 53,
+     "long": 10,
+     "sat": "5K parkrun at Z4 (HR-led)",
+     "sun": "Recovery run",
+     "mon": "5K at Z3 (HR 135-154), first planned Z3 session",
+     "wed": "5 x 1 km @ about 4:00-4:05, 1 min jog",
+     "opt": "Tue easy, Thu recovery, Fri steady (half term, run every day)",
+     "note": "Second big week. Stay under the weekly cap on the easy days."
+    },
+    {
+     "start": "2026-10-31",
+     "phase": "found",
+     "type": "recovery",
+     "km": 30,
+     "long": 11,
+     "sat": "Easy 8-10 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "Optional easy 5 km Thu/Fri",
+     "note": "Recovery week after two big ones: no Z4 or Z5."
+    },
+    {
+     "start": "2026-11-07",
+     "phase": "hm1",
+     "type": "build",
+     "km": 36,
+     "long": 14,
+     "sat": "Long run 14 km, easy Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 5-6 km (HR 135-154)",
+     "wed": "6 x 1 km @ about 4:03, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-11-14",
+     "phase": "hm1",
+     "type": "build",
+     "km": 38,
+     "long": 15,
+     "sat": "Long run 15 km, easy Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Steady high Z2, 8-9 km",
+     "wed": "6 x 800 m @ about 3:55, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-11-21",
+     "phase": "hm1",
+     "type": "build",
+     "km": 40,
+     "long": 17,
+     "sat": "Long run 17 km, easy Z2, last 15 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6 km (HR 135-154)",
+     "wed": "6 x 1 km @ about 4:00, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-11-28",
+     "phase": "hm1",
+     "type": "recovery",
+     "km": 29,
+     "long": 12,
+     "sat": "Easy long run 12 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2026-12-05",
+     "phase": "hm1",
+     "type": "build",
+     "km": 40,
+     "long": 17,
+     "sat": "Long run 17 km, easy Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6 km",
+     "wed": "6 x 1 km @ about 4:03, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-12-12",
+     "phase": "hm1",
+     "type": "build",
+     "km": 42,
+     "long": 18,
+     "sat": "Long run 18 km, easy Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Steady high Z2, 8-9 km",
+     "wed": "6 x 800 m @ about 3:55, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-12-19",
+     "phase": "hm1",
+     "type": "build",
+     "km": 44,
+     "long": 19,
+     "sat": "Long run 19 km, easy Z2, last 15 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 7 km",
+     "wed": "6 x 1 km @ about 4:00, 1 min jog",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2026-12-26",
+     "phase": "hm1",
+     "type": "recovery",
+     "km": 30,
+     "long": 12,
+     "sat": "Easy long run 12 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-01-02",
+     "phase": "hm2",
+     "type": "build",
+     "km": 42,
+     "long": 18,
+     "sat": "Long run 18 km, Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 2 x 12 min, 3 min jog",
+     "wed": "5 x 1.2 km @ about 4:15 (10K effort)",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-01-09",
+     "phase": "hm2",
+     "type": "build",
+     "km": 44,
+     "long": 20,
+     "sat": "Long run 20 km, Z2, last 25 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 tempo 25 min",
+     "wed": "8 x 400 m @ about 3:50",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-01-16",
+     "phase": "hm2",
+     "type": "build",
+     "km": 46,
+     "long": 21,
+     "sat": "Long run 21 km, Z2, last 25 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 2 x 15 min, 3 min jog",
+     "wed": "6 x 1 km @ about 4:00",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-01-23",
+     "phase": "hm2",
+     "type": "recovery",
+     "km": 32,
+     "long": 13,
+     "sat": "Easy long run 13 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-01-30",
+     "phase": "hm2",
+     "type": "build",
+     "km": 44,
+     "long": 20,
+     "sat": "Long run 20 km, Z2",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 2 x 12 min, 3 min jog",
+     "wed": "5 x 1.2 km @ about 4:15 (10K effort)",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-02-06",
+     "phase": "hm2",
+     "type": "build",
+     "km": 46,
+     "long": 22,
+     "sat": "Long run 22 km, Z2, last 25 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 tempo 25 min",
+     "wed": "8 x 400 m @ about 3:50",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-02-13",
+     "phase": "hm2",
+     "type": "build",
+     "km": 48,
+     "long": 22,
+     "sat": "Long run 22 km, Z2, last 25 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 2 x 15 min, 3 min jog",
+     "wed": "6 x 1 km @ about 4:00",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-02-20",
+     "phase": "hm2",
+     "type": "recovery",
+     "km": 33,
+     "long": 14,
+     "sat": "Easy long run 14 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-02-27",
+     "phase": "hms",
+     "type": "build",
+     "km": 46,
+     "long": 22,
+     "sat": "Long run 22 km: 3 x 2 km @ about 5:05 inside the long run",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 25 min continuous",
+     "wed": "4 x 2 km @ about 4:30",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-03-06",
+     "phase": "hms",
+     "type": "peak",
+     "km": 48,
+     "long": 23,
+     "sat": "Long run 23 km: 2 x 5 km @ HM pace (4:59-5:05)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 3 x 10 min",
+     "wed": "6 x 1 km @ about 4:00",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-03-13",
+     "phase": "hms",
+     "type": "build",
+     "km": 46,
+     "long": 21,
+     "sat": "Long run 21 km: 8 km @ HM pace",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 2 x 15 min",
+     "wed": "5 x 1.6 km @ about 4:25",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-03-20",
+     "phase": "hms",
+     "type": "recovery",
+     "km": 34,
+     "long": 14,
+     "sat": "Easy long run 14 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-03-27",
+     "phase": "hms",
+     "type": "build",
+     "km": 46,
+     "long": 22,
+     "sat": "Long run 22 km: 10 km @ HM pace (peak)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 25 min continuous",
+     "wed": "4 x 2 km @ about 4:30",
+     "opt": "Optional Thu: easy 5 km. Optional 10K tune-up race around 27-28 Mar",
+     "note": ""
+    },
+    {
+     "start": "2027-04-03",
+     "phase": "hms",
+     "type": "build",
+     "km": 44,
+     "long": 20,
+     "sat": "Long run 20 km: Rehearsal: 16 km with 10 km @ HM pace, race fuelling",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 3 x 10 min",
+     "wed": "6 x 1 km @ about 4:00",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-04-10",
+     "phase": "hms",
+     "type": "recovery",
+     "km": 36,
+     "long": 16,
+     "sat": "Easy long run 16 km, Z2",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6-7 km",
+     "wed": "Easy 6 km + 6 x 100 m strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-04-17",
+     "phase": "hms",
+     "type": "build",
+     "km": 42,
+     "long": 18,
+     "sat": "Long run 18 km: Last long run: 18 km with 8 km @ HM pace",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z4 3 x 10 min, 2 min jog",
+     "wed": "5 x 1.6 km @ about 4:25",
+     "opt": "Optional Thu: easy 5 km",
+     "note": ""
+    },
+    {
+     "start": "2027-04-24",
+     "phase": "hmt",
+     "type": "taper",
+     "km": 34,
+     "long": 14,
+     "sat": "14 km easy with 4 km @ HM pace",
+     "sun": "Recovery 5 km",
+     "mon": "Z3 steady 5 km",
+     "wed": "4 x 1 km @ about 4:00 (stay sharp, short)",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-05-01",
+     "phase": "hmt",
+     "type": "taper",
+     "km": 26,
+     "long": 10,
+     "sat": "10 km easy + 3 x 1 km @ HM pace",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6 km",
+     "wed": "3 x 1 km @ HM pace, easy 5 km around it",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-05-08",
+     "phase": "hmt",
+     "type": "race",
+     "km": 28,
+     "long": 21.1,
+     "sat": "Shakeout 4 km + 4 strides",
+     "sun": "Great Bristol Run, HM (target 1:45:00, 4:59/km)",
+     "mon": "Easy 5 km",
+     "wed": "Easy 5 km + 4 strides",
+     "opt": "Fri rest. Next week: easy only",
+     "note": ""
+    },
+    {
+     "start": "2027-05-15",
+     "phase": "reset1",
+     "type": "reset",
+     "km": 12,
+     "long": 5,
+     "sat": "Easy 5 km",
+     "sun": "Easy 5 km",
+     "mon": "Rest",
+     "wed": "Easy 4 km",
+     "opt": "Post-HM week: easy only, no quality",
+     "note": ""
+    },
+    {
+     "start": "2027-05-22",
+     "phase": "reset1",
+     "type": "build",
+     "km": 24,
+     "long": 8,
+     "sat": "Long run 8 km, Z2, last 20 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "6 x 1 km @ about 4:05",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-05-29",
+     "phase": "k10",
+     "type": "build",
+     "km": 34,
+     "long": 12,
+     "sat": "Z4 tempo 30-35 min (cruise intervals ok)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "3 x 2 km @ about 4:30 (10K pace)",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-06-05",
+     "phase": "k10",
+     "type": "build",
+     "km": 38,
+     "long": 14,
+     "sat": "Long run 14 km, Z2, last 20 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "5 x 1 km @ about 4:05",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-06-12",
+     "phase": "k10",
+     "type": "build",
+     "km": 40,
+     "long": 15,
+     "sat": "Z4 tempo 30-35 min (cruise intervals ok)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "5 x 1.2 km @ about 4:15",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-06-19",
+     "phase": "k10",
+     "type": "recovery",
+     "km": 28,
+     "long": 11,
+     "sat": "Easy long run 11 km",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6 km",
+     "wed": "Easy 6 km + strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-06-26",
+     "phase": "k10",
+     "type": "build",
+     "km": 40,
+     "long": 16,
+     "sat": "Z4 tempo 30-35 min (cruise intervals ok)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "6 x 1 km @ about 4:05",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-07-03",
+     "phase": "k10",
+     "type": "build",
+     "km": 42,
+     "long": 16,
+     "sat": "Long run 16 km, Z2, last 20 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "3 x 2 km @ about 4:30 (10K pace)",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-07-10",
+     "phase": "k10",
+     "type": "build",
+     "km": 44,
+     "long": 17,
+     "sat": "Z4 tempo 30-35 min (cruise intervals ok)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "5 x 1 km @ about 4:05",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-07-17",
+     "phase": "k10",
+     "type": "recovery",
+     "km": 30,
+     "long": 12,
+     "sat": "Easy long run 12 km",
+     "sun": "Recovery 5 km",
+     "mon": "Easy 6 km",
+     "wed": "Easy 6 km + strides",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-07-24",
+     "phase": "k10",
+     "type": "build",
+     "km": 42,
+     "long": 16,
+     "sat": "Z4 tempo 30-35 min (cruise intervals ok)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "4 x 1.6 km @ about 4:20",
+     "opt": "Optional Thu: easy 5 km. Parkrun 5K time trial this week.",
+     "note": ""
+    },
+    {
+     "start": "2027-07-31",
+     "phase": "k10",
+     "type": "build",
+     "km": 40,
+     "long": 14,
+     "sat": "Long run 14 km, Z2, last 20 min Z3",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6-8 km (HR 135-154)",
+     "wed": "6 x 1 km @ about 4:05",
+     "opt": "Optional Thu: easy 5 km.",
+     "note": ""
+    },
+    {
+     "start": "2027-08-07",
+     "phase": "k10t",
+     "type": "taper",
+     "km": 30,
+     "long": 10,
+     "sat": "Easy 10 km + 4 x 200 m strides",
+     "sun": "Recovery 5 km",
+     "mon": "Z3 steady 5 km",
+     "wed": "4 x 1 km @ about 4:30 (10K pace), sharp not tiring",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-08-14",
+     "phase": "k10t",
+     "type": "race",
+     "km": 26,
+     "long": 10,
+     "sat": "Shakeout 4 km + 4 strides",
+     "sun": "Bath Two Tunnels 10K (target 45:00, 4:30/km)",
+     "mon": "Easy 5 km",
+     "wed": "Easy 5 km + strides",
+     "opt": "Next week: easy only",
+     "note": ""
+    },
+    {
+     "start": "2027-08-21",
+     "phase": "reset2",
+     "type": "reset",
+     "km": 14,
+     "long": 6,
+     "sat": "Easy 5 km",
+     "sun": "Easy 5 km",
+     "mon": "Rest",
+     "wed": "Easy 4 km",
+     "opt": "Post-10K week: easy only",
+     "note": ""
+    },
+    {
+     "start": "2027-08-28",
+     "phase": "k5",
+     "type": "build",
+     "km": 30,
+     "long": 10,
+     "sat": "Parkrun 5K at Z4/threshold effort",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6 km",
+     "wed": "8 x 400 m @ about 3:50",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-09-04",
+     "phase": "k5",
+     "type": "build",
+     "km": 34,
+     "long": 12,
+     "sat": "Parkrun 5K time trial (race effort)",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6 km",
+     "wed": "6 x 800 m @ about 3:55",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-09-11",
+     "phase": "k5",
+     "type": "build",
+     "km": 32,
+     "long": 12,
+     "sat": "Parkrun 5K at Z4/threshold effort",
+     "sun": "Recovery 5-6 km",
+     "mon": "Z3 steady 6 km",
+     "wed": "5 x 1 km @ about 4:00",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-09-18",
+     "phase": "k5t",
+     "type": "taper",
+     "km": 26,
+     "long": 8,
+     "sat": "Easy 8 km + 4 x 200 m strides",
+     "sun": "Recovery 5 km",
+     "mon": "Z3 steady 5 km",
+     "wed": "4 x 800 m @ about 3:55, sharp not tiring",
+     "opt": "",
+     "note": ""
+    },
+    {
+     "start": "2027-09-25",
+     "phase": "k5t",
+     "type": "race",
+     "km": 20,
+     "long": 5,
+     "sat": "Shakeout 3 km + 4 strides",
+     "sun": "Redcar 5K (target 21:00, 4:12/km)",
+     "mon": "Easy 5 km",
+     "wed": "",
+     "opt": "If the race is the Saturday parkrun (25 Sep), shift this week back one day",
+     "note": ""
+    }
+   ],
+   "phases": [
+    {
+     "id": "found",
+     "name": "Foundation",
+     "focus": "Rebuild after the layoff. Two big weeks, then a recovery week.",
+     "start": "2026-10-17",
+     "end": "2026-11-06",
+     "weeks": 3,
+     "kmMin": 30,
+     "kmMax": 58,
+     "longMin": 10,
+     "longMax": 27.3
+    },
+    {
+     "id": "hm1",
+     "name": "HM build 1: aerobic base",
+     "focus": "Long run 14 to 19 km, Z3 introduced, 1k reps, 3:1 weeks.",
+     "start": "2026-11-07",
+     "end": "2027-01-01",
+     "weeks": 8,
+     "kmMin": 29,
+     "kmMax": 44,
+     "longMin": 12,
+     "longMax": 19
+    },
+    {
+     "id": "hm2",
+     "name": "HM build 2: threshold and long run",
+     "focus": "Long run 18 to 22 km with Z3 finishes, Z4 threshold on Mondays.",
+     "start": "2027-01-02",
+     "end": "2027-02-26",
+     "weeks": 8,
+     "kmMin": 32,
+     "kmMax": 48,
+     "longMin": 13,
+     "longMax": 22
+    },
+    {
+     "id": "hms",
+     "name": "HM specific",
+     "focus": "Long runs with HM-pace blocks, rehearsal run, optional 10K tune-up.",
+     "start": "2027-02-27",
+     "end": "2027-04-23",
+     "weeks": 8,
+     "kmMin": 34,
+     "kmMax": 48,
+     "longMin": 14,
+     "longMax": 23
+    },
+    {
+     "id": "hmt",
+     "name": "HM taper and race",
+     "focus": "Two-week taper, Great Bristol Run 9 May.",
+     "start": "2027-04-24",
+     "end": "2027-05-14",
+     "weeks": 3,
+     "kmMin": 26,
+     "kmMax": 34,
+     "longMin": 10,
+     "longMax": 14
+    },
+    {
+     "id": "reset1",
+     "name": "Reset",
+     "focus": "Easy running only after the half marathon.",
+     "start": "2027-05-15",
+     "end": "2027-05-28",
+     "weeks": 2,
+     "kmMin": 12,
+     "kmMax": 24,
+     "longMin": 5,
+     "longMax": 8
+    },
+    {
+     "id": "k10",
+     "name": "10K build",
+     "focus": "Speed endurance: tempo, 10K-pace reps, parkrun time trial.",
+     "start": "2027-05-29",
+     "end": "2027-08-06",
+     "weeks": 10,
+     "kmMin": 28,
+     "kmMax": 44,
+     "longMin": 11,
+     "longMax": 17
+    },
+    {
+     "id": "k10t",
+     "name": "10K taper and race",
+     "focus": "Short sharp reps, Bath Two Tunnels 10K 15 Aug.",
+     "start": "2027-08-07",
+     "end": "2027-08-20",
+     "weeks": 2,
+     "kmMin": 26,
+     "kmMax": 30,
+     "longMin": 10,
+     "longMax": 10
+    },
+    {
+     "id": "reset2",
+     "name": "Reset",
+     "focus": "One easy week after the 10K.",
+     "start": "2027-08-21",
+     "end": "2027-08-27",
+     "weeks": 1,
+     "kmMin": 14,
+     "kmMax": 14,
+     "longMin": 6,
+     "longMax": 6
+    },
+    {
+     "id": "k5",
+     "name": "5K sharpen",
+     "focus": "800 m and 1 km reps near 5K pace, parkruns as time trials.",
+     "start": "2027-08-28",
+     "end": "2027-09-17",
+     "weeks": 3,
+     "kmMin": 30,
+     "kmMax": 34,
+     "longMin": 10,
+     "longMax": 12
+    },
+    {
+     "id": "k5t",
+     "name": "5K taper and race",
+     "focus": "Short sharp reps, Redcar 5K 26 Sep.",
+     "start": "2027-09-18",
+     "end": "2027-10-01",
+     "weeks": 2,
+     "kmMin": 20,
+     "kmMax": 26,
+     "longMin": 8,
+     "longMax": 8
+    }
+   ],
+   "updated": "2026-10-15",
+   "assumptions": [
+    "Saturday becomes the long run from 7 Nov, because the long run is the biggest gap against your history. The Z4 tempo moves to Monday (and into the long run) so the long run can keep growing. Tell me if you would rather keep Saturday as the tempo day.",
+    "Four runs a week (Sat, Sun, Mon, Wed), Tue and Thu rest, Fri yoga. Peak weeks add an optional easy 5 km on Thursday. Daytime days off can host a longer trail run.",
+    "Weekly km for 17 and 24 Oct are my estimates from your schedule (only the 27.3 km trail has a fixed distance). Every later week is a target.",
+    "Recovery weeks follow a 3 build : 1 recovery pattern, at about 65 to 75% of the previous week. The 31 Oct week is the first one.",
+    "Rep and tempo paces start from where you are now (reps about 4:03/km) and move with each Wednesday update. Race-pace work uses the goal paces: HM 4:59, 10K 4:30, 5K 4:12.",
+    "The 5K date in your list (26 Sep 2027) is a Sunday and parkrun is on Saturdays. The plan uses Sun 26 Sep. If the race is Sat 25 Sep, shift that final week back a day."
+   ],
+   "checkpoints": [
+    {
+     "date": "2026-10-24",
+     "what": "Z4 parkrun (HR-led)",
+     "target": "Hold HR 155-159 and note the pace. Benchmark: 5:09/km at HR 157 on 12 Sep."
+    },
+    {
+     "date": "2026-11-21",
+     "what": "Long run 17 km",
+     "target": "Easy, HR 134 or lower for the first three quarters. Easy-run efficiency at 1.08 or better."
+    },
+    {
+     "date": "2026-12-19",
+     "what": "End of HM build 1",
+     "target": "Long run 19 km done. Last 8 weeks average 36 km or more. No more than about 25% of time in Z3."
+    },
+    {
+     "date": "2027-01-16",
+     "what": "Long run 21 km",
+     "target": "Longest run since the marathon block, at easy pace."
+    },
+    {
+     "date": "2027-01-30",
+     "what": "10K time trial (or race)",
+     "target": "46:00 or faster (estimate now 45:30-46:30)."
+    },
+    {
+     "date": "2027-02-27",
+     "what": "Threshold check",
+     "target": "25 min in Z4 at least 15 s/km faster than the 17 Oct tempo."
+    },
+    {
+     "date": "2027-03-27",
+     "what": "10K tune-up race (optional)",
+     "target": "45:30 or better supports the 1:45:00 half marathon goal."
+    },
+    {
+     "date": "2027-04-03",
+     "what": "HM-pace rehearsal",
+     "target": "10 km at 5:00-5:05/km with race fuelling. It should feel controlled; if not, reset the goal to 1:46-1:47."
+    },
+    {
+     "date": "2027-05-09",
+     "what": "Great Bristol Run (HM)",
+     "target": "1:45:00 (4:59/km)."
+    },
+    {
+     "date": "2027-07-24",
+     "what": "5K time trial",
+     "target": "21:10 or faster."
+    },
+    {
+     "date": "2027-08-15",
+     "what": "Bath Two Tunnels 10K",
+     "target": "45:00 (4:30/km)."
+    },
+    {
+     "date": "2027-09-11",
+     "what": "5K time trial (parkrun)",
+     "target": "21:00 or faster."
+    },
+    {
+     "date": "2027-09-26",
+     "what": "Redcar 5K",
+     "target": "21:00 (4:12/km)."
+    }
+   ],
+   "principles": [
+    {
+     "heading": "Weekly structure",
+     "items": [
+      "Sat: long run (or tempo in the foundation weeks). Sun: recovery. Mon: Z3 steady, then Z4 threshold. Tue: rest. Wed: intervals. Thu: rest (optional easy 5 km, or a long trail on a day off). Fri: rest or yoga.",
+      "No more than two hard sessions a week besides the long run, and never on back-to-back days."
+     ]
+    },
+    {
+     "heading": "Load and recovery",
+     "items": [
+      "3 build weeks then 1 recovery week at about 65 to 75% of the previous week. In recovery weeks keep the run days, drop the long run to 12 to 14 km and drop all Z4 and Z5.",
+      "After the 17 and 24 Oct weeks, grow volume by no more than about 10% a week and the long run by 1 to 2 km a week.",
+      "Missed days: up to 3 days, just resume with no catch-up. 4 to 7 days (illness), repeat the week before at about 80% and push the plan back a week.",
+      "Taper: 2 weeks for the half marathon (about 75% then 55% of peak), 1 to 2 weeks for the 10K and 5K. Easy only for a week after each race."
+     ]
+    },
+    {
+     "heading": "Intensity",
+     "items": [
+      "Aim for about 75 to 80% of time in Z1-Z2, about 10% in Z3 and about 10 to 12% in Z4-Z5. Right now Z3 is 27%, mostly easy runs that drift up, so set a watch alert at 134 bpm.",
+      "Pace the reps by pace, not HR (HR lags and the strap has dropped out once). Check the strap fit before every quality session."
+     ]
+    },
+    {
+     "heading": "Support",
+     "items": [
+      "Friday yoga stays. Add one short strength session a week (calves, glutes, single-leg work).",
+      "Practise race fuelling on at least three long runs in March and April. Your race plan (2 gels and 1 drink an hour) is about 90 g carbs and 640 mg sodium an hour. If the gut complains, drop to 60 g an hour.",
+      "Torin 9 is at about 103 km and weekly volume is about to double. Consider a second pair to rotate before the long-run weeks.",
+      "Every Wednesday after the interval session I will compare the week against this plan, update the race estimates and adjust the next week."
+     ]
+    }
+   ],
+   "races": [
+    {
+     "id": "g1",
+     "name": "Great Bristol Run, half marathon, Sun 9 May 2027",
+     "items": [
+      "Target 1:45:00 (4:59/km). Km 1 to 3 at 5:03-5:05 (hold back), km 4 to 15 at 4:59, then hold on and finish as strong as you can.",
+      "Past HMs: 1:46:50 (5:04/km, avg HR 180 in the older zones). If the rehearsal on 3 Apr cannot hold 5:00-5:05 under control, plan on 1:46-1:47.",
+      "Fuel: your plan of 2 gels and 1 drink an hour, practised in training."
+     ]
+    },
+    {
+     "id": "g2",
+     "name": "Bath Two Tunnels, 10K, Sun 15 Aug 2027",
+     "items": [
+      "Target 45:00 (4:30/km). Km 1 to 3 at 4:32-4:33, km 3 to 8 steady at 4:30, last 2 km as hard as you can hold.",
+      "This is the stretch goal against your history (best 46:46). Key sessions: Z4 tempo 30 to 35 min, and 10K-pace reps such as 3 x 2 km at 4:30.",
+      "Warm up 15 min with strides. Gel 15 min before is optional."
+     ]
+    },
+    {
+     "id": "g3",
+     "name": "Redcar 5K, Sun 26 Sep 2027",
+     "items": [
+      "Target 21:00 (4:12/km). Km 1 at 4:13-4:14, km 2 to 4 at 4:12, km 5 all out.",
+      "Your 5K PB is 21:07, so the goal is about 0.5% faster. Key sessions: 800 m and 1 km reps near 4:00 and parkrun time trials.",
+      "Warm up 20 min with strides."
+     ]
+    }
+   ]
+  },
   history: {
    "monthly": [
     {

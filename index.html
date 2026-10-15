@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=17">
+<link rel="stylesheet" href="style.css?v=19">
 </head>
 <body>
 <div class="layout">
@@ -38,6 +38,40 @@
     <section class="card">
       <h2>Weekly distance <small>(last 12 weeks, Sat–Fri)</small></h2>
       <div id="chart"></div>
+    </section>
+
+    <section class="card">
+      <h2>Training plan: weekly distance to race day</h2>
+      <div id="chart-plan-km" class="chart"></div>
+      <div id="plan-legend" class="legend"></div>
+      <p class="muted">Bars: your actual week. Dotted line: the plan (hollow dots are recovery, taper and reset weeks, diamonds are race weeks). The vertical line is this week. Every Wednesday I compare the week with the plan and adjust the next ones.</p>
+    </section>
+    <section class="card">
+      <h2>Training plan: long run</h2>
+      <div id="chart-plan-long" class="chart"></div>
+      <p class="muted">Bars: your longest run each week. Dotted line: the planned long run. This is the main lever for the half marathon and the 10K.</p>
+    </section>
+    <section class="card">
+      <h2>The year at a glance</h2>
+      <div class="table-wrap" id="plan-phases"></div>
+      <div id="plan-assumptions" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Week by week: plan vs actual</h2>
+      <p class="muted">Status compares a finished week's km with the plan: on plan is within 15%.</p>
+      <div id="plan-weeks"></div>
+    </section>
+    <section class="card">
+      <h2>Checkpoints</h2>
+      <div class="table-wrap" id="plan-checkpoints"></div>
+    </section>
+    <section class="card">
+      <h2>Principles</h2>
+      <div id="plan-principles" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Race plans</h2>
+      <div id="plan-races" class="review"></div>
     </section>
 
     <section class="card">
@@ -216,7 +250,7 @@
 
 </div>
 </div>
-<script src="data.js?v=17"></script>
-<script src="app.js?v=17"></script>
+<script src="data.js?v=19"></script>
+<script src="app.js?v=19"></script>
 </body>
 </html>

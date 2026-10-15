@@ -528,6 +528,77 @@ function renderHistory() {
     { t0: parseD('2019-01-01').getTime(), t1: parseD('2026-12-01').getTime(), steps: [1, 2, 5], fmt: v => v.toFixed(0), faster: 'up', label: 'Fitness (VDOT) from race efforts, 2019 to now' });
 }
 
+// ---------- long-term training plan (Training tab) ----------
+const PHASE_RACE = { found: 'base', reset1: 'base', reset2: 'base', hm1: 'hm', hm2: 'hm', hms: 'hm', hmt: 'hm', k10: 'k10', k10t: 'k10', k5: 'k5', k5t: 'k5' };
+const PHASE_SHORT = { found: 'Base', hm1: 'HM build 1', hm2: 'HM build 2', hms: 'HM specific', hmt: 'Taper', reset1: 'Reset', k10: '10K build', k10t: 'Taper', reset2: 'Reset', k5: '5K', k5t: 'Taper' };
+const planWeekEnd = w => { const d = parseD(w.start); d.setDate(d.getDate() + 6); return iso(d); };
+function weekActual(k) {
+  const rs = db.runs.filter(r => weekStart(r.date) === k);
+  return { km: rs.reduce((a, r) => a + r.km, 0), long: Math.max(0, ...rs.map(r => r.km)), n: rs.length };
+}
+function planStatus(w) {
+  const t = today(); if (t < w.start) return '';
+  if (t <= planWeekEnd(w)) return 'in progress';
+  const r = weekActual(w.start).km / w.km; return r < 0.85 ? 'under' : r > 1.15 ? 'over' : 'on plan';
+}
+
+// weekly distance (or long run): actual bars against the dotted plan, with phase bands and race markers
+function planChart(el, metric) {
+  const P = db.longPlan; if (!P || !P.weeks.length) return;
+  const first = weekStart(db.runs.map(r => r.date).filter(d => d >= db.block.start).sort()[0] || db.block.start), last = P.weeks[P.weeks.length - 1].start;
+  const weeks = weekKeys(first, last), N = weeks.length, now = weekStart(today());
+  const W = 760, H = 320, m = { l: 44, r: 14, t: 48, b: 34 }, cw = (W - m.l - m.r) / N, x = i => m.l + (i + 0.5) * cw;
+  const val = k => weekActual(k)[metric], planOf = k => { const w = P.weeks.find(p => p.start === k); return w ? w : null; };
+  const maxV = Math.max(1, ...weeks.map(k => weeks.indexOf(k) <= weeks.indexOf(now) ? val(k) : 0), ...P.weeks.map(w => w[metric]));
+  const [step, top] = niceTop(maxV, metric === 'km' ? [5, 10, 20] : [2, 5, 10]);
+  const y = v => m.t + (1 - v / top) * (H - m.t - m.b), idx = k => weeks.indexOf(k);
+  let g = '', labels = '';
+  P.phases.forEach(p => {
+    const i0 = idx(p.start), i1 = idx(weekStart(p.end)); if (i0 < 0) return;
+    const taper = /taper|race/i.test(p.name);
+    g += `<rect x="${m.l + i0 * cw}" y="${m.t}" width="${(i1 - i0 + 1) * cw}" height="${H - m.t - m.b}" class="pband pb-${PHASE_RACE[p.id]}${taper ? ' pb-strong' : ''}"><title>${esc(p.name)}: ${esc(p.focus)}</title></rect>`;
+    if ((i1 - i0 + 1) * cw >= 46) labels += `<text class="plab" x="${m.l + (i0 + (i1 - i0 + 1) / 2) * cw}" y="${m.t + 12}" text-anchor="middle">${esc(PHASE_SHORT[p.id])}</text>`;
+  });
+  for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${v}</text>`;
+  let lastMonth = '';
+  weeks.forEach((k, i) => { const d = parseD(k), lab = d.toLocaleDateString('en-GB', { month: 'short' }) + " '" + String(d.getFullYear()).slice(2);
+    if (lab !== lastMonth && d.getDate() <= 7) { lastMonth = lab; g += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle">${lab}</text>`; } });
+  weeks.forEach((k, i) => { if (i <= idx(now)) { const v = val(k); if (v > 0) g += `<rect x="${x(i) - cw * 0.34}" y="${y(v)}" width="${cw * 0.68}" height="${y(0) - y(v)}" class="bar bc1"><title>Week from ${fmtDate(k)}: ${v.toFixed(1)} km actual</title></rect>`; } });
+  const pw = P.weeks.map(w => ({ w, i: idx(w.start) })).filter(p => p.i >= 0);
+  g += `<polyline points="${pw.map(p => `${x(p.i).toFixed(1)},${y(p.w[metric]).toFixed(1)}`).join(' ')}" class="proj c2"/>`;
+  pw.forEach(({ w, i }) => {
+    const done = w.start <= now, act = done ? val(w.start) : null, tip = `Week from ${fmtDate(w.start)}: plan ${w[metric]} km (${w.type})${act != null && w.start < now ? `, actual ${act.toFixed(1)} km` : ''}`;
+    if (w.type === 'race') g += `<path d="M${x(i)},${y(w[metric]) - 7} l6,7 l-6,7 l-6,-7 z" class="pdia"><title>${esc(tip)}</title></path>`;
+    else g += `<circle cx="${x(i)}" cy="${y(w[metric])}" r="${w.type === 'recovery' || w.type === 'taper' || w.type === 'reset' ? 3.6 : 2.6}" class="pdot ${w.type === 'recovery' || w.type === 'taper' || w.type === 'reset' ? 'hollow-dot' : ''}"><title>${esc(tip)}</title></circle>`;
+  });
+  [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1).forEach((gl, gi) => { const i = idx(weekStart(gl.date)); if (i < 0) return;
+    g += `<line x1="${x(i)}" x2="${x(i)}" y1="${m.t - 6}" y2="${H - m.b}" class="ref"/>`; labels += `<text class="rlab" x="${Math.min(x(i), W - 6)}" y="${m.t - 12 - (gi % 2) * 13}" text-anchor="${x(i) > W - 70 ? 'end' : 'middle'}">${esc(shortName(gl))} ${parseD(gl.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</text>`; });
+  if (idx(now) >= 0) g += `<line x1="${x(idx(now))}" x2="${x(idx(now))}" y1="${m.t}" y2="${H - m.b}" class="todayline"/>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${metric === 'km' ? 'Weekly distance' : 'Longest run'}: actual against the training plan">${g}${labels}</svg>`;
+}
+
+function renderPlan() {
+  const P = db.longPlan; if (!P) return;
+  planChart($('chart-plan-km'), 'km'); planChart($('chart-plan-long'), 'long');
+  $('plan-legend').innerHTML = '<span><span class="sw sw-base"></span>Base / reset</span> <span><span class="sw sw-hm"></span>Half marathon</span> <span><span class="sw sw-k10"></span>10K</span> <span><span class="sw sw-k5"></span>5K</span>';
+  const now = weekStart(today());
+  const fmtD = s => parseD(s).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: '2-digit' });
+  $('plan-phases').innerHTML = '<table><thead><tr><th>Phase</th><th>Dates</th><th>Weeks</th><th>Weekly km</th><th>Long run</th><th>Focus</th></tr></thead><tbody>' +
+    P.phases.map(p => `<tr><td><b>${esc(p.name)}</b></td><td>${fmtD(p.start)} to ${fmtD(p.end)}</td><td class="num">${p.weeks}</td><td>${p.kmMin === p.kmMax ? p.kmMax : p.kmMin + ' to ' + p.kmMax}</td><td>${p.longMax == null ? '' : p.longMin === p.longMax ? p.longMax : p.longMin + ' to ' + p.longMax} km</td><td class="notes">${esc(p.focus)}</td></tr>`).join('') + '</tbody></table>';
+  $('plan-assumptions').innerHTML = '<h4>Assumptions to check</h4><ul>' + P.assumptions.map(a => `<li>${esc(a)}</li>`).join('') + '</ul>';
+  $('plan-weeks').innerHTML = P.phases.map(p => {
+    const ws = P.weeks.filter(w => w.phase === p.id), cur = p.start <= iso(new Date()) && iso(new Date()) <= p.end || (ws.some(w => w.start === now));
+    return `<details${cur ? ' open' : ''}><summary>${esc(p.name)} <span class="muted">${fmtD(p.start)} to ${fmtD(p.end)}</span></summary><div class="table-wrap"><table><thead><tr><th>Week from</th><th>Type</th><th>Plan km</th><th>Actual km</th><th>Long run plan / actual</th><th>Status</th><th>Sessions</th></tr></thead><tbody>` +
+      ws.map(w => { const a = weekActual(w.start), st = planStatus(w), past = w.start <= now;
+        return `<tr><td>${fmtDate(w.start)}</td><td>${esc(w.type)}</td><td class="num">${w.km}</td><td class="num">${past ? a.km.toFixed(1) : ''}</td><td>${w.long} km${past && w.start < now ? ' / ' + a.long.toFixed(1) : ''}</td>` +
+          `<td>${st ? `<span class="st st-${st.replace(' ', '-')}">${st}</span>` : ''}</td>` +
+          `<td class="notes"><b>Sat</b> ${esc(w.sat)}<br><b>Sun</b> ${esc(w.sun)}<br><b>Mon</b> ${esc(w.mon)}<br><b>Wed</b> ${esc(w.wed)}${w.opt ? `<br>${esc(w.opt)}` : ''}${w.note ? `<br><span class="muted">${esc(w.note)}</span>` : ''}</td></tr>`; }).join('') + '</tbody></table></div></details>'; }).join('');
+  $('plan-checkpoints').innerHTML = '<table><thead><tr><th>Date</th><th>Checkpoint</th><th>Target</th></tr></thead><tbody>' +
+    P.checkpoints.map(c => `<tr class="${c.date < today() ? 'past' : ''}"><td>${fmtDate(c.date)}</td><td><b>${esc(c.what)}</b></td><td class="notes">${esc(c.target)}</td></tr>`).join('') + '</tbody></table>';
+  $('plan-principles').innerHTML = P.principles.map(s => `<h4>${esc(s.heading)}</h4><ul>${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
+  $('plan-races').innerHTML = P.races.map(r => `<h4>${esc(r.name)}</h4><ul>${r.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
+}
+
 // ---------- tabs ----------
 function showTab(name) {
   if (!document.querySelector(`[data-panel="${name}"]`)) name = 'train';
@@ -539,7 +610,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan();
   Object.keys(COLS).forEach(renderCol);
 }
 
