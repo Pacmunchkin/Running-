@@ -13,7 +13,7 @@ const run = (date, time, type, km, dur, hr, maxhr, notes = '', flag = '', shoe =
 const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 
 const SEED = {
-  v: 1, rev: 4,
+  v: 1, rev: 5,
   profile: {
     name: 'Philip Coote', location: 'Bath, UK', phase: 'Phase 1 (Base Building)',
     longDay: 'Saturday = long/tempo day',
@@ -118,20 +118,20 @@ const SEED = {
     { id: 'p4', event: 'Half marathon (not a PB)', place: 'Bath', time: '2:11:33', when: '16 Aug 2026', notes: '22.11 km, avg 5:57/km, avg HR 159. Ultra block' }
   ],
   plan: [
-    { id: 's1', date: '2026-10-17', session: 'Tempo, out and back', details: '10 min out, 10 min back, Z4 (155-159)' },
-    { id: 's2', date: '2026-10-18', session: 'Recovery', details: '5-6 km Z2' },
-    { id: 's3', date: '2026-10-19', session: 'Easy', details: '8-9 km, HR ≤135' },
+    { id: 's1', date: '2026-10-17', session: 'Zone 4 tempo, 20 min', details: 'Z4 (155-159 bpm). Out and back: 10 min out, 10 min back' },
+    { id: 's2', date: '2026-10-18', session: 'Recovery run', details: '5-6 km, Z2' },
+    { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km' },
     { id: 's4', date: '2026-10-20', session: 'Rest', details: '' },
-    { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter, Z5' },
-    { id: 's6', date: '2026-10-22', session: 'Trail run', details: '3 hours, easy Z2 (day off work)' },
+    { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter session, Z5' },
+    { id: 's6', date: '2026-10-22', session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)' },
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '' },
-    { id: 's8', date: '2026-10-24', session: '5K parkrun', details: 'Z4. Half term week' },
-    { id: 's9', date: '2026-10-25', session: 'Easy', details: 'Half term' },
-    { id: 's10', date: '2026-10-26', session: 'Easy', details: 'Half term' },
-    { id: 's11', date: '2026-10-27', session: 'Easy', details: 'Half term' },
-    { id: 's12', date: '2026-10-28', session: '1k repeats', details: 'Half term' },
-    { id: 's13', date: '2026-10-29', session: 'Easy', details: 'Half term' },
-    { id: 's14', date: '2026-10-30', session: 'Easy', details: 'Half term' }
+    { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week' },
+    { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Half term' },
+    { id: 's10', date: '2026-10-26', session: 'Steady run', details: 'Half term' },
+    { id: 's11', date: '2026-10-27', session: '5K at Z3', details: 'HR 135-154. Half term' },
+    { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first' },
+    { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term' },
+    { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term' }
   ],
   missed: [
     { id: 'm1', when: 'Wed 16 Sep', status: 'Missed', what: 'Session', reason: 'Family' },
