@@ -126,8 +126,8 @@ const SEED = {
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '' },
     { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week' },
     { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Half term' },
-    { id: 's10', date: '2026-10-26', session: 'Steady run', details: 'Half term' },
-    { id: 's11', date: '2026-10-27', session: '5K at Z3', details: 'HR 135-154. Half term' },
+    { id: 's10', date: '2026-10-26', session: '5K at Z3', details: 'HR 135-154, first planned Z3 session. Start in low Z3. Half term' },
+    { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term' },
     { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first' },
     { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term' },
     { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term' }
@@ -168,7 +168,7 @@ const SEED = {
         'Wed 21, 400m pyramid: keep it lighter as planned and run by effort at about 3:55-4:05/km pace. HR lags on short reps, so judge by pace. Fit the strap snugly (14 Oct dropout).',
         'Thu 22, 27.3 km trail: HR 134 or below, hike the climbs, and start fuelling in the first 30-45 min. One gel plus one 500 ml endurance drink per hour is about 50 g carbs and 400 mg sodium. Friday is rest as planned.',
         'Sat 24, Z4 parkrun: only two days after the 3 h trail. Run it by HR (155-159), not pace or position. If the legs are flat, drop to Z3 instead.',
-        'Week of 24 Oct: Tue 27 (5K Z3) and Wed 28 (5 x 1 km) are back to back, so keep Tuesday at the low end of Z3 (135-145) to protect the intervals.'] }
+        'Week of 24 Oct: Mon 26 is the first planned Z3 session (5K at HR 135-154, roughly 5:45-6:20/km; start in low Z3 and set an HR alert at 154). Tue 27 is an easy run so Wed 28 (5 x 1 km) starts fresh.'] }
     ] }
   ],
   missed: [
