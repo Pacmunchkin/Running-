@@ -12,7 +12,7 @@ if (db.rev !== SEED.rev) {   // saved by an older version of the site
   if (keep) db.rev = SEED.rev; else db = clone(SEED);
   store.set('rl_db', db);
 }
-let units = store.get('rl_units') || 'km';
+const units = 'km';
 const openRuns = new Set();
 let sort = { key: 'date', dir: -1 };
 
@@ -120,7 +120,6 @@ function renderTable() {
     (openRuns.has(r.id) ? `<tr class="detail"><td colspan="8">${detailHtml(r)}</td></tr>` : '')).join('');
 }
 
-$('units').onchange = e => { units = e.target.value; store.set('rl_units', units); render(); };
 $('search').oninput = renderTable;
 document.querySelector('thead').addEventListener('click', e => {
   const k = e.target.dataset.sort; if (!k) return;
@@ -406,7 +405,6 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  $('units').value = units;
   renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview();
   Object.keys(COLS).forEach(renderCol);
 }

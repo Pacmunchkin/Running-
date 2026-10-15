@@ -11,25 +11,18 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header>
-  <div>
-    <h1>🏃 Run Log</h1>
-    <div id="who" class="muted"></div>
-  </div>
-  <div class="tools">
-    <label>Units
-      <select id="units"><option value="km">km</option><option value="mi">mi</option></select>
-    </label>
-  </div>
-</header>
-<nav id="tabs">
-  <button data-tab="train">Training</button>
-  <button data-tab="review">Review</button>
-  <button data-tab="plan">Plan &amp; goals</button>
-  <button data-tab="gear">Gear &amp; fuel</button>
-  <button data-tab="profile">Profile</button>
-</nav>
-
+<div class="layout">
+<aside id="side">
+  <div class="brand"><span class="logo">🏃</span><div><b>Run Log</b><div id="who" class="muted"></div></div></div>
+  <nav id="tabs">
+    <button data-tab="train">Training</button>
+    <button data-tab="review">Review</button>
+    <button data-tab="plan">Plan &amp; goals</button>
+    <button data-tab="gear">Gear &amp; fuel</button>
+    <button data-tab="profile">Profile</button>
+  </nav>
+</aside>
+<div class="content">
 <main>
   <div data-panel="train">
     <section class="stats" id="stats"></section>
@@ -165,7 +158,8 @@
     <div class="actions"><button type="submit">Save</button><button type="button" class="ghost" id="dlg-cancel">Cancel</button></div>
   </form>
 </dialog>
-<footer class="muted">Run Log</footer>
+</div>
+</div>
 <script src="data.js"></script>
 <script src="app.js"></script>
 </body>
