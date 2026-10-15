@@ -78,3 +78,5 @@ main{grid-template-columns:minmax(0,1fr)}
   #tabs button.on{border-bottom-color:var(--accent)}
   main{padding:12px}
 }
+
+.errbar{background:#5c1f1f;color:#ffd6d6;padding:10px 16px;font-size:14px;position:sticky;top:0;z-index:10}

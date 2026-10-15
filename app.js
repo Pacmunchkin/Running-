@@ -1,12 +1,22 @@
 'use strict';
 const KM_PER_MI = 1.609344;
-const $ = id => document.getElementById(id);
+// Show any uncaught error on the page instead of failing silently
+window.addEventListener('error', e => {
+  if (document.querySelector('.errbar')) return;
+  const bar = document.createElement('div'); bar.className = 'errbar';
+  bar.textContent = `Something went wrong loading this page (${e.message}). Try a hard refresh (Ctrl+Shift+R).`;
+  document.body.prepend(bar);
+});
+// Missing elements (e.g. a cached older page) are ignored rather than crashing the whole script
+const $ = id => document.getElementById(id) || document.createElement('div');
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
   set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch { /* storage unavailable */ } }
 };
 const clone = o => JSON.parse(JSON.stringify(o));
 let db = store.get('rl_db') || clone(SEED);
+for (const k of Object.keys(SEED)) if (db[k] == null) db[k] = clone(SEED[k]);   // fill anything missing from older saved data
+db.profile = { ...SEED.profile, ...db.profile };
 if (db.rev !== SEED.rev) {   // saved by an older version of the site
   const keep = db.runs && db.runs.length && !confirm('This version adds detailed Garmin data (laps, HR zones, ascent, shoes).\n\nOK = replace your saved data with the new starter data.\nCancel = keep your current data (Profile → Reset to starter data loads it later).');
   if (keep) db.rev = SEED.rev; else db = clone(SEED);
@@ -121,7 +131,7 @@ function renderTable() {
 }
 
 $('search').oninput = renderTable;
-document.querySelector('thead').addEventListener('click', e => {
+(document.querySelector('thead') || document.body).addEventListener('click', e => {
   const k = e.target.dataset.sort; if (!k) return;
   sort = { key: k, dir: sort.key === k ? -sort.dir : -1 }; renderTable();
 });
