@@ -908,8 +908,16 @@ const SEED = {
      "items": [
       "Friday yoga stays. Add one short strength session a week (calves, glutes, single-leg work).",
       "Practise race fuelling on at least three long runs in March and April. Your race plan (2 gels and 1 drink an hour) is about 90 g carbs and 640 mg sodium an hour. If the gut complains, drop to 60 g an hour.",
-      "Torin 9 is at about 103 km and weekly volume is about to double. Consider a second pair to rotate before the long-run weeks.",
-      "Every Wednesday after the interval session I will compare the week against this plan, update the race estimates and adjust the next week."
+      "Torin 9 is at about 103 km and weekly volume is about to double. Consider a second pair to rotate before the long-run weeks." 
+     ]
+    },
+    {
+     "heading": "Wednesday review routine",
+     "items": [
+      "After the Wednesday intervals, send me that session plus the other runs since the last review (Sat, Sun, Mon) and a line on how it felt, sleep, niggles and illness.",
+      "I check the week against the plan (km, long run, status), time in each HR zone (especially the Z3 share), interval pace and HR against the last session, easy-run efficiency and any HR strap problems.",
+      "Then I update the race estimates and charts, write a dated review and review the following week's sessions. I only change the plan when the data or your notes call for it: flat, ill or HR running high means cut or repeat the week; going well means hold the plan, not add volume; too many Z3 or Z4 sessions in a row means swap one for something easier.",
+      "Any change to next week is shown in the Week by week table and in the review, with the reason."
      ]
     }
    ],
