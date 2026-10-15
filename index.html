@@ -23,6 +23,7 @@
 </header>
 <nav id="tabs">
   <button data-tab="train">Training</button>
+  <button data-tab="review">Review</button>
   <button data-tab="plan">Plan &amp; goals</button>
   <button data-tab="gear">Gear &amp; fuel</button>
   <button data-tab="profile">Profile</button>
@@ -35,26 +36,6 @@
     <section class="card">
       <h2>Next up</h2>
       <ul id="next" class="plain"></ul>
-    </section>
-
-    <section class="card">
-      <h2 id="form-title">Add a run</h2>
-      <form id="run-form">
-        <input type="hidden" id="run-id">
-        <label>Date <input type="date" id="date" required></label>
-        <label>Type <select id="type"></select></label>
-        <label>Distance (<span class="u">km</span>) <input type="number" id="distance" step="0.01" min="0.01" required></label>
-        <label>Time <input type="text" id="time" placeholder="mm:ss or h:mm:ss" pattern="(\d+:)?\d{1,2}:\d{2}" required></label>
-        <label>Avg HR <input type="number" id="hr" min="30" max="250"></label>
-        <label>Max HR <input type="number" id="maxhr" min="30" max="250"></label>
-        <label>Shoes <input type="text" id="shoe" list="shoe-list"><datalist id="shoe-list"></datalist></label>
-        <label class="wide">Notes <input type="text" id="notes" placeholder="Route, reps, weather, how it felt…"></label>
-        <label class="wide">Data caveat <input type="text" id="flag" placeholder="e.g. HR strap dropout, wrong Garmin label"></label>
-        <div class="actions">
-          <button type="submit">Save run</button>
-          <button type="button" id="cancel" class="ghost" hidden>Cancel</button>
-        </div>
-      </form>
     </section>
 
     <section class="card">
@@ -77,6 +58,44 @@
         </table>
       </div>
       <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
+    </section>
+  </div>
+
+  <div data-panel="review" hidden>
+    <section class="card">
+      <div class="row"><h2>Latest review</h2></div>
+      <div id="review-latest" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Estimated finish times <small>(if raced now)</small></h2>
+      <div class="table-wrap" id="est-table"></div>
+      <p class="muted" id="est-note"></p>
+    </section>
+    <section class="card">
+      <h2>Estimated VO2 max</h2>
+      <div id="chart-vo2"></div>
+      <p class="muted">Daniels VDOT from the average pace of each week's quality reps. A model estimate, not Garmin's VO2 max reading. Dashed lines are your race-equivalent VDOT from past PBs.</p>
+    </section>
+    <section class="card">
+      <h2>Estimated race pace</h2>
+      <div id="chart-pace"></div>
+      <p class="muted">Solid lines: estimated pace if raced now. Dashed lines: goal pace. Higher on the chart is faster.</p>
+    </section>
+    <section class="card">
+      <h2>How the estimates work</h2>
+      <p>VDOT is calculated from the average pace of each week's quality reps, treated as about maximal-aerobic effort. Race estimates are the Daniels race-time equivalent of that VDOT multiplied by an endurance factor per distance (half marathon ×1.136, 10K ×1.052, 5K ×1.014). The factors were calibrated to the 14 Oct estimates and are adjusted each Wednesday from long runs and tempo sessions. Earlier points use the same factors and are marked retrospective.</p>
+    </section>
+    <section class="card">
+      <h2>Block stats <small id="block-title"></small></h2>
+      <div id="block-stats" class="stats"></div>
+      <h3>Weeks (Sat–Fri)</h3><div class="table-wrap" id="block-weeks"></div>
+      <h3>Time in HR zones</h3><div id="block-zones"></div>
+      <h3>Quality work</h3><div class="table-wrap" id="block-quality"></div>
+      <h3>Easy and recovery runs</h3><div class="table-wrap" id="block-easy"></div>
+    </section>
+    <section class="card">
+      <h2>Earlier reviews</h2>
+      <div id="review-older"><p class="muted">None yet.</p></div>
     </section>
   </div>
 

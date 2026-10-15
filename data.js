@@ -13,7 +13,8 @@ const run = (date, time, type, km, dur, hr, maxhr, notes = '', flag = '', shoe =
 const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 
 const SEED = {
-  v: 1, rev: 5,
+  v: 1, rev: 6,
+  block: { start: '2026-09-01', name: 'Phase 1: base building' },
   profile: {
     name: 'Philip Coote', location: 'Bath, UK', phase: 'Phase 1 (Base Building)',
     longDay: 'Saturday = long/tempo day',
@@ -106,9 +107,9 @@ const SEED = {
         lap('Cool down', '23:11', 2.56, '9:04', 119, 130, 144)] })
   ],
   goals: [
-    { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', estimate: '1:49-1:51', notes: 'Estimate as of 14 Oct 2026, based on 1k reps ~4:04/km' },
-    { id: 'g2', event: '10K', distKm: 10, race: 'Bath Two Tunnels', date: '2027-08-15', target: '45:00', estimate: '45:30-46:30', notes: 'Estimate as of 14 Oct 2026' },
-    { id: 'g3', event: '5K', distKm: 5, race: 'Redcar parkrun', date: '2027-09-26', target: '21:00', estimate: '21:15-21:30', notes: 'Estimate as of 14 Oct 2026' }
+    { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
+    { id: 'g2', event: '10K', distKm: 10, race: 'Bath Two Tunnels', date: '2027-08-15', target: '45:00', notes: '' },
+    { id: 'g3', event: '5K', distKm: 5, race: 'Redcar parkrun', date: '2027-09-26', target: '21:00', notes: '' }
   ],
   pbs: [
     { id: 'p1', event: '5K parkrun', place: 'Redcar', time: '21:06', when: 'Apr 2025', notes: 'Garmin, 19 Apr 2025: 21:07, 5.00 km, avg HR 179 / max 201, effort 9/10' },
@@ -132,6 +133,45 @@ const SEED = {
     { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first' },
     { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term' },
     { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term' }
+  ],
+  estimates: [
+    { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
+      basis: '3 x 3 min efforts, avg 4:20/km (old shoes, avg HR 139). Retrospective' },
+    { date: '2026-09-30', vdot: 41.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7200, 7350], g2: [3000, 3075], g3: [1405, 1420] },
+      basis: '4 x 1 km, avg 4:26/km, 3 min recoveries, first quality session after illness. Retrospective' },
+    { date: '2026-10-07', vdot: 44.5, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6840, 6960], g2: [2850, 2910], g3: [1330, 1350] },
+      basis: '4 x 1 km, avg 4:13/km, 1 min recoveries. Retrospective' },
+    { date: '2026-10-14', vdot: 46.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6540, 6660], g2: [2730, 2790], g3: [1275, 1290] },
+      basis: '4 x 1 km, avg 4:03/km, 1 min recoveries. Reps 3-4 HR looks low (strap?), pace-based so unaffected' }
+  ],
+  reviews: [
+    { id: 'v1', date: '2026-10-14', title: 'Block review: 1 Sep - 14 Oct 2026 (Phase 1, base building)', sections: [
+      { heading: 'What went well', items: [
+        'Volume: 125 km in 17 runs (15 h 55 min) over six weeks, excluding the 11 Oct 3:38 PM activity. Weekly km: 28, 22, 5 (illness), 21, 24, 24. The five healthy weeks averaged 24 km.',
+        'Speed is back quickly. Average rep pace went 4:20 (9 Sep), 4:26 (30 Sep, just after illness), 4:13 (7 Oct), 4:03 (14 Oct). The last three sessions had almost the same average HR (153, 152, 153), so you ran about 24 s/km faster at the same heart rate in two weeks.',
+        'Estimated VO2 max (VDOT) rose 41.8, 44.5, 46.8. That equals your 5K PB fitness (46.8, Apr 2025) from the 14 Oct reps alone.',
+        'Easy-run efficiency: 7 Sep 9:16/km at HR 128, 5 Oct 7:18/km at HR 127. That is nearly 2 min/km faster at the same HR (the 7 Sep run was soon after the HM and hillier, so some of this is recovery).',
+        'Consistency since the illness: three Wednesday quality sessions in a row (30 Sep, 7 Oct, 14 Oct) and easy/recovery runs on 13 Sep, 26 Sep, 27 Sep and 11 Oct kept to 0-5% of time in Z3.'] },
+      { heading: 'What to watch', items: [
+        'Too much Z3. Time in zones for the block: Z1 3%, Z2 60%, Z3 27%, Z4 4%, Z5 6%. Most of the Z3 is easy runs creeping up: 5 Sep (72% in Z3), 14 Sep (72%) and 5 Oct (37%). Cap easy days at 134 bpm (set a Garmin HR alert) so the quality days stay quality.',
+        'Saturday threshold work is the weak spot. 12 Sep: two 10-min efforts averaged 5:08/km at HR 150. 10 Oct: 5:56/km at HR 159, with HR drifting into Z5 on the way back. The shapes differed (out and back, 3 days after repeats), and 3 Oct became a trail run, so there has been no clean Z4 block since 12 Sep. The 17 Oct session is the test.',
+        'Endurance, not speed, limits the HM and 10K. At VDOT 46.8 a perfect HM would be 1:36:52, but your May 2025 HM (1:46:50) was about 10% slower than your 5K fitness predicted. The 1:45:00 goal needs about 8%, so it is realistic but only if long runs and weekly volume build. The 5K goal (21:00) only needs a 0.4% better 5K than your current speed fitness.',
+        'No run longer than 9.7 km since the 22.1 km HM on 16 Aug. The planned 27.3 km trail on 22 Oct is nearly three times that.',
+        'HR quality: 19 Sep (illness spike) and reps 3-4 on 14 Oct (possible strap dropout). The VDOT estimate uses pace only, so it is not affected, but I cannot judge effort on those reps from HR.'] },
+      { heading: 'Estimates after this review (if raced now)', items: [
+        'Half marathon (9 May 2027): 1:49:00-1:51:00 vs goal 1:45:00.',
+        '10K (15 Aug 2027): 45:30-46:30 vs goal 45:00.',
+        '5K (26 Sep 2027): 21:15-21:30 vs goal 21:00.',
+        'These match your own 14 Oct estimates. The model is explained under the charts. Next update: Wed 21 Oct after the pyramid session.'] },
+      { heading: 'Next week (Sat 17 - Fri 23 Oct)', items: [
+        'Sat 17, 20 min Z4: warm up 15-20 min, then a flat route (not hilly out-and-back). Hold HR 155-159 and settle pace by feel. Benchmarks: 5:09/km at HR 157 on 12 Sep, 5:44/km at HR 154 on 10 Oct. Around 5:10-5:25 at that HR would be a good sign; slower than 5:40 means the HM estimate should stay where it is.',
+        'Sun 18, recovery 5-6 km: keep HR under about 125 (recent recovery runs averaged 108-115). It protects Monday and Wednesday.',
+        'Mon 19, steady high Z2: HR 125-134, never 135+. On current form that is roughly 6:55-7:10/km (7:18/km at HR 127 on 5 Oct). 8-9 km.',
+        'Wed 21, 400m pyramid: keep it lighter as planned and run by effort at about 3:55-4:05/km pace. HR lags on short reps, so judge by pace. Fit the strap snugly (14 Oct dropout).',
+        'Thu 22, 27.3 km trail: HR 134 or below, hike the climbs, and start fuelling in the first 30-45 min. One gel plus one 500 ml endurance drink per hour is about 50 g carbs and 400 mg sodium. Friday is rest as planned.',
+        'Sat 24, Z4 parkrun: only two days after the 3 h trail. Run it by HR (155-159), not pace or position. If the legs are flat, drop to Z3 instead.',
+        'Week of 24 Oct: Tue 27 (5K Z3) and Wed 28 (5 x 1 km) are back to back, so keep Tuesday at the low end of Z3 (135-145) to protect the intervals.'] }
+    ] }
   ],
   missed: [
     { id: 'm1', when: 'Wed 16 Sep', status: 'Missed', what: 'Session', reason: 'Family' },

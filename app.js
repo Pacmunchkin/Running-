@@ -1,6 +1,5 @@
 'use strict';
 const KM_PER_MI = 1.609344;
-const TYPES = ['Easy', 'Recovery', 'Long/Tempo', 'Tempo', 'Intervals', 'Repeats', 'Trail', 'Parkrun', 'Race', 'Other'];
 const $ = id => document.getElementById(id);
 const store = {
   get(k) { try { return JSON.parse(localStorage.getItem(k)); } catch { return null; } },
@@ -117,32 +116,10 @@ function renderTable() {
     <td>${fmtDate(r.date)}</td><td>${esc(r.type)}</td><td class="num">${fmtDist(r.km)} ${units}</td><td>${fmtTime(r.secs)}</td><td>${fmtPace(r.secs, r.km)}</td>
     <td>${r.hr ?? ''}${r.maxhr ? ' / ' + r.maxhr : ''} ${zoneBadge(r.hr)}</td>
     <td class="notes">${esc(r.notes)}${r.shoe ? `<span class="flag">👟 ${esc(r.shoe)}</span>` : ''}${r.flag ? `<span class="flag">⚠ ${esc(r.flag)}</span>` : ''}</td>
-    <td><button class="link" data-more="${r.id}">${openRuns.has(r.id) ? 'Hide' : 'Details'}</button><button class="link" data-edit="${r.id}">Edit</button><button class="link" data-del="${r.id}">Delete</button></td></tr>` +
+    <td><button class="link" data-more="${r.id}">${openRuns.has(r.id) ? 'Hide' : 'Details'}</button><button class="link" data-del="${r.id}">Delete</button></td></tr>` +
     (openRuns.has(r.id) ? `<tr class="detail"><td colspan="8">${detailHtml(r)}</td></tr>` : '')).join('');
 }
 
-function setTypeOptions(selected) {
-  const opts = TYPES.includes(selected) || !selected ? TYPES : [...TYPES, selected];
-  $('type').innerHTML = opts.map(t => `<option>${esc(t)}</option>`).join('');
-  if (selected) $('type').value = selected;
-}
-function resetForm() {
-  $('run-form').reset(); $('run-id').value = ''; setTypeOptions(); $('date').value = today();
-  $('form-title').textContent = 'Add a run'; $('cancel').hidden = true;
-}
-
-$('run-form').addEventListener('submit', e => {
-  e.preventDefault();
-  const secs = parseTime($('time').value), km = fromUnit(parseFloat($('distance').value));
-  if (!(secs > 0) || !(km > 0)) return alert('Please enter a valid distance and time.');
-  const n = id => $(id).value ? +$(id).value : null;
-  const run = { id: $('run-id').value || uid(), date: $('date').value, km, secs, type: $('type').value,
-    hr: n('hr'), maxhr: n('maxhr'), shoe: $('shoe').value.trim(), notes: $('notes').value.trim(), flag: $('flag').value.trim() };
-  const i = db.runs.findIndex(r => r.id === run.id);
-  i >= 0 ? db.runs[i] = { ...db.runs[i], ...run } : db.runs.push(run);
-  resetForm(); persist();
-});
-$('cancel').onclick = resetForm;
 $('units').onchange = e => { units = e.target.value; store.set('rl_units', units); render(); };
 $('search').oninput = renderTable;
 document.querySelector('thead').addEventListener('click', e => {
@@ -150,16 +127,9 @@ document.querySelector('thead').addEventListener('click', e => {
   sort = { key: k, dir: sort.key === k ? -sort.dir : -1 }; renderTable();
 });
 $('rows').addEventListener('click', e => {
-  const { edit, del, more } = e.target.dataset;
+  const { del, more } = e.target.dataset;
   if (more) { openRuns.has(more) ? openRuns.delete(more) : openRuns.add(more); renderTable(); }
   if (del && confirm('Delete this run?')) { db.runs = db.runs.filter(r => r.id !== del); persist(); }
-  if (edit) {
-    const r = db.runs.find(r => r.id === edit);
-    $('run-id').value = r.id; $('date').value = r.date; setTypeOptions(r.type); $('distance').value = +toUnit(r.km).toFixed(2);
-    $('time').value = fmtTime(r.secs); $('hr').value = r.hr ?? ''; $('maxhr').value = r.maxhr ?? '';
-    $('shoe').value = r.shoe || ''; $('notes').value = r.notes || ''; $('flag').value = r.flag || '';
-    $('form-title').textContent = 'Edit run'; $('cancel').hidden = false; scrollTo({ top: 0, behavior: 'smooth' });
-  }
 });
 
 // ---------- generic editable lists (goals, plan, shoes, …) ----------
@@ -167,9 +137,10 @@ $('rows').addEventListener('click', e => {
 const COLS = {
   goals: {
     single: 'goal', fields: [['event', 'Event', 'text', 1], ['race', 'Race', 'text'], ['date', 'Date', 'date'], ['distKm', 'Distance (km)', 'number', 1],
-      ['target', 'Target time', 'text', 1], ['estimate', 'Current estimate', 'text'], ['notes', 'Notes', 'text']],
+      ['target', 'Target time', 'text', 1], ['notes', 'Notes', 'text']],
     hide: ['distKm'], sort: (a, b) => a.date < b.date ? -1 : 1,
     extra: [['Target pace', g => esc(fmtPace(parseTime(g.target), g.distKm))],
+            ['Estimate now', g => { const e = estOf(g.id); return e ? fmtRange(e.est[g.id]) : ''; }],
             ['Days to go', g => { const d = Math.round((parseD(g.date) - parseD(today())) / 864e5); return d >= 0 ? d : 'done'; }]]
   },
   plan: {
@@ -248,6 +219,125 @@ function renderProfile() {
     '</tbody></table>' + (p.zoneNote ? `<p class="muted">${esc(p.zoneNote)}</p>` : '');
 }
 
+
+// ---------- review tab ----------
+const sortedEsts = () => [...db.estimates].sort((a, b) => a.date < b.date ? -1 : 1);
+const estOf = (gid, back = 0) => { const l = sortedEsts().filter(e => e.est && e.est[gid]); return l[l.length - 1 - back]; };
+const fmtRange = r => `${fmtTime(r[0])}–${fmtTime(r[1])}`;
+const mid = r => (r[0] + r[1]) / 2;
+const secPerUnit = secPerKm => secPerKm * (units === 'mi' ? KM_PER_MI : 1);
+
+function reviewHtml(r) {
+  return `<h3>${esc(r.title)}</h3><p class="muted">${fmtDate(r.date)}</p>` +
+    r.sections.map(s => `<h4>${esc(s.heading)}</h4><ul>${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
+}
+
+function renderEstimates() {
+  const goals = [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1);
+  const last = sortedEsts().slice(-1)[0];
+  $('est-table').innerHTML = '<table><thead><tr><th>Race</th><th>Date</th><th>Goal</th><th>Estimate</th><th>Gap to goal (mid)</th><th>Since last update</th></tr></thead><tbody>' +
+    goals.map(g => {
+      const e = estOf(g.id), p = estOf(g.id, 1); if (!e) return '';
+      const target = parseTime(g.target), gap = mid(e.est[g.id]) - target;
+      const d = p ? mid(e.est[g.id]) - mid(p.est[g.id]) : null;
+      const sign = x => (x > 0 ? '+' : x < 0 ? '−' : '') + fmtTime(Math.abs(x));
+      return `<tr><td>${esc(g.event)} <span class="muted">${esc(g.race)}</span></td><td>${fmtDate(g.date)}</td><td>${esc(g.target)}</td>
+        <td><b>${fmtRange(e.est[g.id])}</b></td><td>${gap > 0 ? sign(gap) + ' slower' : sign(gap) + ' faster'}</td>
+        <td>${d == null ? '' : d === 0 ? 'no change' : sign(d) + (d < 0 ? ' (faster)' : ' (slower)')}</td></tr>`;
+    }).join('') + '</tbody></table>';
+  $('est-note').textContent = last ? `Last updated ${fmtDate(last.date)}. VDOT ${last.vdot}. Basis: ${last.basis}.` : 'No estimates yet.';
+}
+
+// simple SVG line chart. series: [{name, cls, pts:[{t, v, tip}], dashed, noEnd}]
+function lineChart(el, series, o) {
+  const pts = series.flatMap(s => s.pts);
+  if (!pts.length) { el.innerHTML = '<p class="muted">No data yet.</p>'; return; }
+  const W = 640, H = 250, m = { l: 50, r: 92, t: 12, b: 30 };
+  const t0 = parseD(db.block.start).getTime(), t1 = Math.max(...pts.map(p => p.t)) + 7 * 864e5;
+  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v)); const pad = (hi - lo || 1) * 0.1; lo -= pad; hi += pad;
+  const step = o.steps.find(s => (hi - lo) / s <= 6) || o.steps[o.steps.length - 1];
+  const yTicks = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) yTicks.push(v);
+  const x = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r);
+  const y = v => o.faster === 'down' ? m.t + (v - lo) / (hi - lo) * (H - m.t - m.b) : m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);   // 'down': lower values are better and plot higher
+  const xTicks = []; const d = parseD(iso(new Date(t0))); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7);   // Saturdays
+  const every = (t1 - t0) / 864e5 > 90 ? 28 : 14; for (; d.getTime() <= t1; d.setDate(d.getDate() + every)) xTicks.push(new Date(d));
+  let g = '';
+  yTicks.forEach(v => { g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.fmt(v)}</text>`; });
+  xTicks.forEach(t => { g += `<text x="${x(t.getTime())}" y="${H - 8}" text-anchor="middle">${t.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</text>`; });
+  series.forEach(s => {
+    const p = s.pts.map(q => `${x(q.t).toFixed(1)},${y(q.v).toFixed(1)}`).join(' ');
+    if (s.ref) { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="ref"/><text class="reflbl" x="${m.l + 4}" y="${yy - 4}">${esc(s.name)}</text>`; return; }
+    if (s.dashed) { const yy = y(s.pts[0].v); g += `<line x1="${m.l}" x2="${W - m.r}" y1="${yy}" y2="${yy}" class="goal ${s.cls}"/>`; return; }
+    g += `<polyline points="${p}" class="ln ${s.cls}"/>` + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
+    const l = s.pts[s.pts.length - 1];
+    g += `<text class="end ${s.cls}" x="${x(l.t) + 8}" y="${y(l.v) + 4}">${esc(s.name)} ${o.fmt(l.v)}</text>`;
+  });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${g}</svg>`;
+}
+
+function renderCharts() {
+  const ests = sortedEsts(), dt = e => parseD(e.date).getTime();
+  const pb = (name, vdot) => ({ name: `${name} ${vdot}`, ref: true, pts: [{ t: 0, v: vdot }] });
+  lineChart($('chart-vo2'), [pb('5K PB', 46.8), pb('10K PB', 43.3), pb('HM PB', 41.8),
+    { name: 'VO2 max', cls: 'c0', pts: ests.map(e => ({ t: dt(e), v: e.vdot, tip: `${fmtDate(e.date)}: VDOT ${e.vdot}. ${e.basis}` })) }],
+    { steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Estimated VO2 max over time' });
+  const goals = [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1), cls = ['c1', 'c2', 'c3'];
+  const pace = (g, e) => secPerUnit(mid(e.est[g.id]) / g.distKm);
+  const series = [];
+  goals.forEach((g, i) => {
+    const es = ests.filter(e => e.est && e.est[g.id]), short = g.event.replace('Half marathon', 'HM');
+    series.push({ name: short, cls: cls[i % 3], pts: es.map(e => ({ t: dt(e), v: pace(g, e), tip: `${fmtDate(e.date)}: ${short} ${fmtRange(e.est[g.id])} (${fmtTime(pace(g, e))}/${units})` })) });
+    series.push({ name: short + ' goal', cls: cls[i % 3], dashed: true, pts: [{ t: 0, v: secPerUnit(parseTime(g.target) / g.distKm) }] });
+  });
+  // goal lines count towards the y-range
+  lineChart($('chart-pace'), series, { steps: [5, 10, 15, 30, 60], fmt: fmtTime, faster: 'down', label: 'Estimated race pace over time, with goal pace' });
+}
+
+function renderBlock() {
+  const start = db.block.start, runs = db.runs.filter(r => r.date >= start && r.type !== 'Other');
+  $('block-title').textContent = `${fmtDate(start)} to ${fmtDate(runs.map(r => r.date).sort().pop() || start)} (excludes runs typed “Other”)`;
+  const km = runs.reduce((a, r) => a + r.km, 0), secs = runs.reduce((a, r) => a + r.secs, 0);
+  const weeks = {};
+  runs.forEach(r => { const k = weekStart(r.date), w = weeks[k] ||= { n: 0, km: 0, secs: 0, long: 0 }; w.n++; w.km += r.km; w.secs += r.secs; w.long = Math.max(w.long, r.km); });
+  const wk = Object.entries(weeks).sort();
+  const ok = wk.filter(([, w]) => w.km > 10);
+  const items = [['Runs', runs.length], [`Total ${units}`, fmtDist(km)], ['Total time', fmtTime(secs)], [`Avg per week (${units})`, ok.length ? fmtDist(ok.reduce((a, [, w]) => a + w.km, 0) / ok.length) : '–'],
+    ['Longest run', fmtDist(runs.reduce((a, r) => Math.max(a, r.km), 0)) + ' ' + units], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m']];
+  $('block-stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
+  $('block-weeks').innerHTML = '<table><thead><tr><th>Week from</th><th>Runs</th><th>' + units + '</th><th>Time</th><th>Longest</th></tr></thead><tbody>' +
+    wk.map(([k, w]) => `<tr><td>${fmtDate(k)}</td><td>${w.n}</td><td class="num">${fmtDist(w.km)}</td><td>${fmtTime(w.secs)}</td><td class="num">${fmtDist(w.long)}</td></tr>`).join('') + '</tbody></table>';
+
+  // time in zones across runs that have zone data
+  const z = [0, 0, 0, 0, 0]; let below = 0, tot = 0;
+  runs.filter(r => r.zones).forEach(r => { r.zones.forEach((s, i) => z[i] += s); below += Math.max(0, r.secs - r.zones.reduce((a, b) => a + b, 0)); tot += r.secs; });
+  const parts = [[0, below], ...z.map((s, i) => [i + 1, s])].filter(p => p[1] > 0), pct = s => Math.round(s / tot * 100);
+  $('block-zones').innerHTML = tot ? `<div class="zbar" role="img" aria-label="Time in HR zones">${parts.map(([n, s]) => `<i class="seg z${n}" style="width:${s / tot * 100}%"></i>`).join('')}</div>` +
+    `<div class="legend">${parts.map(([n, s]) => `<span><span class="z z${n}">${n ? 'Z' + n : '<Z1'}</span> ${fmtTime(s)} (${pct(s)}%)</span>`).join('')}</div>` +
+    `<p class="muted">Z1–Z2 and below ${pct(below + z[0] + z[1])}%, Z3 ${pct(z[2])}%, Z4–Z5 ${pct(z[3] + z[4])}%. Includes warm-ups, cool-downs and recoveries.</p>` : '<p class="muted">No zone data.</p>';
+
+  // quality work: rep/effort laps
+  const lt = l => l.time.split(':').reduce((a, n) => a * 60 + +n, 0);
+  const q = runs.map(r => {
+    const L = (r.laps || []).filter(l => /^(Rep \d|Effort|Out|Back)/.test(l.label) && !/abandoned/.test(l.label)); if (!L.length) return null;
+    const T = L.reduce((a, l) => a + lt(l), 0), K = L.reduce((a, l) => a + l.km, 0);
+    return { r, n: L.length, pace: secPerUnit(T / K), hr: L.reduce((a, l) => a + l.hr * lt(l), 0) / T };
+  }).filter(Boolean).sort((a, b) => a.r.date < b.r.date ? -1 : 1);
+  $('block-quality').innerHTML = '<table><thead><tr><th>Date</th><th>Session</th><th>Reps</th><th>Avg rep pace</th><th>Avg HR</th></tr></thead><tbody>' +
+    q.map(x => `<tr><td>${fmtDate(x.r.date)}</td><td>${esc(x.r.type)}</td><td>${x.n}</td><td>${fmtTime(x.pace)}/${units}</td><td>${Math.round(x.hr)} ${zoneBadge(Math.round(x.hr))}</td></tr>`).join('') + '</tbody></table>';
+
+  const easy = runs.filter(r => ['Easy', 'Recovery'].includes(r.type)).sort((a, b) => a.date < b.date ? -1 : 1);
+  $('block-easy').innerHTML = '<table><thead><tr><th>Date</th><th>Type</th><th>' + units + '</th><th>Pace</th><th>Avg HR</th><th>Time in Z3+</th></tr></thead><tbody>' +
+    easy.map(r => `<tr><td>${fmtDate(r.date)}</td><td>${esc(r.type)}</td><td class="num">${fmtDist(r.km)}</td><td>${fmtPace(r.secs, r.km)}</td><td>${r.hr} ${zoneBadge(r.hr)}</td>
+      <td>${r.zones ? Math.round((r.zones[2] + r.zones[3] + r.zones[4]) / r.secs * 100) + '%' : ''}</td></tr>`).join('') + '</tbody></table>';
+}
+
+function renderReview() {
+  const rv = [...db.reviews].sort((a, b) => a.date < b.date ? 1 : -1);
+  $('review-latest').innerHTML = rv.length ? reviewHtml(rv[0]) : '<p class="muted">No review yet.</p>';
+  $('review-older').innerHTML = rv.length > 1 ? rv.slice(1).map(r => `<details><summary>${fmtDate(r.date)}: ${esc(r.title)}</summary>${reviewHtml(r)}</details>`).join('') : '<p class="muted">None yet.</p>';
+  renderEstimates(); renderCharts(); renderBlock();
+}
+
 // ---------- tabs ----------
 function showTab(name) {
   if (!document.querySelector(`[data-panel="${name}"]`)) name = 'train';
@@ -260,8 +350,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
   $('units').value = units;
-  $('shoe-list').innerHTML = db.shoes.filter(s => s.status !== 'Considered').map(s => `<option value="${esc(s.name)}">`).join('');
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview();
   Object.keys(COLS).forEach(renderCol);
 }
 
@@ -319,4 +408,4 @@ $('reset').onclick = () => {
   if (confirm('Replace ALL data in this browser with the starter data? This cannot be undone (back up first).')) { db = clone(SEED); persist(); }
 };
 
-resetForm(); render(); showTab(location.hash.slice(1) || 'train');
+render(); showTab(location.hash.slice(1) || 'train');
