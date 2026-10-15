@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 <div class="layout">
@@ -19,6 +19,7 @@
     <button data-tab="train">Training</button>
     <button data-tab="review">Review</button>
     <button data-tab="trends">Trends</button>
+    <button data-tab="history">History</button>
     <button data-tab="plan">Plan &amp; goals</button>
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="profile">Profile</button>
@@ -132,6 +133,40 @@
     </section>
   </div>
 
+  <div data-panel="history" hidden>
+    <section class="card">
+      <h2>What your Garmin history says</h2>
+      <p class="muted">From your Garmin activity export (2019 to 14 Oct 2026). Compared with the 2025/26 block for the April 2026 trail marathon, which built different things: vertical, durability and slow long runs.</p>
+      <div id="history-notes" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Weekly distance: this block vs the marathon block</h2>
+      <div id="chart-hist-km" class="chart"></div>
+      <p class="muted">Week 1 is the Sat–Fri week that contains 1 September (30 Aug 2025 and 29 Aug 2026). The marathon block ran 33 weeks to the 45 km race on 12 Apr 2026.</p>
+    </section>
+    <section class="card">
+      <h2>Longest run each week: this block vs the marathon block</h2>
+      <div id="chart-hist-long" class="chart"></div>
+      <p class="muted">Km. The marathon block had 15 to 17 km long runs from November, 20 to 22 km in Feb and Mar, then the 45 km race (marked, not plotted).</p>
+    </section>
+    <section class="card">
+      <h2>Distance per month since mid-2022</h2>
+      <div id="chart-hist-month" class="chart"></div>
+      <div class="legend"><span><span class="z z3" style="background:var(--c3);color:#04281f">Marathon block</span></span> <span><span class="z z4" style="background:var(--c1);color:#2e1400">This block</span></span> <span><span class="z z0" style="background:var(--c2);color:#06233b">Other months</span></span></div>
+      <p class="muted">Garmin data before 2023 looks incomplete, so early months may be undercounted.</p>
+    </section>
+    <section class="card">
+      <h2>Easy-run efficiency since Jan 2025</h2>
+      <div id="chart-hist-eff" class="chart"></div>
+      <p class="muted">Speed (m/min) per heartbeat on flat easy runs of 5 to 14 km at HR 105 to 142, averaged by month. Only months with at least two such runs are shown. Higher is better.</p>
+    </section>
+    <section class="card">
+      <h2>Fitness from race efforts (VDOT)</h2>
+      <div id="chart-hist-vdot" class="chart"></div>
+      <p class="muted">Each dot is a 5K, 10K or half marathon effort converted to VDOT. Grey dots are the 2026 steady half marathons (not races). The dashed line is the current estimate from your reps.</p>
+    </section>
+  </div>
+
   <div data-panel="plan" hidden>
     <section class="card">
       <h2>Goals</h2>
@@ -181,7 +216,7 @@
 
 </div>
 </div>
-<script src="data.js?v=15"></script>
-<script src="app.js?v=15"></script>
+<script src="data.js?v=17"></script>
+<script src="app.js?v=17"></script>
 </body>
 </html>

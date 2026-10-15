@@ -15,6 +15,934 @@ const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 const SEED = {
   v: 1, rev: 8,
   projection: { vdotGain: 1.5, vdotWeeks: 26, gapWeeks: 20, gapFloor: { g1: 1.09, g2: 1.04, g3: 1.005 } },
+  history: {
+   "monthly": [
+    {
+     "m": "2022-06",
+     "runs": 8,
+     "km": 27.2,
+     "h": 3.2,
+     "asc": 1045
+    },
+    {
+     "m": "2022-07",
+     "runs": 12,
+     "km": 64.6,
+     "h": 6.1,
+     "asc": 737
+    },
+    {
+     "m": "2022-08",
+     "runs": 14,
+     "km": 92.8,
+     "h": 8.4,
+     "asc": 191
+    },
+    {
+     "m": "2022-09",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2022-10",
+     "runs": 1,
+     "km": 21.7,
+     "h": 2.2,
+     "asc": 68
+    },
+    {
+     "m": "2022-11",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2022-12",
+     "runs": 1,
+     "km": 10.5,
+     "h": 1.1,
+     "asc": 140
+    },
+    {
+     "m": "2023-01",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2023-02",
+     "runs": 6,
+     "km": 41.7,
+     "h": 4.4,
+     "asc": 76
+    },
+    {
+     "m": "2023-03",
+     "runs": 4,
+     "km": 17.4,
+     "h": 2.0,
+     "asc": 423
+    },
+    {
+     "m": "2023-04",
+     "runs": 7,
+     "km": 43.9,
+     "h": 4.3,
+     "asc": 492
+    },
+    {
+     "m": "2023-05",
+     "runs": 16,
+     "km": 77.6,
+     "h": 8.0,
+     "asc": 1370
+    },
+    {
+     "m": "2023-06",
+     "runs": 4,
+     "km": 23.5,
+     "h": 2.6,
+     "asc": 360
+    },
+    {
+     "m": "2023-07",
+     "runs": 3,
+     "km": 18.3,
+     "h": 1.9,
+     "asc": 69
+    },
+    {
+     "m": "2023-08",
+     "runs": 11,
+     "km": 69.5,
+     "h": 6.8,
+     "asc": 397
+    },
+    {
+     "m": "2023-09",
+     "runs": 9,
+     "km": 68.1,
+     "h": 7.2,
+     "asc": 780
+    },
+    {
+     "m": "2023-10",
+     "runs": 7,
+     "km": 60.6,
+     "h": 8.9,
+     "asc": 651
+    },
+    {
+     "m": "2023-11",
+     "runs": 9,
+     "km": 86.9,
+     "h": 9.6,
+     "asc": 1189
+    },
+    {
+     "m": "2023-12",
+     "runs": 6,
+     "km": 74.8,
+     "h": 8.3,
+     "asc": 1043
+    },
+    {
+     "m": "2024-01",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2024-02",
+     "runs": 4,
+     "km": 41.6,
+     "h": 4.2,
+     "asc": 369
+    },
+    {
+     "m": "2024-03",
+     "runs": 3,
+     "km": 48.1,
+     "h": 5.0,
+     "asc": 394
+    },
+    {
+     "m": "2024-04",
+     "runs": 6,
+     "km": 57.8,
+     "h": 5.6,
+     "asc": 274
+    },
+    {
+     "m": "2024-05",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2024-06",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2024-07",
+     "runs": 0,
+     "km": 0.0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "m": "2024-08",
+     "runs": 5,
+     "km": 65.3,
+     "h": 7.1,
+     "asc": 292
+    },
+    {
+     "m": "2024-09",
+     "runs": 2,
+     "km": 14.4,
+     "h": 1.5,
+     "asc": 30
+    },
+    {
+     "m": "2024-10",
+     "runs": 4,
+     "km": 49.6,
+     "h": 5.7,
+     "asc": 594
+    },
+    {
+     "m": "2024-11",
+     "runs": 7,
+     "km": 74.2,
+     "h": 8.2,
+     "asc": 916
+    },
+    {
+     "m": "2024-12",
+     "runs": 4,
+     "km": 40.4,
+     "h": 4.5,
+     "asc": 226
+    },
+    {
+     "m": "2025-01",
+     "runs": 3,
+     "km": 31.8,
+     "h": 3.5,
+     "asc": 405
+    },
+    {
+     "m": "2025-02",
+     "runs": 8,
+     "km": 68.5,
+     "h": 7.4,
+     "asc": 431
+    },
+    {
+     "m": "2025-03",
+     "runs": 10,
+     "km": 137.1,
+     "h": 16.7,
+     "asc": 2089
+    },
+    {
+     "m": "2025-04",
+     "runs": 13,
+     "km": 157.1,
+     "h": 17.0,
+     "asc": 1261
+    },
+    {
+     "m": "2025-05",
+     "runs": 6,
+     "km": 71.2,
+     "h": 7.6,
+     "asc": 914
+    },
+    {
+     "m": "2025-06",
+     "runs": 3,
+     "km": 44.2,
+     "h": 5.4,
+     "asc": 707
+    },
+    {
+     "m": "2025-07",
+     "runs": 4,
+     "km": 37.8,
+     "h": 4.5,
+     "asc": 245
+    },
+    {
+     "m": "2025-08",
+     "runs": 5,
+     "km": 49.8,
+     "h": 5.5,
+     "asc": 427
+    },
+    {
+     "m": "2025-09",
+     "runs": 11,
+     "km": 82.9,
+     "h": 11.6,
+     "asc": 1684
+    },
+    {
+     "m": "2025-10",
+     "runs": 12,
+     "km": 94.4,
+     "h": 14.0,
+     "asc": 1861
+    },
+    {
+     "m": "2025-11",
+     "runs": 13,
+     "km": 129.2,
+     "h": 17.4,
+     "asc": 3270
+    },
+    {
+     "m": "2025-12",
+     "runs": 11,
+     "km": 99.7,
+     "h": 13.9,
+     "asc": 2031
+    },
+    {
+     "m": "2026-01",
+     "runs": 17,
+     "km": 141.1,
+     "h": 22.1,
+     "asc": 2950
+    },
+    {
+     "m": "2026-02",
+     "runs": 10,
+     "km": 121.9,
+     "h": 16.4,
+     "asc": 2275
+    },
+    {
+     "m": "2026-03",
+     "runs": 9,
+     "km": 92.7,
+     "h": 13.1,
+     "asc": 2197
+    },
+    {
+     "m": "2026-04",
+     "runs": 3,
+     "km": 57.7,
+     "h": 7.0,
+     "asc": 855
+    },
+    {
+     "m": "2026-05",
+     "runs": 7,
+     "km": 34.4,
+     "h": 4.9,
+     "asc": 130
+    },
+    {
+     "m": "2026-06",
+     "runs": 1,
+     "km": 10.0,
+     "h": 0.8,
+     "asc": 69
+    },
+    {
+     "m": "2026-07",
+     "runs": 2,
+     "km": 14.3,
+     "h": 1.7,
+     "asc": 28
+    },
+    {
+     "m": "2026-08",
+     "runs": 4,
+     "km": 34.1,
+     "h": 3.5,
+     "asc": 134
+    },
+    {
+     "m": "2026-09",
+     "runs": 11,
+     "km": 77.3,
+     "h": 9.9,
+     "asc": 1067
+    },
+    {
+     "m": "2026-10",
+     "runs": 6,
+     "km": 47.7,
+     "h": 6.1,
+     "asc": 592
+    }
+   ],
+   "block": [
+    {
+     "km": 11.4,
+     "runs": 2,
+     "long": 6.4,
+     "h": 1.5,
+     "asc": 189
+    },
+    {
+     "km": 21.4,
+     "runs": 3,
+     "long": 9.7,
+     "h": 3.1,
+     "asc": 344
+    },
+    {
+     "km": 26.1,
+     "runs": 3,
+     "long": 13.1,
+     "h": 3.6,
+     "asc": 526
+    },
+    {
+     "km": 15.1,
+     "runs": 2,
+     "long": 11.5,
+     "h": 2.2,
+     "asc": 417
+    },
+    {
+     "km": 8.8,
+     "runs": 1,
+     "long": 8.8,
+     "h": 1.2,
+     "asc": 208
+    },
+    {
+     "km": 22.3,
+     "runs": 3,
+     "long": 10.9,
+     "h": 3.0,
+     "asc": 555
+    },
+    {
+     "km": 31.2,
+     "runs": 4,
+     "long": 10.7,
+     "h": 4.8,
+     "asc": 567
+    },
+    {
+     "km": 28.7,
+     "runs": 3,
+     "long": 13.9,
+     "h": 4.1,
+     "asc": 736
+    },
+    {
+     "km": 12.3,
+     "runs": 2,
+     "long": 12.1,
+     "h": 2.0,
+     "asc": 3
+    },
+    {
+     "km": 30.2,
+     "runs": 3,
+     "long": 11.9,
+     "h": 3.8,
+     "asc": 768
+    },
+    {
+     "km": 35.2,
+     "runs": 4,
+     "long": 13.2,
+     "h": 4.9,
+     "asc": 1016
+    },
+    {
+     "km": 34.2,
+     "runs": 3,
+     "long": 15.2,
+     "h": 4.4,
+     "asc": 831
+    },
+    {
+     "km": 23.0,
+     "runs": 2,
+     "long": 16.9,
+     "h": 3.3,
+     "asc": 559
+    },
+    {
+     "km": 6.6,
+     "runs": 1,
+     "long": 6.6,
+     "h": 0.9,
+     "asc": 96
+    },
+    {
+     "km": 17.7,
+     "runs": 2,
+     "long": 12.3,
+     "h": 2.7,
+     "asc": 518
+    },
+    {
+     "km": 13.5,
+     "runs": 2,
+     "long": 8.5,
+     "h": 2.0,
+     "asc": 213
+    },
+    {
+     "km": 40.1,
+     "runs": 4,
+     "long": 16.8,
+     "h": 5.4,
+     "asc": 561
+    },
+    {
+     "km": 28.4,
+     "runs": 3,
+     "long": 15.9,
+     "h": 3.8,
+     "asc": 739
+    },
+    {
+     "km": 32.6,
+     "runs": 3,
+     "long": 15.5,
+     "h": 4.4,
+     "asc": 906
+    },
+    {
+     "km": 32.4,
+     "runs": 4,
+     "long": 17.4,
+     "h": 5.4,
+     "asc": 1067
+    },
+    {
+     "km": 37.5,
+     "runs": 5,
+     "long": 14.9,
+     "h": 7.0,
+     "asc": 354
+    },
+    {
+     "km": 24.0,
+     "runs": 4,
+     "long": 17.3,
+     "h": 3.4,
+     "asc": 496
+    },
+    {
+     "km": 33.0,
+     "runs": 3,
+     "long": 14.6,
+     "h": 4.2,
+     "asc": 375
+    },
+    {
+     "km": 33.2,
+     "runs": 3,
+     "long": 15.6,
+     "h": 4.8,
+     "asc": 862
+    },
+    {
+     "km": 12.5,
+     "runs": 1,
+     "long": 12.5,
+     "h": 2.0,
+     "asc": 0
+    },
+    {
+     "km": 36.1,
+     "runs": 3,
+     "long": 21.6,
+     "h": 4.3,
+     "asc": 648
+    },
+    {
+     "km": 39.7,
+     "runs": 3,
+     "long": 21.7,
+     "h": 5.7,
+     "asc": 878
+    },
+    {
+     "km": 0,
+     "runs": 0,
+     "long": 0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "km": 21.4,
+     "runs": 1,
+     "long": 21.4,
+     "h": 2.0,
+     "asc": 101
+    },
+    {
+     "km": 34.1,
+     "runs": 4,
+     "long": 20.1,
+     "h": 5.5,
+     "asc": 1213
+    },
+    {
+     "km": 19.2,
+     "runs": 2,
+     "long": 13.7,
+     "h": 2.8,
+     "asc": 522
+    },
+    {
+     "km": 0,
+     "runs": 0,
+     "long": 0,
+     "h": 0.0,
+     "asc": 0
+    },
+    {
+     "km": 52.7,
+     "runs": 2,
+     "long": 45.3,
+     "h": 6.5,
+     "asc": 830
+    }
+   ],
+   "eff": [
+    {
+     "m": "2025-01",
+     "n": 2,
+     "ef": 1.17,
+     "pace": 380,
+     "hr": 136
+    },
+    {
+     "m": "2025-02",
+     "n": 2,
+     "ef": 1.06,
+     "pace": 431,
+     "hr": 132
+    },
+    {
+     "m": "2025-04",
+     "n": 5,
+     "ef": 1.18,
+     "pace": 406,
+     "hr": 125
+    },
+    {
+     "m": "2025-05",
+     "n": 2,
+     "ef": 1.2,
+     "pace": 373,
+     "hr": 134
+    },
+    {
+     "m": "2025-09",
+     "n": 5,
+     "ef": 1.04,
+     "pace": 486,
+     "hr": 119
+    },
+    {
+     "m": "2025-10",
+     "n": 3,
+     "ef": 1.02,
+     "pace": 483,
+     "hr": 126
+    },
+    {
+     "m": "2025-11",
+     "n": 2,
+     "ef": 0.95,
+     "pace": 504,
+     "hr": 126
+    },
+    {
+     "m": "2026-01",
+     "n": 2,
+     "ef": 0.97,
+     "pace": 536,
+     "hr": 116
+    },
+    {
+     "m": "2026-02",
+     "n": 3,
+     "ef": 0.99,
+     "pace": 461,
+     "hr": 133
+    },
+    {
+     "m": "2026-04",
+     "n": 2,
+     "ef": 1.07,
+     "pace": 448,
+     "hr": 127
+    },
+    {
+     "m": "2026-05",
+     "n": 3,
+     "ef": 1.23,
+     "pace": 386,
+     "hr": 127
+    },
+    {
+     "m": "2026-09",
+     "n": 6,
+     "ef": 1.07,
+     "pace": 443,
+     "hr": 129
+    },
+    {
+     "m": "2026-10",
+     "n": 5,
+     "ef": 1.04,
+     "pace": 448,
+     "hr": 129
+    }
+   ],
+   "efforts": [
+    {
+     "date": "2019-06-22",
+     "dist": "5K",
+     "km": 5.0,
+     "secs": 1316,
+     "hr": null,
+     "mhr": null,
+     "vdot": 44.7,
+     "kind": "race",
+     "title": "Running"
+    },
+    {
+     "date": "2023-08-19",
+     "dist": "5K",
+     "km": 5.0,
+     "secs": 1330,
+     "hr": 179.0,
+     "mhr": 199.0,
+     "vdot": 44.1,
+     "kind": "race",
+     "title": "Redcar and Cleveland Running"
+    },
+    {
+     "date": "2024-11-30",
+     "dist": "5K",
+     "km": 4.99,
+     "secs": 1324,
+     "hr": 164.0,
+     "mhr": 184.0,
+     "vdot": 44.3,
+     "kind": "race",
+     "title": "North Kesteven - 5kPb"
+    },
+    {
+     "date": "2025-02-22",
+     "dist": "5K",
+     "km": 4.99,
+     "secs": 1343,
+     "hr": 176.0,
+     "mhr": 191.0,
+     "vdot": 43.5,
+     "kind": "race",
+     "title": "Redcar and Cleveland - 5kPb"
+    },
+    {
+     "date": "2025-04-19",
+     "dist": "5K",
+     "km": 5.0,
+     "secs": 1267,
+     "hr": 179.0,
+     "mhr": 201.0,
+     "vdot": 46.7,
+     "kind": "race",
+     "title": "Redcar and Cleveland - 5kPb"
+    },
+    {
+     "date": "2019-05-12",
+     "dist": "10K",
+     "km": 10.0,
+     "secs": 2806,
+     "hr": null,
+     "mhr": null,
+     "vdot": 43.3,
+     "kind": "race",
+     "title": "Running"
+    },
+    {
+     "date": "2020-03-01",
+     "dist": "10K",
+     "km": 10.0,
+     "secs": 2927,
+     "hr": 179.0,
+     "mhr": 196.0,
+     "vdot": 41.2,
+     "kind": "race",
+     "title": "Bath Running"
+    },
+    {
+     "date": "2022-07-10",
+     "dist": "10K",
+     "km": 10.01,
+     "secs": 2922,
+     "hr": 176.0,
+     "mhr": 195.0,
+     "vdot": 41.3,
+     "kind": "race",
+     "title": "Bath Running"
+    },
+    {
+     "date": "2026-06-07",
+     "dist": "10K",
+     "km": 10.0,
+     "secs": 2818,
+     "hr": 174.0,
+     "mhr": 190.0,
+     "vdot": 43.1,
+     "kind": "race",
+     "title": "Bath - 10k"
+    },
+    {
+     "date": "2019-03-17",
+     "dist": "HM",
+     "km": 21.24,
+     "secs": 6488,
+     "hr": null,
+     "mhr": null,
+     "vdot": 41.5,
+     "kind": "race",
+     "title": "Running"
+    },
+    {
+     "date": "2022-08-28",
+     "dist": "HM",
+     "km": 21.25,
+     "secs": 6470,
+     "hr": 174.0,
+     "mhr": 186.0,
+     "vdot": 41.7,
+     "kind": "race",
+     "title": "Forest of Dean Running"
+    },
+    {
+     "date": "2023-09-17",
+     "dist": "HM",
+     "km": 21.1,
+     "secs": 6422,
+     "hr": 174.0,
+     "mhr": 190.0,
+     "vdot": 41.7,
+     "kind": "race",
+     "title": "Wiltshire Running"
+    },
+    {
+     "date": "2025-05-11",
+     "dist": "HM",
+     "km": 21.1,
+     "secs": 6410,
+     "hr": 180.0,
+     "mhr": 196.0,
+     "vdot": 41.8,
+     "kind": "race",
+     "title": "Bristol - Great Bristol Run"
+    },
+    {
+     "date": "2025-08-17",
+     "dist": "HM",
+     "km": 21.28,
+     "secs": 7180,
+     "hr": 173.0,
+     "mhr": 199.0,
+     "vdot": 37.0,
+     "kind": "race",
+     "title": "Bath - 17Aug"
+    },
+    {
+     "date": "2026-03-15",
+     "dist": "HM",
+     "km": 21.36,
+     "secs": 7270,
+     "hr": 163.0,
+     "mhr": 184.0,
+     "vdot": 36.6,
+     "kind": "steady",
+     "title": "Bath - Two tunnels hilly half"
+    },
+    {
+     "date": "2026-08-16",
+     "dist": "HM",
+     "km": 22.11,
+     "secs": 7893,
+     "hr": 159.0,
+     "mhr": 186.0,
+     "vdot": 34.7,
+     "kind": "steady",
+     "title": "Bath - 16 Aug"
+    }
+   ],
+   "blockStart": "2025-08-30",
+   "notes": [
+    {
+     "heading": "This block vs the 2025/26 trail-marathon block (same dates, 1 Sep to 12 Oct)",
+     "items": [
+      "Same volume and frequency: 115.6 km in 16 runs this year, 120.5 km in 16 runs last year.",
+      "Last year was slower and hillier: 17.6 h and 2,632 m of ascent against 14.8 h and 1,558 m now. The longest run was 13.1 km then and is 9.7 km now. Average HR was 122 then and 129 now, so this block is faster and harder but shorter on the long run.",
+      "Quality work has changed. This block has 6 quality sessions in 6 weeks. Across the whole 32-week marathon block, titled quality or race-effort sessions came to about 10 (hill sessions, a few tempos and two \"hilly half\" runs). That counts titles only, so it may be an undercount."
+     ]
+    },
+    {
+     "heading": "What the marathon block built",
+     "items": [
+      "84 runs plus one treadmill run, 815 km, 115 hours and 17,098 m of ascent in 32 weeks (25.6 km and 2.7 runs a week). The biggest non-race week was 40 km (20 Dec).",
+      "Twelve runs of 15 km or more before the race, four of them 20 km or more (21.7, 21.6, 21.4 and 20.1 km, Feb to Mar), then 45.3 km in 5:26:24 on 12 Apr 2026 (7:13/km, avg HR 153, 804 m ascent).",
+      "Your 22 Oct trail (27.3 km, 3:08 h, 430 m) is the same time on feet as your 21 Mar long run (20.1 km, 3:10, 911 m), so it is well inside what you have done. The risk is the layoff: Jun to Aug 2026 was 58 km, against 132 km in 2025."
+     ]
+    },
+    {
+     "heading": "What built your half marathon PB (Feb to May 2025)",
+     "items": [
+      "About 37 km a week for eight weeks (8 Mar to 26 Apr 2025) from mostly 2 to 3 runs a week (one week had 7), with a long run of roughly 15 to 21 km every week (average 18 km). The 5K PB (21:07, 19 Apr) came in the middle of that block and the HM PB (1:46:50) three weeks later.",
+      "Compare now: about 24 km a week and a longest run of 9 to 10 km."
+     ]
+    },
+    {
+     "heading": "Aerobic efficiency",
+     "items": [
+      "Speed per heartbeat on flat easy runs is 1.04 to 1.07 now, the same as Sep to Oct 2025 (1.02 to 1.04). It was 1.18 to 1.20 in Apr to May 2025 and 1.23 in May 2026. In pace terms, easy runs at HR 125 to 134 were 6:15 to 6:45/km then and are about 7:25/km now.",
+      "In 2025 it rose from 1.06 (Feb) to 1.18 (Apr) over about two months of roughly 35 km weeks, so there is a precedent for the same recovery."
+     ]
+    },
+    {
+     "heading": "Race history and goals",
+     "items": [
+      "Your half marathons are remarkably consistent: 1:48:08 (2019), 1:47:50 (2022), 1:47:02 (2023) and 1:46:50 (2025) all work out at VDOT 41.5 to 41.8. The 1:45:00 goal (VDOT 42.6) is about 1.7% faster than your PB.",
+      "The 5K goal (21:00) is about 0.5% faster than your 21:07 PB. The 10K goal (45:00) is the stretch: your best is 46:46 (2019) and 46:58 (Jun 2026), so 45:00 is 3.8% faster, even though your 5K PB predicts about 43:45.",
+      "The 5K-to-HM conversion was 1.05 in 2023 and 1.10 in 2025. The race-day projections on the Review tab use a 2025-like conversion (x1.09 to x1.10), which is the cautious end."
+     ]
+    },
+    {
+     "heading": "Max HR and data caveats",
+     "items": [
+      "Max HR 201 (5K, Apr 2025) is backed by 199 in two other efforts (Aug 2023 5K, Aug 2025 HM), so it looks real rather than a spike. In 2026 your highest HR was 190, so the zones (Z5 from 160 bpm) are probably set for a lower max and are worth revisiting.",
+      "The same Bath HM a year apart: 1:59:40 at avg HR 173 (Aug 2025) and 2:11:33 at avg HR 159 (Aug 2026). The 2026 run was a much less intense effort.",
+      "Data gaps: the CSV is thin before 2023 (many months have no runs), so older weekly numbers are not reliable. Months with fewer than two flat easy runs are left out of the efficiency chart."
+     ]
+    }
+   ]
+  },
   block: { start: '2026-09-01', name: 'Phase 1: base building' },
   profile: {
     name: 'Philip Coote', location: 'Bath, UK', phase: 'Phase 1 (Base Building)',

@@ -242,14 +242,15 @@ function lineChart(el, series, o) {
   const pts = series.flatMap(s => s.pts);
   if (!pts.length) { el.innerHTML = '<p class="muted">No data yet.</p>'; return; }
   const W = 640, H = 270, m = { l: 50, r: 132, t: 16, b: 30 };
-  const t0 = parseD(db.block.start).getTime(), t1 = o.t1 || Math.max(...pts.map(p => p.t)) + 7 * 864e5;
+  const t0 = o.t0 || parseD(db.block.start).getTime(), t1 = o.t1 || Math.max(...pts.map(p => p.t)) + 7 * 864e5;
   let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v)); const pad = (hi - lo || 1) * 0.1; lo -= pad; hi += pad;
   const step = o.steps.find(s => (hi - lo) / s <= 6) || o.steps[o.steps.length - 1];
   const yTicks = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) yTicks.push(v);
   const x = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r);
   const y = v => o.faster === 'down' ? m.t + (v - lo) / (hi - lo) * (H - m.t - m.b) : m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);   // 'down': lower values are better and plot higher
   const spanDays = (t1 - t0) / 864e5, xTicks = [];
-  if (spanDays > 120) { const d = parseD(iso(new Date(t0))); d.setDate(1); d.setMonth(d.getMonth() + 1); for (; d.getTime() <= t1; d.setMonth(d.getMonth() + (spanDays > 300 ? 2 : 1))) xTicks.push([new Date(d), d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })]); }
+  if (spanDays > 1000) { for (let yr = new Date(t0).getFullYear() + (new Date(t0).getMonth() ? 1 : 0); new Date(yr, 0, 1).getTime() <= t1; yr++) xTicks.push([new Date(yr, 0, 1), String(yr)]); }
+  else if (spanDays > 120) { const d = parseD(iso(new Date(t0))); d.setDate(1); d.setMonth(d.getMonth() + 1); for (; d.getTime() <= t1; d.setMonth(d.getMonth() + (spanDays > 300 ? 2 : 1))) xTicks.push([new Date(d), d.toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })]); }
   else { const d = parseD(iso(new Date(t0))); d.setDate(d.getDate() + (6 - d.getDay() + 7) % 7); for (; d.getTime() <= t1; d.setDate(d.getDate() + 14)) xTicks.push([new Date(d), d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })]); }
   let g = '', labels = '';
   yTicks.forEach(v => { g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.fmt(v)}</text>`; });
@@ -262,7 +263,7 @@ function lineChart(el, series, o) {
     if (s.kind === 'proj') {
       g += `<polyline points="${poly}" class="proj ${s.cls}"/><circle cx="${x(l.t)}" cy="${y(l.v)}" r="5" class="pend ${s.cls}"><title>${esc(l.tip)}</title></circle>`;
     } else {
-      g += `<polyline points="${poly}" class="ln ${s.cls}"/>` + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
+      g += (s.noLine ? '' : `<polyline points="${poly}" class="ln ${s.cls}"/>`) + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
       if (s.topLabel) labels += `<text class="now ${s.cls}" x="${x(l.t)}" y="${y(l.v) - 10}" text-anchor="middle">${esc(s.topLabel)}</text>`;
     }
     if (s.endLabel) labels += `<text class="end ${s.cls}" x="${x(l.t) + 9}" y="${y(l.v) + 4}">${esc(s.endLabel)}</text>`;
@@ -377,7 +378,7 @@ function barChart(el, cats, stacks, o) {
   const y = v => m.t + (1 - v / top) * (H - m.t - m.b), bw = (W - m.l - m.r) / n, bx = i => m.l + i * bw + bw * 0.19, bwid = bw * 0.62;
   let g = '', labels = '';
   for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.axisFmt ? o.axisFmt(v) : v}</text>`;
-  cats.forEach((c, i) => { g += `<text x="${bx(i) + bwid / 2}" y="${H - 10}" text-anchor="middle">${esc(c.label)}</text>`; });
+  cats.forEach((c, i) => { if (i % (o.labelEvery || 1) === 0) g += `<text x="${bx(i) + bwid / 2}" y="${H - 10}" text-anchor="middle">${esc(c.label)}</text>`; });
   const acc = new Array(n).fill(0);
   stacks.forEach(s => s.vals.forEach((v, i) => {
     if (!(v > 0)) return;
@@ -405,7 +406,8 @@ function catLines(el, cats, series, o) {
   const y = v => o.faster === 'down' ? m.t + (v - lo) / (hi - lo) * (H - m.t - m.b) : m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
   let g = '', ends = [];
   for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.fmt(v)}</text>`;
-  cats.forEach((c, i) => { g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${esc(c)}</text>`; });
+  cats.forEach((c, i) => { if (i % (o.labelEvery || 1) === 0 || i === cats.length - 1) g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${esc(c)}</text>`; });
+  (o.marks || []).forEach(k => { g += `<line x1="${x(k.i)}" x2="${x(k.i)}" y1="${m.t}" y2="${H - m.b}" class="ref"/><text class="reflbl" x="${x(k.i) - 4}" y="${m.t + 10}" text-anchor="end">${esc(k.label)}</text>`; });
   series.forEach(s => {
     const pts = s.vals.map((v, i) => v == null ? null : [x(i), y(v), v, i]).filter(Boolean);
     g += `<polyline points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" class="ln ${s.cls}"/>` +
@@ -486,6 +488,46 @@ function renderTrends() {
     { line: { name: '4-week average', vals: avg }, fmt: v => Math.round(v), axisFmt: v => v, steps: [50, 100, 200, 250], label: 'Weekly training load' });
 }
 
+
+// ---------- history tab (Garmin CSV, 2019 to now) ----------
+function renderHistory() {
+  const H = db.history; if (!H) return;
+  $('history-notes').innerHTML = H.notes.map(sec => `<h4>${esc(sec.heading)}</h4><ul>${sec.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
+
+  // weekly distance and longest run: this block vs the marathon block, by week of block (week 1 contains 1 Sept)
+  const wk0 = parseD(weekStart(db.block.start)).getTime(), idxOf = d => Math.round((parseD(weekStart(d)).getTime() - wk0) / (7 * 864e5));
+  const cur = idxOf(today()), mine = {};
+  db.runs.filter(r => r.date >= db.block.start).forEach(r => { const w = mine[idxOf(r.date)] ||= { km: 0, long: 0 }; w.km += r.km; w.long = Math.max(w.long, r.km); });
+  const n = H.block.length, cats = Array.from({ length: n }, (_, i) => String(i + 1)), mark = [{ i: n - 1, label: 'Marathon 12 Apr' }];
+  const both = f => [{ name: '2025/26', cls: 'c2', vals: H.block.map(f) }, { name: 'Now', cls: 'c1', vals: cats.map((_, i) => i <= cur ? f(mine[i] || { km: 0, long: 0 }) : null) }];
+  catLines($('chart-hist-km'), cats, both(w => w.km), { steps: [5, 10, 20], fmt: v => v.toFixed(0), faster: 'up', labelEvery: 4, marks: mark, label: 'Weekly distance, this block against the marathon block' });
+  const bothLong = both(w => w.long); bothLong[0].vals[n - 1] = null;   // leave the 45 km race out so the weekly long runs stay readable
+  catLines($('chart-hist-long'), cats, bothLong, { steps: [2, 5, 10], fmt: v => v.toFixed(0), faster: 'up', labelEvery: 4, marks: mark, label: 'Longest run each week, this block against the marathon block' });
+
+  // monthly distance
+  const inMarathon = m => m >= '2025-09' && m <= '2026-04', inNow = m => m >= db.block.start.slice(0, 7);
+  const mcats = H.monthly.map(x => ({ label: new Date(x.m + '-01T12:00:00').toLocaleDateString('en-GB', { month: 'short', year: '2-digit' }) }));
+  const pick = f => H.monthly.map(x => f(x.m) ? x.km : 0);
+  barChart($('chart-hist-month'), mcats, [{ name: 'Other months', cls: 'bar bc2', vals: pick(m => !inMarathon(m) && !inNow(m)) },
+    { name: 'Marathon block', cls: 'bar bc3', vals: pick(inMarathon) }, { name: 'This block', cls: 'bar bc1', vals: pick(inNow) }],
+    { fmt: v => v.toFixed(0) + ' km', axisFmt: v => v, steps: [25, 50, 100], noTotals: true, labelEvery: 6, label: 'Running distance per month since mid-2022' });
+
+  // easy-run efficiency by month
+  const ts = m => parseD(m + '-15').getTime();
+  lineChart($('chart-hist-eff'), [{ kind: 'line', cls: 'c3', endLabel: 'Easy runs', pts: H.eff.map(e => ({ t: ts(e.m), v: e.ef, tip: `${e.m}: efficiency ${e.ef} from ${e.n} runs, average ${fmtTime(e.pace)}/km at HR ${e.hr}` })) }],
+    { t0: parseD('2025-01-01').getTime(), steps: [0.02, 0.05, 0.1], fmt: v => v.toFixed(2), faster: 'up', label: 'Easy-run efficiency by month' });
+
+  // race-effort fitness (VDOT)
+  const ser = (dist, cls, kind) => ({ kind: 'line', cls, noLine: kind === 'steady', endLabel: kind === 'race' ? dist : '',
+    pts: H.efforts.filter(e => e.dist === dist && e.kind === kind).map(e => ({ t: parseD(e.date).getTime(), v: e.vdot,
+      tip: `${fmtDate(e.date)}: ${dist} ${fmtTime(e.secs)} (${e.km} km)${e.hr ? `, HR ${e.hr}/${e.mhr}` : ''}, VDOT ${e.vdot}${kind === 'steady' ? '. Steady effort, not a race' : ''}` })) });
+  const est = sortedEsts().slice(-1)[0];
+  lineChart($('chart-hist-vdot'), [...(est ? [{ kind: 'ref', name: `Estimate now ${est.vdot}`, pts: [{ t: 0, v: est.vdot }] }] : []),
+    ser('5K', 'c1', 'race'), ser('10K', 'c2', 'race'), ser('HM', 'c3', 'race'),
+    { kind: 'line', cls: 'c4', noLine: true, pts: H.efforts.filter(e => e.kind === 'steady').map(e => ({ t: parseD(e.date).getTime(), v: e.vdot, tip: `${fmtDate(e.date)}: ${e.dist} ${fmtTime(e.secs)} (${e.km} km), HR ${e.hr}/${e.mhr}, VDOT ${e.vdot}. Steady effort, not a race` })) }].filter(s => s.pts.length),
+    { t0: parseD('2019-01-01').getTime(), t1: parseD('2026-12-01').getTime(), steps: [1, 2, 5], fmt: v => v.toFixed(0), faster: 'up', label: 'Fitness (VDOT) from race efforts, 2019 to now' });
+}
+
 // ---------- tabs ----------
 function showTab(name) {
   if (!document.querySelector(`[data-panel="${name}"]`)) name = 'train';
@@ -497,7 +539,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory();
   Object.keys(COLS).forEach(renderCol);
 }
 

@@ -96,3 +96,5 @@ main{grid-template-columns:minmax(0,1fr)}
 .chart text.hraxis{fill:var(--c2)}
 .lapchart{margin:8px 0}.lapchart p{margin:2px 0 8px;font-size:13px}
 h2.gap{margin-top:18px}
+
+.bar.bc3{fill:var(--c3)}.c4.dot{stroke:var(--muted)}
