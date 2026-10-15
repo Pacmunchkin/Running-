@@ -80,3 +80,18 @@ main{grid-template-columns:minmax(0,1fr)}
 }
 
 .errbar{background:#5c1f1f;color:#ffd6d6;padding:10px 16px;font-size:14px;position:sticky;top:0;z-index:10}
+
+.chart svg{width:100%;height:auto}
+.chart text{fill:var(--muted);font-size:11px}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.chart .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 4}.chart .reflbl{font-size:10px}
+.chart text.tot{font-size:10px;fill:var(--text)}.chart text.tot.plan{fill:var(--muted)}
+.chart text.end{font-weight:600;font-size:12px;paint-order:stroke;stroke:var(--card);stroke-width:4px;stroke-linejoin:round}
+.chart text.end.c0{fill:var(--c0)}.chart text.end.c1{fill:var(--c1)}.chart text.end.c2{fill:var(--c2)}.chart text.end.c3{fill:var(--c3)}
+.bar.bc1{fill:var(--c1)}.bar.bc2{fill:var(--c2)}
+.hollow{fill:none;stroke:var(--c1);stroke-width:2;stroke-dasharray:5 4}
+.bar.zf0{fill:#3b4558}.bar.zf1{fill:#cfe8ff}.bar.zf2{fill:#c8efd0}.bar.zf3{fill:#fff0b3}.bar.zf4{fill:#ffd0a6}.bar.zf5{fill:#ffb3b3}
+.lapw{fill:var(--c1)}.lapr{fill:#3b4558}.laphr{fill:none;stroke:var(--c2);stroke-width:2.5}.lapdot{fill:var(--card);stroke:var(--c2);stroke-width:2}
+.chart text.hraxis{fill:var(--c2)}
+.lapchart{margin:8px 0}.lapchart p{margin:2px 0 8px;font-size:13px}
+h2.gap{margin-top:18px}

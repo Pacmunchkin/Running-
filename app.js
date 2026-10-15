@@ -113,7 +113,7 @@ function detailHtml(r) {
   }
   const laps = r.laps ? `<table class="laps"><thead><tr><th>Lap</th><th>Time</th><th>${units}</th><th>Pace</th><th>HR avg / max</th><th>Cadence</th></tr></thead><tbody>` +
     r.laps.map(l => `<tr><td>${esc(l.label)}</td><td>${esc(l.time)}</td><td>${fmtDist(l.km)}</td><td>${fmtPaceStr(l.pace)}/${units}</td><td>${l.hr} / ${l.max} ${zoneBadge(l.hr)}</td><td>${l.cad}</td></tr>`).join('') + '</tbody></table>' : '';
-  return `<div class="meta">${meta}</div>${zones}${laps}`;
+  return `<div class="meta">${meta}</div>${zones}${lapChart(r)}${laps}`;
 }
 
 function renderTable() {
@@ -404,6 +404,136 @@ function renderReview() {
 }
 document.addEventListener('click', e => { const v = e.target.dataset && e.target.dataset.pv; if (v) { paceView = v; renderCharts(); } });
 
+// ---------- trends tab ----------
+const WEEKDAY_FMT = { day: 'numeric', month: 'short' };
+const weekKeys = (from, to) => { const out = [], d = parseD(from); while (iso(d) <= to) { out.push(iso(d)); d.setDate(d.getDate() + 7); } return out; };
+const wkLabel = k => parseD(k).toLocaleDateString('en-GB', WEEKDAY_FMT);
+const ZONE_WEIGHT = [1, 2, 3, 4, 5];   // Edwards-style load: minutes in each zone x zone number
+const runLoad = r => r.zones ? r.zones.reduce((a, s, i) => a + s / 60 * ZONE_WEIGHT[i], 0) : r.secs / 60 * (zoneOf(r.hr) || 0);
+
+function niceTop(maxV, steps) {
+  const step = steps.find(s => maxV * 1.05 / s <= 7) || steps[steps.length - 1];
+  return [step, Math.ceil(maxV * 1.05 / step) * step];
+}
+
+// vertical bars (optionally stacked) with optional planned (hollow) bars, a line overlay and reference lines
+function barChart(el, cats, stacks, o) {
+  const W = 640, H = 250, m = { l: 46, r: 16, t: 18, b: 32 }, n = cats.length;
+  const totals = cats.map((_, i) => stacks.reduce((a, s) => a + (s.vals[i] || 0), 0));
+  const lineVals = o.line ? o.line.vals.filter(v => v != null) : [];
+  const [step, top] = niceTop(Math.max(1e-9, ...totals, ...(o.hollow || []), ...lineVals, ...(o.refs || []).map(r => r.v)), o.steps);
+  const y = v => m.t + (1 - v / top) * (H - m.t - m.b), bw = (W - m.l - m.r) / n, bx = i => m.l + i * bw + bw * 0.19, bwid = bw * 0.62;
+  let g = '', labels = '';
+  for (let v = 0; v <= top + 1e-9; v += step) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.axisFmt ? o.axisFmt(v) : v}</text>`;
+  cats.forEach((c, i) => { g += `<text x="${bx(i) + bwid / 2}" y="${H - 10}" text-anchor="middle">${esc(c.label)}</text>`; });
+  const acc = new Array(n).fill(0);
+  stacks.forEach(s => s.vals.forEach((v, i) => {
+    if (!(v > 0)) return;
+    g += `<rect x="${bx(i)}" y="${y(acc[i] + v)}" width="${bwid}" height="${y(acc[i]) - y(acc[i] + v)}" class="${s.cls}"><title>${esc(cats[i].label)}: ${esc(s.name)} ${o.fmt(v)}</title></rect>`;
+    acc[i] += v;
+  }));
+  totals.forEach((t, i) => { if (t > 0 && !o.noTotals) labels += `<text class="tot" x="${bx(i) + bwid / 2}" y="${y(t) - 5}" text-anchor="middle">${o.fmt(t)}</text>`; });
+  (o.hollow || []).forEach((h, i) => { if (h > totals[i]) g += `<rect x="${bx(i)}" y="${y(h)}" width="${bwid}" height="${y(0) - y(h)}" class="hollow"><title>${esc(cats[i].label)}: planned ${o.fmt(h)}</title></rect>`;
+    if (h > totals[i]) labels += `<text class="tot plan" x="${bx(i) + bwid / 2}" y="${y(h) - 5}" text-anchor="middle">${o.fmt(h)} planned</text>`; });
+  if (o.line) {
+    const pts = o.line.vals.map((v, i) => v == null ? null : [bx(i) + bwid / 2, y(v), v]).filter(Boolean);
+    g += `<polyline points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" class="ln c1"/>` + pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="3.5" class="dot c1"><title>${esc(o.line.name)} ${o.fmt(p[2])}</title></circle>`).join('');
+  }
+  (o.refs || []).forEach(r => { g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(r.v)}" y2="${y(r.v)}" class="ref"/>`; labels += `<text class="reflbl" x="${m.l + 4}" y="${y(r.v) - 4}">${esc(r.label)}</text>`; });
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${g}${labels}</svg>`;
+}
+
+// lines over categories (e.g. rep 1..4), one series per session
+function catLines(el, cats, series, o) {
+  const W = 640, H = 230, m = { l: 50, r: 70, t: 14, b: 28 };
+  const all = series.flatMap(s => s.vals.filter(v => v != null));
+  let lo = Math.min(...all), hi = Math.max(...all); const pad = (hi - lo || 1) * 0.12; lo -= pad; hi += pad;
+  const step = o.steps.find(s => (hi - lo) / s <= 6) || o.steps[o.steps.length - 1];
+  const x = i => m.l + (cats.length === 1 ? 0 : i / (cats.length - 1)) * (W - m.l - m.r);
+  const y = v => o.faster === 'down' ? m.t + (v - lo) / (hi - lo) * (H - m.t - m.b) : m.t + (hi - v) / (hi - lo) * (H - m.t - m.b);
+  let g = '', ends = [];
+  for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(v)}" y2="${y(v)}" class="grid"/><text x="${m.l - 6}" y="${y(v) + 4}" text-anchor="end">${o.fmt(v)}</text>`;
+  cats.forEach((c, i) => { g += `<text x="${x(i)}" y="${H - 8}" text-anchor="middle">${esc(c)}</text>`; });
+  series.forEach(s => {
+    const pts = s.vals.map((v, i) => v == null ? null : [x(i), y(v), v, i]).filter(Boolean);
+    g += `<polyline points="${pts.map(p => p[0].toFixed(1) + ',' + p[1].toFixed(1)).join(' ')}" class="ln ${s.cls}"/>` +
+      pts.map(p => `<circle cx="${p[0]}" cy="${p[1]}" r="4" class="dot ${s.cls}"><title>${esc(s.name)}, ${esc(cats[p[3]])}: ${o.fmt(p[2])}</title></circle>`).join('');
+    const l = pts[pts.length - 1]; ends.push({ y: l[1], text: s.name, cls: s.cls, x: l[0] });
+  });
+  ends.sort((a, b) => a.y - b.y); ends.forEach((e, i) => { if (i && e.y < ends[i - 1].y + 14) e.y = ends[i - 1].y + 14; });   // keep end labels apart
+  g += ends.map(e => `<text class="end ${e.cls}" x="${e.x + 9}" y="${e.y + 4}">${esc(e.text)}</text>`).join('');
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.label)}">${g}</svg>`;
+}
+
+// bars = pace per lap (taller is faster), line = average HR per lap
+function lapChart(r) {
+  const L = r.laps; if (!L || L.length < 2) return '';
+  const W = 640, H = 200, m = { l: 8, r: 44, t: 18, b: 26 }, n = L.length, bw = (W - m.l - m.r) / n, ph = H - m.t - m.b;
+  const speed = l => 3600 / Math.max(1, parseTime(l.pace));
+  const vmax = Math.max(...L.map(speed));
+  const hrs = L.map(l => l.hr), hmin = Math.min(...hrs) - 6, hmax = Math.max(...hrs) + 6;
+  const hy = h => m.t + (1 - (h - hmin) / (hmax - hmin)) * ph;
+  const short = l => l.label.replace('Warm up', 'WU').replace('Cool down', 'CD').replace('Recovery', 'Rec').replace(/^Rep (\d)( \(abandoned\))?/, 'R$1').replace('Effort ', 'E').replace(/^Run (\d)/, 'Run$1');
+  const isWork = l => /^(Rep|Effort|Out|Back|Run \d)/.test(l.label);
+  let g = '', labels = '';
+  L.forEach((l, i) => {
+    const h = speed(l) / vmax * ph * 0.88, x = m.l + i * bw + 3;
+    g += `<rect x="${x}" y="${m.t + ph - h}" width="${bw - 6}" height="${h}" rx="2" class="${isWork(l) ? 'lapw' : 'lapr'}"><title>${esc(l.label)}: ${l.pace}/km, ${l.time}, avg HR ${l.hr}</title></rect>`;
+    g += `<text x="${x + (bw - 6) / 2}" y="${H - 8}" text-anchor="middle">${esc(short(l))}</text>`;
+    if (bw > 36) labels += `<text class="tot" x="${x + (bw - 6) / 2}" y="${m.t + ph - h - 4}" text-anchor="middle">${esc(l.pace)}</text>`;
+  });
+  g += `<polyline class="laphr" points="${L.map((l, i) => `${(m.l + i * bw + bw / 2).toFixed(1)},${hy(l.hr).toFixed(1)}`).join(' ')}"/>` +
+    L.map((l, i) => `<circle class="lapdot" r="3.5" cx="${m.l + i * bw + bw / 2}" cy="${hy(l.hr)}"><title>${esc(l.label)} avg HR ${l.hr}</title></circle>`).join('');
+  [hmin + 6, (hmin + hmax) / 2, hmax - 6].forEach(h => { g += `<text class="hraxis" x="${W - m.r + 6}" y="${hy(h) + 4}">${Math.round(h)}</text>`; });
+  return `<div class="chart lapchart"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pace and heart rate by lap">${g}${labels}</svg>` +
+    `<p class="muted">Bars: pace per lap in min/km (taller is faster). Line: average HR per lap (bpm, right axis).</p></div>`;
+}
+
+function renderTrends() {
+  const now = weekStart(today());
+  const runs = db.runs.filter(r => r.date >= db.block.start);
+  const start = weekStart(runs.map(r => r.date).sort()[0] || db.block.start), planKm = db.plan.filter(p => p.km);
+  const lastPlan = planKm.map(p => weekStart(p.date)).sort().pop() || now;
+  const weeks = weekKeys(start, lastPlan > now ? lastPlan : now), cats = weeks.map(k => ({ label: wkLabel(k) }));
+  const inWeek = k => runs.filter(r => weekStart(r.date) === k);
+
+  // 1. long run progression
+  barChart($('chart-long'), cats, [{ name: 'Longest run', cls: 'bar bc1', vals: weeks.map(k => Math.max(0, ...inWeek(k).map(r => r.km))) }],
+    { hollow: weeks.map(k => Math.max(0, ...planKm.filter(p => weekStart(p.date) === k).map(p => p.km))), refs: [{ v: 21.0975, label: 'Half marathon distance 21.1 km' }],
+      fmt: v => v.toFixed(1), axisFmt: v => v, steps: [2, 5, 10], label: 'Longest run each week' });
+
+  // 2. easy-run efficiency (speed in m/min per beat per minute)
+  const eff = type => runs.filter(r => r.type === type && r.hr).sort((a, b) => a.date < b.date ? -1 : 1).map(r => {
+    const v = (1000 / (r.secs / r.km / 60)) / r.hr;
+    return { t: parseD(r.date).getTime(), v, tip: `${fmtDate(r.date)}: ${fmtPace(r.secs, r.km)} at avg HR ${r.hr}, efficiency ${v.toFixed(2)}` };
+  });
+  lineChart($('chart-eff'), [{ kind: 'line', cls: 'c3', endLabel: 'Easy', pts: eff('Easy') }, { kind: 'line', cls: 'c2', endLabel: 'Recovery', pts: eff('Recovery') }].filter(s => s.pts.length),
+    { steps: [0.02, 0.05, 0.1], fmt: v => v.toFixed(2), faster: 'up', label: 'Easy-run efficiency over time' });
+
+  // 3. rep progression
+  const lt = l => l.time.split(':').reduce((a, n) => a * 60 + +n, 0);
+  const sessions = runs.map(r => ({ r, reps: (r.laps || []).filter(l => /^Rep \d/.test(l.label) && !/abandoned/.test(l.label)) })).filter(s => s.reps.length >= 3).sort((a, b) => a.r.date < b.r.date ? -1 : 1);
+  const repCls = ['c1', 'c3', 'c2', 'c0'], maxReps = Math.max(0, ...sessions.map(s => s.reps.length));
+  const repCats = Array.from({ length: maxReps }, (_, i) => 'Rep ' + (i + 1));
+  const sName = s => parseD(s.r.date).toLocaleDateString('en-GB', WEEKDAY_FMT);
+  const pick = f => sessions.map((s, i) => ({ name: sName(s), cls: repCls[sessions.length - 1 - i], vals: repCats.map((_, j) => s.reps[j] ? f(s.reps[j]) : null) }));
+  catLines($('chart-rep-pace'), repCats, pick(l => lt(l) / l.km), { steps: [5, 10, 15, 30], fmt: fmtTime, faster: 'down', label: 'Pace per rep, by session' });
+  catLines($('chart-rep-hr'), repCats, pick(l => l.hr), { steps: [2, 5, 10], fmt: v => Math.round(v), faster: 'up', label: 'Average HR per rep, by session' });
+
+  // 4. weekly volume split by HR zone (hours)
+  const wz = weeks.map(k => { const z = [0, 0, 0, 0, 0, 0]; inWeek(k).forEach(r => { const zs = r.zones || [0, 0, 0, 0, 0]; z[0] += Math.max(0, r.secs - zs.reduce((a, b) => a + b, 0)); zs.forEach((s, i) => z[i + 1] += s); }); return z; });
+  barChart($('chart-zones'), cats, [0, 1, 2, 3, 4, 5].map(n => ({ name: n ? 'Z' + n : '<Z1', cls: 'bar zf' + n, vals: wz.map(z => z[n] / 3600) })),
+    { fmt: v => v.toFixed(1) + ' h', axisFmt: v => v + ' h', steps: [0.5, 1, 2], label: 'Weekly time by HR zone' });
+  $('zones-legend').innerHTML = '<span class="z z0">&lt;Z1</span> ' + [1, 2, 3, 4, 5].map(n => `<span class="z z${n}">Z${n}</span>`).join(' ');
+
+  // 5. weekly training load, with 4-week average
+  const load = weeks.map(k => inWeek(k).reduce((a, r) => a + runLoad(r), 0));
+  const first = load.findIndex(v => v > 0);
+  const avg = load.map((_, i) => weeks[i] <= now && i >= first ? load.slice(Math.max(first, i - 3), i + 1).reduce((x, y) => x + y, 0) / (i - Math.max(first, i - 3) + 1) : null);
+  barChart($('chart-load'), cats, [{ name: 'Training load', cls: 'bar bc2', vals: load.map((v, i) => weeks[i] <= now ? v : 0) }],
+    { line: { name: '4-week average', vals: avg }, fmt: v => Math.round(v), axisFmt: v => v, steps: [50, 100, 200, 250], label: 'Weekly training load' });
+}
+
 // ---------- tabs ----------
 function showTab(name) {
   if (!document.querySelector(`[data-panel="${name}"]`)) name = 'train';
@@ -415,7 +545,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends();
   Object.keys(COLS).forEach(renderCol);
 }
 

@@ -13,7 +13,7 @@ const run = (date, time, type, km, dur, hr, maxhr, notes = '', flag = '', shoe =
 const OLY = 'Altra Olympus 275', TOR = 'Altra Torin 9';
 
 const SEED = {
-  v: 1, rev: 7,
+  v: 1, rev: 8,
   projection: { vdotGain: 1.5, vdotWeeks: 26, gapWeeks: 20, gapFloor: { g1: 1.09, g2: 1.04, g3: 1.005 } },
   block: { start: '2026-09-01', name: 'Phase 1: base building' },
   profile: {
@@ -122,7 +122,7 @@ const SEED = {
     { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km' },
     { id: 's4', date: '2026-10-20', session: 'Rest', details: '' },
     { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter session, Z5' },
-    { id: 's6', date: '2026-10-22', session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)' },
+    { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)' },
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '' },
     { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week' },
     { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Half term' },

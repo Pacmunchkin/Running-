@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=9">
+<link rel="stylesheet" href="style.css?v=11">
 </head>
 <body>
 <div class="layout">
@@ -18,6 +18,7 @@
   <nav id="tabs">
     <button data-tab="train">Training</button>
     <button data-tab="review">Review</button>
+    <button data-tab="trends">Trends</button>
     <button data-tab="plan">Plan &amp; goals</button>
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="profile">Profile</button>
@@ -100,6 +101,37 @@
     </section>
   </div>
 
+  <div data-panel="trends" hidden>
+    <section class="card">
+      <h2>Long run progression</h2>
+      <div id="chart-long" class="chart"></div>
+      <p class="muted">Longest run each week. Hollow bars are planned runs. Endurance, not speed, is what limits your half marathon and 10K estimates, so this is the chart to watch.</p>
+    </section>
+    <section class="card">
+      <h2>Easy-run efficiency</h2>
+      <div id="chart-eff" class="chart"></div>
+      <p class="muted">Speed (m/min) per heartbeat for easy and recovery runs. Higher means more speed for the same heart rate. Compare easy with easy: terrain, heat and warm-ups move it.</p>
+    </section>
+    <section class="card">
+      <h2>Rep progression: pace</h2>
+      <div id="chart-rep-pace" class="chart"></div>
+      <h2 class="gap">Rep progression: heart rate</h2>
+      <div id="chart-rep-hr" class="chart"></div>
+      <p class="muted">Each line is one 1 km repeats session, rep by rep (faster is higher on the pace chart). Rep 3–4 HR on 14 Oct looks low for the pace, possibly a strap dropout.</p>
+    </section>
+    <section class="card">
+      <h2>Weekly volume by HR zone</h2>
+      <div id="chart-zones" class="chart"></div>
+      <div id="zones-legend" class="legend"></div>
+      <p class="muted">Hours per week in each zone (the grey part is below Z1: walking, warm-up and jogging). Totals include warm-ups, cool-downs and recoveries.</p>
+    </section>
+    <section class="card">
+      <h2>Weekly training load</h2>
+      <div id="chart-load" class="chart"></div>
+      <p class="muted">Zone-weighted load: minutes in each zone multiplied by the zone number (Z1 ×1 up to Z5 ×5). The line is the average of the last four weeks, so you can see a week against your recent norm.</p>
+    </section>
+  </div>
+
   <div data-panel="plan" hidden>
     <section class="card">
       <div class="row"><h2>Goals</h2><button class="ghost" data-add="goals">+ Add</button></div>
@@ -161,7 +193,7 @@
 </dialog>
 </div>
 </div>
-<script src="data.js?v=9"></script>
-<script src="app.js?v=9"></script>
+<script src="data.js?v=11"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
