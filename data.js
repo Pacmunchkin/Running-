@@ -28,7 +28,7 @@ const SEED = {
      "mon": "Steady high Z2, 8-9 km (HR 125-134)",
      "wed": "400m pyramid, lighter (Z5)",
      "opt": "Thu: trail run/hike 27.3 km, 3:08 h, easy Z2",
-     "fuel": "Z4 tempo (about 65 min): light breakfast 1.5-2 h before, nothing during. The Thursday 27.3 km trail needs fuelling: 1 gel + 1 drink an hour (see the schedule).",
+     "fuel": "Tempo: nothing during. Thursday trail: 1 gel + 1 drink every hour (see the schedule).",
      "note": "Biggest week of the block by far. Everything else stays easy."
     },
     {
@@ -42,7 +42,7 @@ const SEED = {
      "mon": "5K at Z3 (HR 135-154), first planned Z3 session",
      "wed": "5 x 1 km @ about 4:00-4:05, 1 min jog",
      "opt": "Tue easy, Thu recovery, Fri steady (half term, run every day)",
-     "fuel": "Parkrun: light breakfast 1.5-2 h before or 1 gel 15 min before. Nothing needed during on the other runs.",
+     "fuel": "None during any run this week. Breakfast before parkrun.",
      "note": "Second big week. Stay under the weekly cap on the easy days."
     },
     {
@@ -56,7 +56,7 @@ const SEED = {
      "mon": "Easy 7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "Optional easy 5 km Thu/Fri",
-     "fuel": "None needed during the easy runs. Normal meals.",
+     "fuel": "None.",
      "note": "Recovery week after two big ones: no Z4 or Z5."
     },
     {
@@ -70,7 +70,7 @@ const SEED = {
      "mon": "Z3 steady 5-6 km (HR 135-154)",
      "wed": "6 x 1 km @ about 4:03, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -84,7 +84,7 @@ const SEED = {
      "mon": "Steady high Z2, 8-9 km",
      "wed": "6 x 800 m @ about 3:55, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -98,7 +98,7 @@ const SEED = {
      "mon": "Z3 steady 6 km (HR 135-154)",
      "wed": "6 x 1 km @ about 4:00, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -112,7 +112,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -126,7 +126,7 @@ const SEED = {
      "mon": "Z3 steady 6 km",
      "wed": "6 x 1 km @ about 4:03, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -140,7 +140,7 @@ const SEED = {
      "mon": "Steady high Z2, 8-9 km",
      "wed": "6 x 800 m @ about 3:55, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -154,7 +154,7 @@ const SEED = {
      "mon": "Z3 steady 7 km",
      "wed": "6 x 1 km @ about 4:00, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -168,7 +168,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -182,7 +182,7 @@ const SEED = {
      "mon": "Z4 2 x 12 min, 3 min jog",
      "wed": "5 x 1.2 km @ about 4:15 (10K effort)",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -196,7 +196,7 @@ const SEED = {
      "mon": "Z4 tempo 25 min",
      "wed": "8 x 400 m @ about 3:50",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -210,7 +210,7 @@ const SEED = {
      "mon": "Z4 2 x 15 min, 3 min jog",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel + 1 x 500 ml endurance drink per hour (about 50 g carbs, 400 mg sodium), starting at 30-45 min. Breakfast 2-3 h before (60-80 g carbs). Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -224,7 +224,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -238,7 +238,7 @@ const SEED = {
      "mon": "Z4 2 x 12 min, 3 min jog",
      "wed": "5 x 1.2 km @ about 4:15 (10K effort)",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -252,7 +252,7 @@ const SEED = {
      "mon": "Z4 tempo 25 min",
      "wed": "8 x 400 m @ about 3:50",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel + 1 x 500 ml endurance drink per hour (about 50 g carbs, 400 mg sodium), starting at 30-45 min. Breakfast 2-3 h before (60-80 g carbs). Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -266,7 +266,7 @@ const SEED = {
      "mon": "Z4 2 x 15 min, 3 min jog",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel + 1 x 500 ml endurance drink per hour (about 50 g carbs, 400 mg sodium), starting at 30-45 min. Breakfast 2-3 h before (60-80 g carbs). Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -280,7 +280,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -294,7 +294,7 @@ const SEED = {
      "mon": "Z4 25 min continuous",
      "wed": "4 x 2 km @ about 4:30",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel + 1 x 500 ml endurance drink per hour (about 50 g carbs, 400 mg sodium), starting at 30-45 min. Breakfast 2-3 h before (60-80 g carbs). Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -308,7 +308,7 @@ const SEED = {
      "mon": "Z4 3 x 10 min",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "1 training gel + 1 x 500 ml endurance drink per hour (about 50 g carbs, 400 mg sodium), starting at 30-45 min. Breakfast 2-3 h before (60-80 g carbs). Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -322,7 +322,7 @@ const SEED = {
      "mon": "Z4 2 x 15 min",
      "wed": "5 x 1.6 km @ about 4:25",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "Race fuelling rehearsal: 2 race gels + 1 race drink an hour (about 90 g carbs/h), starting at 30 min. Build up from 60 g/h if your gut is not used to it. Breakfast 2-3 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
      "note": ""
     },
     {
@@ -336,7 +336,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -350,7 +350,7 @@ const SEED = {
      "mon": "Z4 25 min continuous",
      "wed": "4 x 2 km @ about 4:30",
      "opt": "Optional Thu: easy 5 km. Optional 10K tune-up race around 27-28 Mar",
-     "fuel": "Race fuelling rehearsal: 2 race gels + 1 race drink an hour (about 90 g carbs/h), starting at 30 min. Build up from 60 g/h if your gut is not used to it. Breakfast 2-3 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
      "note": ""
     },
     {
@@ -364,7 +364,7 @@ const SEED = {
      "mon": "Z4 3 x 10 min",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "Race fuelling rehearsal: 2 race gels + 1 race drink an hour (about 90 g carbs/h), starting at 30 min. Build up from 60 g/h if your gut is not used to it. Breakfast 2-3 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
      "note": ""
     },
     {
@@ -378,7 +378,7 @@ const SEED = {
      "mon": "Easy 6-7 km",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -392,7 +392,7 @@ const SEED = {
      "mon": "Z4 3 x 10 min, 2 min jog",
      "wed": "5 x 1.6 km @ about 4:25",
      "opt": "Optional Thu: easy 5 km",
-     "fuel": "Race fuelling rehearsal: 2 race gels + 1 race drink an hour (about 90 g carbs/h), starting at 30 min. Build up from 60 g/h if your gut is not used to it. Breakfast 2-3 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
      "note": ""
     },
     {
@@ -406,7 +406,7 @@ const SEED = {
      "mon": "Z3 steady 5 km",
      "wed": "4 x 1 km @ about 4:00 (stay sharp, short)",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -420,7 +420,7 @@ const SEED = {
      "mon": "Easy 6 km",
      "wed": "3 x 1 km @ HM pace, easy 5 km around it",
      "opt": "",
-     "fuel": "None needed during. Normal breakfast.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -434,7 +434,7 @@ const SEED = {
      "mon": "Easy 5 km",
      "wed": "Easy 5 km + 4 strides",
      "opt": "Fri rest. Next week: easy only",
-     "fuel": "Race fuelling as rehearsed: 2 race gels + 1 race drink an hour (about 90 g carbs, 640 mg sodium an hour). Carb-rich dinner the night before, breakfast 2-3 h before the start.",
+     "fuel": "Race plan: 2 gels + 1 drink every hour. Carb dinner the night before.",
      "note": ""
     },
     {
@@ -448,7 +448,7 @@ const SEED = {
      "mon": "Rest",
      "wed": "Easy 4 km",
      "opt": "Post-HM week: easy only, no quality",
-     "fuel": "None needed.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -462,7 +462,7 @@ const SEED = {
      "mon": "Z3 steady 5 km (HR 135-154)",
      "wed": "Easy 6 km + 6 x 100 m strides",
      "opt": "Return week: build volume gently",
-     "fuel": "None needed during. Breakfast 1.5-2 h before.",
+     "fuel": "None. Breakfast 2 h before.",
      "note": ""
     },
     {
@@ -476,7 +476,7 @@ const SEED = {
      "mon": "Z3 steady 6 km (HR 135-154)",
      "wed": "3 x 2 km @ about 4:30 (10K pace)",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "None needed during. Breakfast 1.5-2 h before.",
+     "fuel": "None. Breakfast 2 h before.",
      "note": ""
     },
     {
@@ -490,7 +490,7 @@ const SEED = {
      "mon": "Z4 tempo 20 min (HR 155-159)",
      "wed": "5 x 1 km @ about 4:05",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -504,7 +504,7 @@ const SEED = {
      "mon": "Z4 tempo 30 min (HR 155-159)",
      "wed": "5 x 1.2 km @ about 4:15",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -518,7 +518,7 @@ const SEED = {
      "mon": "Easy 6 km",
      "wed": "Easy 6 km + strides",
      "opt": "",
-     "fuel": "None needed during. Normal breakfast.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -532,7 +532,7 @@ const SEED = {
      "mon": "Z4 tempo 35 min",
      "wed": "6 x 1 km @ about 4:05",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -546,7 +546,7 @@ const SEED = {
      "mon": "Z4 3 x 10 min, 2 min jog",
      "wed": "3 x 2 km @ about 4:30 (10K pace)",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -560,7 +560,7 @@ const SEED = {
      "mon": "Z4 tempo 35 min",
      "wed": "5 x 1 km @ about 4:05",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "2 training gels (25 g each) at about 45 and 90 min, or 1 gel + 1 drink. Breakfast 60-80 g carbs 2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
      "note": ""
     },
     {
@@ -574,7 +574,7 @@ const SEED = {
      "mon": "Easy 6 km",
      "wed": "Easy 6 km + strides",
      "opt": "",
-     "fuel": "Long run is short this week: 1 training gel at about 60 min if it feels long. Breakfast 1.5-2 h before.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -588,7 +588,7 @@ const SEED = {
      "mon": "Z4 2 x 15 min, 3 min jog",
      "wed": "4 x 1.6 km @ about 4:20",
      "opt": "Optional Thu: easy 5 km. Parkrun 5K time trial this week (Sat or in place of the long run).",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -602,7 +602,7 @@ const SEED = {
      "mon": "Z4 tempo 35 min",
      "wed": "6 x 1 km @ about 4:05",
      "opt": "Optional Thu: easy 5 km.",
-     "fuel": "1 training gel (25 g carbs) at about 50 min. Breakfast 60-80 g carbs 1.5-2 h before. Carbs + 20-30 g protein after.",
+     "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": ""
     },
     {
@@ -616,7 +616,7 @@ const SEED = {
      "mon": "Z3 steady 5 km",
      "wed": "4 x 1 km @ about 4:30 (10K pace), sharp not tiring",
      "opt": "",
-     "fuel": "None needed during. Normal breakfast.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -630,7 +630,7 @@ const SEED = {
      "mon": "Easy 5 km",
      "wed": "Easy 5 km + strides",
      "opt": "Next week: easy only",
-     "fuel": "No fuelling needed during a 10K. Optional 1 gel 15 min before. Carb-rich dinner the night before, breakfast 2-3 h before.",
+     "fuel": "None during. Carb dinner the night before.",
      "note": ""
     },
     {
@@ -644,7 +644,7 @@ const SEED = {
      "mon": "Rest",
      "wed": "Easy 4 km",
      "opt": "Post-10K week: easy only",
-     "fuel": "None needed.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -658,7 +658,7 @@ const SEED = {
      "mon": "Z3 steady 6 km",
      "wed": "8 x 400 m @ about 3:50",
      "opt": "",
-     "fuel": "None needed during. Breakfast 1.5-2 h before.",
+     "fuel": "None. Breakfast 2 h before.",
      "note": ""
     },
     {
@@ -672,7 +672,7 @@ const SEED = {
      "mon": "Z3 steady 6 km",
      "wed": "6 x 800 m @ about 3:55",
      "opt": "",
-     "fuel": "None needed during. Breakfast 1.5-2 h before.",
+     "fuel": "None. Breakfast 2 h before.",
      "note": ""
     },
     {
@@ -686,7 +686,7 @@ const SEED = {
      "mon": "Z3 steady 6 km",
      "wed": "5 x 1 km @ about 4:00",
      "opt": "",
-     "fuel": "None needed during. Breakfast 1.5-2 h before.",
+     "fuel": "None. Breakfast 2 h before.",
      "note": ""
     },
     {
@@ -700,7 +700,7 @@ const SEED = {
      "mon": "Z3 steady 5 km",
      "wed": "4 x 800 m @ about 3:55, sharp not tiring",
      "opt": "",
-     "fuel": "None needed during. Normal breakfast.",
+     "fuel": "None.",
      "note": ""
     },
     {
@@ -714,7 +714,7 @@ const SEED = {
      "mon": "Easy 5 km",
      "wed": "",
      "opt": "If the race is the Saturday parkrun (25 Sep), shift this week back one day",
-     "fuel": "No fuelling needed during a 5K. Light breakfast 2-3 h before, or 1 gel 15 min before. Carb-rich dinner the night before.",
+     "fuel": "None during. Carb dinner the night before.",
      "note": ""
     }
    ],
@@ -957,7 +957,7 @@ const SEED = {
      "heading": "Support",
      "items": [
       "Friday yoga stays. Add one short strength session a week (calves, glutes, single-leg work).",
-      "Every run I schedule gets a fuelling note: nothing during runs under about 75 min, 1 gel from about 13 km, 2 gels or a gel plus a drink at 17 to 20 km, and 50 g carbs an hour (1 gel + 1 drink) beyond about 2 hours. Breakfast of 60 to 80 g carbs 1.5 to 3 h before long runs, and 20 to 30 g protein after Z4 and Z5 sessions. Adjust to what your gut tolerates and tell me.",
+      "Fuel rule of thumb. Runs under 75 min: nothing during. Longer: 1 gel from about 13 km, 2 gels at 17 to 20 km, and 1 gel + 1 drink every hour beyond 2 hours. Carb breakfast before long runs, protein after hard sessions. Tell me if your gut disagrees. Every run I schedule gets a short fuel note.",
       "Practise race fuelling on at least three long runs in March and April. Your race plan (2 gels and 1 drink an hour) is about 90 g carbs and 640 mg sodium an hour. If the gut complains, drop to 60 g an hour.",
       "Torin 9 is at about 103 km and weekly volume is about to double. Consider a second pair to rotate before the long-run weeks.",
       "Every Wednesday after the interval session I will compare the week against this plan, update the race estimates and adjust the next week."
@@ -2027,20 +2027,20 @@ const SEED = {
     { id: 'p4', event: 'Half marathon (not a PB)', place: 'Bath', time: '2:11:33', when: '16 Aug 2026', notes: '22.11 km, avg 5:57/km, avg HR 159. Ultra block' }
   ],
   plan: [
-    { id: 's1', date: '2026-10-17', session: 'Zone 4 tempo, 20 min', details: 'Z4 (155-159 bpm). Out and back: 10 min out, 10 min back', fuel: "Light breakfast 1.5-2 h before (about 60 g carbs, e.g. porridge and a banana), or 1 training gel 15 min before if short on time. Nothing needed during. 20-30 g protein after." },
-    { id: 's2', date: '2026-10-18', session: 'Recovery run', details: '5-6 km, pure recovery (HR under 125)', fuel: "None needed. Water if thirsty." },
-    { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km', fuel: "None needed during. If it is an evening run, a carb snack about 2 h before." },
-    { id: 's4', date: '2026-10-20', session: 'Rest', details: '', fuel: "Rest day: normal meals, with carbs at dinner ahead of Wednesday." },
-    { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter session, Z5', fuel: "Nothing during. Carb snack about 2 h before (it is an evening session). 20-30 g protein after, as it is a Z5 session." },
-    { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Needed. Breakfast 2-3 h before (60-80 g carbs). From 30-45 min on, every hour: 1 training gel + 1 x 500 ml endurance drink (about 50 g carbs, 400 mg sodium). For 3:08 h that is about 3 gels and 3 drinks (150 g carbs, 1,200 mg sodium), plus water. Carry a spare gel. Carbs + 20-30 g protein within an hour after." },
-    { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '', fuel: "None needed." },
-    { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week', fuel: "Light breakfast 1.5-2 h before, or 1 training gel 15 min before. Nothing during. 20-30 g protein after (Z4 effort)." },
-    { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Pure recovery (HR under 125). Half term', fuel: "None needed." },
-    { id: 's10', date: '2026-10-26', session: '5K at Z3', details: 'HR 135-154, first planned Z3 session. Start in low Z3. Half term', fuel: "None needed during. Carb snack about 2 h before if it is an evening run." },
-    { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None needed." },
-    { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Nothing during (under 75 min). Carb snack about 2 h before; 20-30 g protein after." },
-    { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term', fuel: "None needed." },
-    { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term', fuel: "None needed during." }
+    { id: 's1', date: '2026-10-17', session: 'Zone 4 tempo, 20 min', details: 'Z4 (155-159 bpm). Out and back: 10 min out, 10 min back', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
+    { id: 's2', date: '2026-10-18', session: 'Recovery run', details: '5-6 km, pure recovery (HR under 125)', fuel: "None." },
+    { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km', fuel: "None. Snack 2 h before if it is an evening run." },
+    { id: 's4', date: '2026-10-20', session: 'Rest', details: '', fuel: "Normal meals, carbs at dinner." },
+    { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter session, Z5', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
+    { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min (3 of each in total), take a spare gel. After: carbs + protein." },
+    { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '', fuel: "None." },
+    { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
+    { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Pure recovery (HR under 125). Half term', fuel: "None." },
+    { id: 's10', date: '2026-10-26', session: '5K at Z3', details: 'HR 135-154, first planned Z3 session. Start in low Z3. Half term', fuel: "None. Snack 2 h before if it is an evening run." },
+    { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None." },
+    { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
+    { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term', fuel: "None." },
+    { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term', fuel: "None." }
   ],
   estimates: [
     { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
