@@ -58,7 +58,8 @@ function renderStats() {
     ['This month', fmtDist(sum(r => r.date.startsWith(mo))) + ' ' + units],
     ['Avg pace', fmtPace(secs, km)], ['Longest', fmtDist(longest) + ' ' + units],
     ['Avg HR (time-weighted)', hrSecs ? Math.round(withHr.reduce((a, r) => a + r.hr * r.secs, 0) / hrSecs) : '–'],
-    ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m']
+    ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m'],
+    ...(db.weight && db.weight.length ? [['Weight (' + parseD(db.weight[db.weight.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.weight[db.weight.length - 1].kg + ' kg']] : [])
   ];
   $('stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
 }
@@ -243,7 +244,8 @@ function lineChart(el, series, o) {
   if (!pts.length) { el.innerHTML = '<p class="muted">No data yet.</p>'; return; }
   const W = 640, H = 270, m = { l: 50, r: 132, t: 16, b: 30 };
   const t0 = o.t0 || parseD(db.block.start).getTime(), t1 = o.t1 || Math.max(...pts.map(p => p.t)) + 7 * 864e5;
-  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v)); const pad = (hi - lo || 1) * 0.1; lo -= pad; hi += pad;
+  let lo = Math.min(...pts.map(p => p.v)), hi = Math.max(...pts.map(p => p.v)); if (o.minSpan && hi - lo < o.minSpan) { const c = (hi + lo) / 2; lo = c - o.minSpan / 2; hi = c + o.minSpan / 2; }
+  const pad = (hi - lo || 1) * 0.1; lo -= pad; hi += pad;
   const step = o.steps.find(s => (hi - lo) / s <= 6) || o.steps[o.steps.length - 1];
   const yTicks = []; for (let v = Math.ceil(lo / step) * step; v <= hi; v += step) yTicks.push(v);
   const x = t => m.l + (t - t0) / (t1 - t0) * (W - m.l - m.r);
@@ -443,7 +445,16 @@ function lapChart(r) {
     `<p class="muted">Bars: pace per lap in min/km (taller is faster). Line: average HR per lap (bpm, right axis).</p></div>`;
 }
 
+function renderWeight() {
+  const wts = [...(db.weight || [])].sort((a, b) => a.date < b.date ? -1 : 1);
+  if (!wts.length) { $('chart-weight').innerHTML = '<p class="muted">No weigh-ins yet.</p>'; return; }
+  const first = wts[0], last = wts[wts.length - 1], change = last.kg - first.kg;
+  lineChart($('chart-weight'), [{ kind: 'line', cls: 'c0', endLabel: `${last.kg} kg`, pts: wts.map(w => ({ t: parseD(w.date).getTime(), v: w.kg, tip: `${fmtDate(w.date)}: ${w.kg} kg${w.note ? '. ' + w.note : ''}` })) }],
+    { t0: parseD(first.date).getTime() - 14 * 864e5, minSpan: 4, steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Body weight over time' });
+  $('weight-note').textContent = wts.length > 1 ? `${wts.length} weigh-ins since ${fmtDate(first.date)}. Change: ${change > 0 ? '+' : ''}${change.toFixed(1)} kg.` : `One weigh-in so far: ${last.kg} kg on ${fmtDate(last.date)}.`;
+}
 function renderTrends() {
+  renderWeight();
   const now = weekStart(today());
   const runs = db.runs.filter(r => r.date >= db.block.start);
   const start = weekStart(runs.map(r => r.date).sort()[0] || db.block.start), planKm = db.plan.filter(p => p.km);

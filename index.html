@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=22">
+<link rel="stylesheet" href="style.css?v=23">
 </head>
 <body>
 <div class="layout">
@@ -161,6 +161,12 @@
       <p class="muted">Hours per week in each zone (the grey part is below Z1: walking, warm-up and jogging). Totals include warm-ups, cool-downs and recoveries.</p>
     </section>
     <section class="card">
+      <h2>Body weight</h2>
+      <div id="chart-weight" class="chart"></div>
+      <p class="muted" id="weight-note"></p>
+      <p class="muted">Weigh in once a week, first thing in the morning, and read the trend, not single readings. It is context for pace, efficiency and fuelling, not a target.</p>
+    </section>
+    <section class="card">
       <h2>Weekly training load</h2>
       <div id="chart-load" class="chart"></div>
       <p class="muted">Zone-weighted load: minutes in each zone multiplied by the zone number (Z1 ×1 up to Z5 ×5). The line is the average of the last four weeks, so you can see a week against your recent norm.</p>
@@ -250,7 +256,7 @@
 
 </div>
 </div>
-<script src="data.js?v=22"></script>
-<script src="app.js?v=22"></script>
+<script src="data.js?v=23"></script>
+<script src="app.js?v=23"></script>
 </body>
 </html>
