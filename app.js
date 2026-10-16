@@ -67,7 +67,7 @@ function renderStats() {
 function renderNext() {
   const up = db.plan.filter(p => p.date >= today()).sort((a, b) => a.date < b.date ? -1 : 1).slice(0, 5);
   $('next').innerHTML = up.length
-    ? up.map(p => `<li><b>${fmtDate(p.date)}</b> — ${esc(p.session)}${p.details ? ' <span class="muted">(' + esc(p.details) + ')</span>' : ''}</li>`).join('')
+    ? up.map(p => `<li><b>${fmtDate(p.date)}</b> — ${esc(p.session)}${p.details ? ' <span class="muted">(' + esc(p.details) + ')</span>' : ''}${p.fuel ? `<span class="flag">Fuel: ${esc(p.fuel)}</span>` : ''}</li>`).join('')
     : '<li class="muted">Nothing scheduled. Add sessions on the Plan &amp; goals tab.</li>';
 }
 
@@ -142,7 +142,7 @@ const COLS = {
             ['Days to go', g => { const d = Math.round((parseD(g.date) - parseD(today())) / 864e5); return d >= 0 ? d : 'done'; }]]
   },
   plan: {
-    single: 'session', fields: [['date', 'Date', 'date', 1], ['session', 'Session', 'text', 1], ['details', 'Details', 'text']],
+    single: 'session', fields: [['date', 'Date', 'date', 1], ['session', 'Session', 'text', 1], ['details', 'Details', 'text', 0, 1], ['fuel', 'Fuelling', 'text', 0, 1]],
     sort: (a, b) => a.date < b.date ? -1 : 1,
     extra: [['Logged', p => { const r = db.runs.filter(r => r.date === p.date); return r.length ? '✓ ' + esc(r.map(r => fmtDist(r.km) + ' ' + units).join(', ')) : ''; }]]
   },
@@ -164,7 +164,7 @@ function renderCol(key) {
   const items = [...db[key]]; if (c.sort) items.sort(c.sort);
   $('c-' + key).innerHTML = items.length
     ? `<table><thead><tr>${shown.map(f => `<th>${esc(f[1])}</th>`).join('')}${(c.extra || []).map(x => `<th>${esc(x[0])}</th>`).join('')}</tr></thead><tbody>` +
-      items.map(it => `<tr>${shown.map(([k, , t]) => `<td${t === 'number' ? ' class="num"' : ''}>${t === 'date' ? fmtDate(it[k]) : esc(it[k])}</td>`).join('')}` +
+      items.map(it => `<tr>${shown.map(([k, , t, , wrap]) => `<td${t === 'number' ? ' class="num"' : wrap ? ' class="notes"' : ''}>${t === 'date' ? fmtDate(it[k]) : esc(it[k])}</td>`).join('')}` +
         (c.extra || []).map(x => `<td>${x[1](it)}</td>`).join('') + '</tr>').join('') + '</tbody></table>'
     : '<p class="muted">Nothing here yet.</p>';
 }
@@ -603,7 +603,7 @@ function renderPlan() {
       ws.map(w => { const a = weekActual(w.start), st = planStatus(w), past = w.start <= now;
         return `<tr><td>${fmtDate(w.start)}</td><td>${esc(w.type)}</td><td class="num">${w.km}</td><td class="num">${past ? a.km.toFixed(1) : ''}</td><td>${w.long} km${past && w.start < now ? ' / ' + a.long.toFixed(1) : ''}</td>` +
           `<td>${st ? `<span class="st st-${st.replace(' ', '-')}">${st}</span>` : ''}</td>` +
-          `<td class="notes"><b>Sat</b> ${esc(w.sat)}<br><b>Sun</b> ${esc(w.sun)}<br><b>Mon</b> ${esc(w.mon)}<br><b>Wed</b> ${esc(w.wed)}${w.opt ? `<br>${esc(w.opt)}` : ''}${w.note ? `<br><span class="muted">${esc(w.note)}</span>` : ''}</td></tr>`; }).join('') + '</tbody></table></div></details>'; }).join('');
+          `<td class="notes"><b>Sat</b> ${esc(w.sat)}<br><b>Sun</b> ${esc(w.sun)}<br><b>Mon</b> ${esc(w.mon)}<br><b>Wed</b> ${esc(w.wed)}${w.opt ? `<br>${esc(w.opt)}` : ''}${w.fuel ? `<br><b>Fuel</b> ${esc(w.fuel)}` : ''}${w.note ? `<br><span class="muted">${esc(w.note)}</span>` : ''}</td></tr>`; }).join('') + '</tbody></table></div></details>'; }).join('');
   $('plan-checkpoints').innerHTML = '<table><thead><tr><th>Date</th><th>Checkpoint</th><th>Target</th></tr></thead><tbody>' +
     P.checkpoints.map(c => `<tr class="${c.date < today() ? 'past' : ''}"><td>${fmtDate(c.date)}</td><td><b>${esc(c.what)}</b></td><td class="notes">${esc(c.target)}</td></tr>`).join('') + '</tbody></table>';
   $('plan-principles').innerHTML = P.principles.map(s => `<h4>${esc(s.heading)}</h4><ul>${s.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
