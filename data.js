@@ -2034,7 +2034,13 @@ const SEED = {
         lap('Warm up', '21:28', 2.49, '8:37', 130, 160, 147), lap('Rep 1', '4:04.3', 1.00, '4:04', 155, 177, 182), lap('Recovery', '1:00', 0.10, '10:26', 174, 184, 133),
         lap('Rep 2', '4:02.9', 1.00, '4:03', 164, 173, 179), lap('Recovery', '1:00', 0.10, '9:44', 161, 174, 128), lap('Rep 3', '4:05.1', 1.00, '4:05', 145, 155, 181),
         lap('Recovery', '1:00', 0.11, '8:43', 151, 155, 131), lap('Rep 4', '3:58.4', 1.00, '3:58', 150, 157, 180), lap('Recovery', '1:00', 0.10, '10:30', 148, 158, 136),
-        lap('Cool down', '23:11', 2.56, '9:04', 119, 130, 144)] })
+        lap('Cool down', '23:11', 2.56, '9:04', 119, 130, 144)] }),
+    run('2026-10-17', '11:01', 'Tempo', 8.35, '54:17', 138, 177,
+      'Z4 tempo, 2 x 10 min (out and back): 4:30/km at HR 158, then 4:34/km at HR 166. Benchmarks at similar HR: 5:09/km at 157 (12 Sep), 5:44/km at 154 (10 Oct)',
+      'Second 10 min ran above the 155-159 target (avg 166). Garmin titled it "Long run"', TOR,
+      { title: 'Long run', asc: 56, cal: 635, sweat: 659, cad: 156, stride: 0.97, moving: '54:00', best: '3:56', zones: Z('0:38', '30:47', '4:45', '3:20', '14:46'), laps: [
+        lap('Warm up', '16:43', 2.00, '8:21', 124, 139, 151), lap('Out', '10:00', 2.22, '4:30', 158, 168, 175), lap('Back', '10:00', 2.19, '4:34', 166, 177, 182),
+        lap('Cool down', '17:34', 1.93, '9:05', 123, 175, 134)] })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
