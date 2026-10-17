@@ -2061,7 +2061,7 @@ const SEED = {
   plan: [
     { id: 's1', date: '2026-10-17', session: 'Zone 4 tempo, 20 min', details: 'Z4 (155-159 bpm). Out and back: 10 min out, 10 min back', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
     { id: 's2', date: '2026-10-18', session: 'Recovery run', details: '5-6 km, pure recovery (HR under 125)', fuel: "None." },
-    { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km', fuel: "None. Snack 2 h before if it is an evening run." },
+    { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km', fuel: "None during. Sweat test: weigh before and after, no drinking. Snack 2 h before if it is an evening run." },
     { id: 's4', date: '2026-10-20', session: 'Rest', details: '', fuel: "Normal meals, carbs at dinner." },
     { id: 's5', date: '2026-10-21', session: '400m pyramid', details: 'Lighter session, Z5', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
     { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min (3 of each in total), take a spare gel. After: carbs + protein." },
