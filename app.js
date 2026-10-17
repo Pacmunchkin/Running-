@@ -174,7 +174,8 @@ function renderProfile() {
   const p = db.profile;
   $('who').textContent = [p.name, p.location, p.phase].filter(Boolean).join(' · ');
   $('profile').innerHTML = [['Name', p.name], ['Location', p.location], ['Phase', p.phase], ['Long/tempo day', p.longDay], ['Running week', p.week],
-    ['Max HR seen', p.maxHr ? p.maxHr + ' bpm' + (p.maxHrNote ? ` (${p.maxHrNote})` : '') : '']]
+    ['Max HR seen', p.maxHr ? p.maxHr + ' bpm' + (p.maxHrNote ? ` (${p.maxHrNote})` : '') : ''],
+    ['Resting HR', p.restHr ? p.restHr + ' bpm' + (p.restHrNote ? ` (${p.restHrNote})` : '') : '']]
     .map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join('');
   $('zones').innerHTML = '<table><thead><tr><th>Zone</th><th>Range (bpm)</th></tr></thead><tbody>' +
     [1, 2, 3, 4, 5].map(n => `<tr><td><span class="z z${n}">Z${n}</span></td><td>${p['z' + n]}${n < 5 ? '–' + (p['z' + (n + 1)] - 1) : '+'}</td></tr>`).join('') +
@@ -265,7 +266,7 @@ function lineChart(el, series, o) {
     if (s.kind === 'proj') {
       g += `<polyline points="${poly}" class="proj ${s.cls}"/><circle cx="${x(l.t)}" cy="${y(l.v)}" r="5" class="pend ${s.cls}"><title>${esc(l.tip)}</title></circle>`;
     } else {
-      g += (s.noLine ? '' : `<polyline points="${poly}" class="ln ${s.cls}"/>`) + s.pts.map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
+      g += (s.noLine ? '' : `<polyline points="${poly}" class="ln ${s.cls}"/>`) + (s.noDots ? [s.pts[s.pts.length - 1]] : s.pts).map(q => `<circle cx="${x(q.t)}" cy="${y(q.v)}" r="4" class="dot ${s.cls}"><title>${esc(q.tip)}</title></circle>`).join('');
       if (s.topLabel) labels += `<text class="now ${s.cls}" x="${x(l.t)}" y="${y(l.v) - 10}" text-anchor="middle">${esc(s.topLabel)}</text>`;
     }
     if (s.endLabel) labels += `<text class="end ${s.cls}" x="${x(l.t) + 9}" y="${y(l.v) + 4}">${esc(s.endLabel)}</text>`;
@@ -277,7 +278,8 @@ function renderCharts() {
   const ests = sortedEsts(), dt = e => parseD(e.date).getTime();
   const pb = (name, vdot) => ({ kind: 'ref', name: `${name} ${vdot}`, pts: [{ t: 0, v: vdot }] });
   lineChart($('chart-vo2'), [pb('5K PB', 46.8), pb('10K PB', 43.3), pb('HM PB', 41.8),
-    { kind: 'line', cls: 'c0', endLabel: `VO2 max ${ests.length ? ests[ests.length - 1].vdot.toFixed(1) : ''}`, pts: ests.map(e => ({ t: dt(e), v: e.vdot, tip: `${fmtDate(e.date)}: VDOT ${e.vdot}. ${e.basis}` })) }],
+    ...((db.garmin && db.garmin.vo2Block.length) ? [{ kind: 'line', cls: 'c3', endLabel: `Garmin ${db.garmin.vo2Block[db.garmin.vo2Block.length - 1][1]}`, pts: db.garmin.vo2Block.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `${fmtDate(d)}: Garmin VO2 max ${v}` })) }] : []),
+    { kind: 'line', cls: 'c0', endLabel: `Est. ${ests.length ? ests[ests.length - 1].vdot.toFixed(1) : ''}`, pts: ests.map(e => ({ t: dt(e), v: e.vdot, tip: `${fmtDate(e.date)}: VDOT ${e.vdot}. ${e.basis}` })) }],
     { steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Estimated VO2 max over time' });
 
   const goals = [...db.goals].sort((a, b) => a.date < b.date ? -1 : 1), cls = ['c1', 'c2', 'c3'];
@@ -453,8 +455,15 @@ function renderWeight() {
     { t0: parseD(first.date).getTime() - 14 * 864e5, minSpan: 4, steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Body weight over time' });
   $('weight-note').textContent = wts.length > 1 ? `${wts.length} weigh-ins since ${fmtDate(first.date)}. Change: ${change > 0 ? '+' : ''}${change.toFixed(1)} kg.` : `One weigh-in so far: ${last.kg} kg on ${fmtDate(last.date)}.`;
 }
+function renderRhr() {
+  const G = db.garmin; if (!G || !G.rhrDaily.length) return;
+  const pts = G.rhrDaily.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `${fmtDate(d)}: resting HR ${v}` })), last = G.rhrDaily[G.rhrDaily.length - 1];
+  lineChart($('chart-rhr'), [{ kind: 'ref', name: `Baseline ${G.rhrBaseline}`, pts: [{ t: 0, v: G.rhrBaseline }] }, { kind: 'line', cls: 'c2', noDots: true, endLabel: `${last[1]} bpm`, pts }],
+    { t0: pts[0].t - 3 * 864e5, minSpan: 6, steps: [1, 2], fmt: v => v.toFixed(0), faster: 'up', label: 'Daily resting heart rate since mid August' });
+  $('rhr-note').textContent = `Latest ${last[1]} bpm on ${fmtDate(last[0])}. Baseline about ${G.rhrBaseline} bpm. Source: Garmin daily summaries.`;
+}
 function renderTrends() {
-  renderWeight();
+  renderWeight(); renderRhr();
   const now = weekStart(today());
   const runs = db.runs.filter(r => r.date >= db.block.start);
   const start = weekStart(runs.map(r => r.date).sort()[0] || db.block.start), planKm = db.plan.filter(p => p.km);
@@ -528,6 +537,13 @@ function renderHistory() {
   lineChart($('chart-hist-eff'), [{ kind: 'line', cls: 'c3', endLabel: 'Easy runs', pts: H.eff.map(e => ({ t: ts(e.m), v: e.ef, tip: `${e.m}: efficiency ${e.ef} from ${e.n} runs, average ${fmtTime(e.pace)}/km at HR ${e.hr}` })) }],
     { t0: parseD('2025-01-01').getTime(), steps: [0.02, 0.05, 0.1], fmt: v => v.toFixed(2), faster: 'up', label: 'Easy-run efficiency by month' });
 
+  const G = db.garmin;
+  if (G) {
+    lineChart($('chart-hist-rhr'), [{ kind: 'line', cls: 'c2', noDots: true, endLabel: `${G.rhrWeekly[G.rhrWeekly.length - 1][1]} bpm`, pts: G.rhrWeekly.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `Week from ${fmtDate(d)}: resting HR ${v}` })) }],
+      { t0: parseD('2024-01-01').getTime(), steps: [1, 2, 5], fmt: v => v.toFixed(0), faster: 'up', label: 'Weekly average resting heart rate since 2024' });
+    lineChart($('chart-hist-vo2'), [{ kind: 'line', cls: 'c3', noDots: true, endLabel: `${G.vo2Monthly[G.vo2Monthly.length - 1][1]}`, pts: G.vo2Monthly.map(([m, v]) => ({ t: parseD(m + '-15').getTime(), v, tip: `${m}: Garmin VO2 max ${v}` })) }],
+      { t0: parseD('2020-01-01').getTime(), t1: parseD('2026-12-01').getTime(), steps: [1, 2, 5], fmt: v => v.toFixed(0), faster: 'up', label: 'Garmin VO2 max by month since 2020' });
+  }
   // race-effort fitness (VDOT)
   const ser = (dist, cls, kind) => ({ kind: 'line', cls, noLine: kind === 'steady', endLabel: kind === 'race' ? dist : '',
     pts: H.efforts.filter(e => e.dist === dist && e.kind === kind).map(e => ({ t: parseD(e.date).getTime(), v: e.vdot,

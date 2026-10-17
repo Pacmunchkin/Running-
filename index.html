@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=25">
+<link rel="stylesheet" href="style.css?v=27">
 </head>
 <body>
 <div class="layout">
@@ -167,6 +167,12 @@
       <p class="muted">Weigh in once a week, first thing in the morning, and read the trend, not single readings. It is context for pace, efficiency and fuelling, not a target.</p>
     </section>
     <section class="card">
+      <h2>Resting heart rate</h2>
+      <div id="chart-rhr" class="chart"></div>
+      <p class="muted" id="rhr-note"></p>
+      <p class="muted">Garmin's daily resting HR. In September it rose from 40 to 44 across the week of the illness and took until 7 Oct to settle. Three or more bpm above baseline for two mornings is a cue for an easy day.</p>
+    </section>
+    <section class="card">
       <h2>Weekly training load</h2>
       <div id="chart-load" class="chart"></div>
       <p class="muted">Zone-weighted load: minutes in each zone multiplied by the zone number (Z1 ×1 up to Z5 ×5). The line is the average of the last four weeks, so you can see a week against your recent norm.</p>
@@ -199,6 +205,16 @@
       <h2>Easy-run efficiency since Jan 2025</h2>
       <div id="chart-hist-eff" class="chart"></div>
       <p class="muted">Speed (m/min) per heartbeat on flat easy runs of 5 to 14 km at HR 105 to 142, averaged by month. Only months with at least two such runs are shown. Higher is better.</p>
+    </section>
+    <section class="card">
+      <h2>Garmin VO2 max since 2020</h2>
+      <div id="chart-hist-vo2" class="chart"></div>
+      <p class="muted">Monthly average of the watch's running VO2 max. It peaked at 54 in April and May 2025 and has sat at 47 to 49 since last autumn.</p>
+    </section>
+    <section class="card">
+      <h2>Resting heart rate since 2024</h2>
+      <div id="chart-hist-rhr" class="chart"></div>
+      <p class="muted">Weekly average. It has drifted down from about 44 to about 40 bpm over two years.</p>
     </section>
     <section class="card">
       <h2>Fitness from race efforts (VDOT)</h2>
@@ -256,7 +272,7 @@
 
 </div>
 </div>
-<script src="data.js?v=25"></script>
-<script src="app.js?v=25"></script>
+<script src="data.js?v=27"></script>
+<script src="app.js?v=27"></script>
 </body>
 </html>

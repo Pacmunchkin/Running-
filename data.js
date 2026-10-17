@@ -943,7 +943,8 @@ const SEED = {
       "After the 17 and 24 Oct weeks, grow volume by no more than about 10% a week and the long run by 1 to 2 km a week.",
       "Missed days: up to 3 days, just resume with no catch-up. 4 to 7 days (illness), repeat the week before at about 80% and push the plan back a week.",
       "Taper: 2 weeks for the half marathon (about 75% then 55% of peak), 1 to 2 weeks for the 10K and 5K. Easy only for a week after each race.",
-      "If a long run with a Z3 finish leaves you flat on Monday, swap Monday's Z4 tempo for a Z3 steady run that week and tell me."
+      "If a long run with a Z3 finish leaves you flat on Monday, swap Monday's Z4 tempo for a Z3 steady run that week and tell me.",
+      "Resting HR check: your baseline is about 40 bpm. If it is 3 bpm or more above that for two mornings, make the next day easy or rest, and tell me. In September it rose from 40 to 44 across the week of the illness."
      ]
     },
     {
@@ -960,7 +961,16 @@ const SEED = {
       "Fuel rule of thumb. Runs under 75 min: nothing during. Longer: 1 gel from about 13 km, 2 gels at 17 to 20 km, and 1 gel + 1 drink every hour beyond 2 hours. Carb breakfast before long runs, protein after hard sessions. Tell me if your gut disagrees. Every run I schedule gets a short fuel note.",
       "Practise race fuelling on at least three long runs in March and April. Your race plan (2 gels and 1 drink an hour) is about 90 g carbs and 640 mg sodium an hour. If the gut complains, drop to 60 g an hour.",
       "Torin 9 is at about 103 km and weekly volume is about to double. Consider a second pair to rotate before the long-run weeks.",
-      "Every Wednesday after the interval session I will compare the week against this plan, update the race estimates and adjust the next week."
+      "Weigh in once a week, first thing in the morning, and look at the trend, not single readings. Weight is context, not a target: a steady drift down as volume doubles can mean under-fuelling. 77.8 kg on 16 Oct 2026 is the starting point."
+     ]
+    },
+    {
+     "heading": "Wednesday review routine",
+     "items": [
+      "After the Wednesday intervals, send me that session plus the other runs since the last review (Sat, Sun, Mon) and a line on how it felt, sleep, niggles and illness.",
+      "I check the week against the plan (km, long run, status), time in each HR zone (especially the Z3 share), interval pace and HR against the last session, easy-run efficiency, resting HR against the 40 bpm baseline, Garmin VO2 max, your weekly weight trend and any HR strap problems.",
+      "Then I update the race estimates and charts, write a dated review and review the following week's sessions. I only change the plan when the data or your notes call for it: flat, ill or HR running high means cut or repeat the week; going well means hold the plan, not add volume; too many Z3 or Z4 sessions in a row means swap one for something easier.",
+      "Any change to next week is shown in the Week by week table and in the review, with the reason."
      ]
     }
    ],
@@ -1919,18 +1929,30 @@ const SEED = {
       "The same Bath HM a year apart: 1:59:40 at avg HR 173 (Aug 2025) and 2:11:33 at avg HR 159 (Aug 2026). The 2026 run was a much less intense effort.",
       "Data gaps: the CSV is thin before 2023 (many months have no runs), so older weekly numbers are not reliable. Months with fewer than two flat easy runs are left out of the efficiency chart."
      ]
+    },
+    {
+     "heading": "From the extra Garmin export: resting HR, VO2 max, PRs",
+     "items": [
+      "Resting HR is about 40 bpm now (median 40 from mid Aug to 15 Oct, 39 this week). That is lower than in your PB builds (median 42 in Mar to May 2025) and close to your lowest ever (37, Sep 2022).",
+      "The illness left a clear mark. Resting HR rose from 40 (14 Sep) to 44 (23 to 26 Sep) and was back to 40 by 7 Oct. It was already 1 to 2 bpm up on 15 to 18 Sep, before the 19 Sep parkrun. A rise of 3 bpm or more for two mornings is a useful early warning, so I will check it each Wednesday.",
+      "Garmin's own VO2 max is 49 now (48 until 7 Oct). It peaked at 54 in late April and early May 2025 during the HM PB build and sat at 47 to 49 through the marathon block. On the watch's scale your aerobic engine is about 5 points below the PB-form peak, which matches the easy-run efficiency (1.04 to 1.07 now against 1.18 to 1.20). Your rep speed is back, the aerobic base is not yet.",
+      "Official Garmin PRs: fastest 1 km 3:56.9 and mile 6:59.7 (14 Oct 2026), 5K 21:06.5 (19 Apr 2025), 10K 46:46 (12 May 2019), HM 1:46:50 (11 May 2025), marathon 4:41:04 (18 Aug 2024), longest run 45.3 km (12 Apr 2026).",
+      "Max HR: the all-day monitor peaked at 196 (19 Apr and 17 Aug 2025) and 193 three times, while activity files peak at 201. The true max is probably 196 to 201. I am keeping 201 for now.",
+      "HR zones: with resting HR 40 and max about 198, %HR-reserve zones come out near Z1 119-134, Z2 135-150, Z3 151-166, Z4 167-182, Z5 183-198. Your race HRs (10K 174, HM 180, 5K 179) sit in that Z4, so the current Garmin zones (Z5 from 160) read about one zone low, and your Garmin Z3 (135-154) is roughly an easy-aerobic Z2 on that scale. I have not changed the zones or the plan."
+     ]
     }
    ]
   },
   weight: [
     { date: '2026-10-16', kg: 77.8, note: 'First entry' }
   ],
+  garmin: {"rhrBaseline":40,"rhrLatest":39,"rhrAsOf":"2026-10-15","rhrDaily":[["2026-08-15",40],["2026-08-16",40],["2026-08-17",40],["2026-08-18",40],["2026-08-19",40],["2026-08-20",40],["2026-08-21",40],["2026-08-22",39],["2026-08-23",39],["2026-08-24",39],["2026-08-25",38],["2026-08-26",38],["2026-08-27",39],["2026-08-28",39],["2026-08-29",40],["2026-08-30",40],["2026-08-31",40],["2026-09-01",40],["2026-09-02",40],["2026-09-03",40],["2026-09-04",39],["2026-09-05",39],["2026-09-06",39],["2026-09-07",39],["2026-09-08",40],["2026-09-09",40],["2026-09-10",40],["2026-09-11",40],["2026-09-12",39],["2026-09-13",40],["2026-09-14",40],["2026-09-15",41],["2026-09-16",40],["2026-09-17",41],["2026-09-18",41],["2026-09-19",42],["2026-09-20",42],["2026-09-21",43],["2026-09-22",43],["2026-09-23",44],["2026-09-24",44],["2026-09-25",43],["2026-09-26",44],["2026-09-27",43],["2026-09-28",42],["2026-09-29",42],["2026-09-30",42],["2026-10-01",43],["2026-10-02",42],["2026-10-03",42],["2026-10-04",41],["2026-10-05",41],["2026-10-06",41],["2026-10-07",40],["2026-10-08",40],["2026-10-09",40],["2026-10-10",39],["2026-10-11",40],["2026-10-12",40],["2026-10-13",39],["2026-10-14",39],["2026-10-15",39]],"rhrWeekly":[["2024-01-06",48.6],["2024-01-13",47.4],["2024-01-20",46.1],["2024-01-27",44.7],["2024-02-03",44.6],["2024-02-10",44.1],["2024-02-17",44.4],["2024-02-24",44.9],["2024-03-02",45.1],["2024-03-09",46.9],["2024-03-16",47.6],["2024-03-23",48.6],["2024-03-30",47.7],["2024-04-06",45.2],["2024-08-10",47.2],["2024-08-17",42.7],["2024-08-24",42.3],["2024-08-31",41.6],["2024-09-07",41.9],["2024-09-14",42.3],["2024-09-21",44.9],["2024-09-28",41.3],["2024-10-05",42.4],["2024-10-12",45.3],["2024-10-19",44.7],["2024-10-26",44.7],["2024-11-02",44.9],["2024-11-09",44.4],["2024-11-16",43.1],["2024-11-23",44.4],["2024-11-30",43.7],["2024-12-07",44.0],["2024-12-14",43.3],["2024-12-21",43.9],["2024-12-28",46.4],["2025-01-04",45.3],["2025-01-11",44.9],["2025-01-18",43.4],["2025-01-25",43.6],["2025-02-01",44.9],["2025-02-08",45.6],["2025-02-15",45.6],["2025-02-22",48.9],["2025-03-01",46.1],["2025-03-08",44.0],["2025-03-15",43.7],["2025-03-22",42.1],["2025-03-29",42.3],["2025-04-05",41.9],["2025-04-12",41.7],["2025-04-19",42.0],["2025-04-26",41.0],["2025-05-03",41.1],["2025-05-10",41.0],["2025-05-17",41.0],["2025-05-24",41.1],["2025-05-31",43.1],["2025-06-07",40.7],["2025-06-14",41.0],["2025-06-21",41.0],["2025-06-28",40.9],["2025-07-05",41.0],["2025-07-12",43.0],["2025-07-19",43.4],["2025-07-26",43.3],["2025-08-02",43.3],["2025-08-09",42.6],["2025-08-16",42.1],["2025-08-23",41.3],["2025-08-30",40.7],["2025-09-06",41.4],["2025-09-13",41.3],["2025-09-20",41.9],["2025-09-27",41.7],["2025-10-04",44.1],["2025-10-11",44.1],["2025-10-18",44.3],["2025-10-25",45.5],["2025-11-01",44.7],["2025-11-08",43.0],["2025-11-15",42.9],["2025-11-22",43.0],["2025-11-29",49.1],["2025-12-06",45.7],["2025-12-13",45.6],["2025-12-20",42.7],["2025-12-27",42.4],["2026-01-03",42.6],["2026-01-10",45.7],["2026-01-17",46.0],["2026-01-24",45.3],["2026-01-31",44.7],["2026-02-07",43.0],["2026-02-14",41.9],["2026-02-21",41.9],["2026-02-28",41.9],["2026-03-07",40.7],["2026-03-14",42.1],["2026-03-21",43.0],["2026-03-28",42.3],["2026-04-04",43.7],["2026-04-11",42.4],["2026-04-18",40.9],["2026-04-25",42.1],["2026-05-02",42.0],["2026-05-09",43.0],["2026-05-16",43.6],["2026-05-23",43.6],["2026-05-30",43.7],["2026-06-06",41.0],["2026-06-13",40.0],["2026-06-20",40.3],["2026-06-27",41.0],["2026-07-04",40.7],["2026-07-11",38.9],["2026-07-18",40.1],["2026-07-25",41.1],["2026-08-01",41.4],["2026-08-08",40.9],["2026-08-15",40.0],["2026-08-22",38.7],["2026-08-29",39.9],["2026-09-05",39.6],["2026-09-12",40.3],["2026-09-19",43.0],["2026-09-26",42.6],["2026-10-03",40.7],["2026-10-10",39.3]],"vo2Monthly":[["2020-02",48.0],["2020-03",46.5],["2020-04",44.4],["2020-05",43.5],["2020-06",44.0],["2020-07",45.0],["2020-12",50.5],["2021-01",49.5],["2021-06",48.5],["2021-07",47.2],["2021-08",47.0],["2021-09",47.0],["2021-10",47.0],["2022-01",50.0],["2022-06",49.1],["2022-07",49.4],["2022-08",50.0],["2022-10",51.0],["2022-12",50.0],["2023-02",49.0],["2023-03",49.3],["2023-04",49.0],["2023-05",50.1],["2023-06",52.0],["2023-07",52.0],["2023-08",51.2],["2023-09",50.4],["2023-10",50.0],["2023-11",49.3],["2023-12",49.0],["2024-02",49.0],["2024-03",48.0],["2024-04",48.2],["2024-08",49.0],["2024-09",49.0],["2024-10",48.5],["2024-11",48.0],["2024-12",47.8],["2025-01",48.0],["2025-02",48.6],["2025-03",48.7],["2025-04",51.3],["2025-05",52.3],["2025-06",50.3],["2025-07",49.0],["2025-08",48.0],["2025-09",48.0],["2025-10",47.6],["2025-11",48.0],["2025-12",47.3],["2026-01",47.0],["2026-02",47.0],["2026-03",47.2],["2026-04",48.0],["2026-05",48.0],["2026-06",48.0],["2026-07",48.0],["2026-08",48.0],["2026-09",48.0],["2026-10",48.7]],"vo2Block":[["2026-09-05",48.0],["2026-09-07",48.0],["2026-09-09",48.0],["2026-09-12",48.0],["2026-09-13",48.0],["2026-09-14",48.0],["2026-09-19",48.0],["2026-09-26",48.0],["2026-09-30",48.0],["2026-10-03",48.0],["2026-10-05",48.0],["2026-10-07",49.0],["2026-10-10",49.0],["2026-10-11",49.0],["2026-10-14",49.0]],"vo2Peak":{"value":54,"date":"2025-04-26"},"maxHrMonitorPeak":196},
   block: { start: '2026-09-01', name: 'Phase 1: base building' },
   profile: {
     name: 'Philip Coote', location: 'Bath, UK', phase: 'Phase 1 (Base Building)',
     longDay: 'Saturday = long/tempo day',
     week: 'Sat / Sun / Mon / Tue (rest) / Wed / Thu (rest) / Fri (yoga)',
-    maxHr: 201, maxHrNote: 'Redcar 5K PB, 19 Apr 2025 (Garmin). Bristol HM max was 196. To be reviewed as new data comes in',
+    maxHr: 201, maxHrNote: 'activity peak at the Redcar 5K PB, 19 Apr 2025. Garmin all-day monitoring peaked at 196 (19 Apr and 17 Aug 2025). Likely range 196 to 201, to be reviewed as new data comes in', restHr: 40, restHrNote: 'Garmin daily resting HR, median 40 from mid Aug to 15 Oct 2026 (39 this week). Lowest ever 37 (Sep 2022)',
     z1: 85, z2: 102, z3: 135, z4: 155, z5: 160,
     zoneNote: 'Zone 2/3 boundary is 134/135 bpm'
   },
@@ -1992,7 +2014,7 @@ const SEED = {
       { title: 'Long run', asc: 209, cal: 656, sweat: 713, cad: 139, stride: 0.81, moving: '1:00:24', best: '2:08', zones: Z('0:38', '32:47', '20:23', '3:57', '2:13') }),
     run('2026-10-05', '19:56', 'Easy', 7.93, '57:50', 127, 152, '7:18/km', '', TOR,
       { title: 'Easy', asc: 60, cal: 612, sweat: 649, cad: 163, stride: 0.84, moving: '57:29', best: '5:15', zones: Z('0:08', '36:05', '21:13', '', '') }),
-    run('2026-10-07', '19:17', 'Repeats', 9.23, '1:05:05', 135, 163, '1k repeats: 4:18, 4:12, 4:12, 4:10/km. 1 min recovery. Garmin PR flagged', '', TOR,
+    run('2026-10-07', '19:17', 'Repeats', 9.23, '1:05:05', 135, 163, '1k repeats: 4:18, 4:12, 4:12, 4:10/km. 1 min recovery. Garmin PR: fastest 1 km 4:08.9 (beaten on 14 Oct)', '', TOR,
       { title: '1k repeats', asc: 100, cal: 720, sweat: 772, cad: 152, stride: 0.91, moving: '1:04:45', recHr: 29, best: '3:51', zones: Z('0:36', '37:02', '16:48', '8:32', '2:06'), laps: [
         lap('Warm up', '21:54', 2.36, '9:18', 127, 149, 144), lap('Rep 1', '4:17.5', 1.00, '4:18', 151, 161, 177), lap('Recovery', '1:00', 0.08, '11:52', 153, 159, 102),
         lap('Rep 2', '4:12.1', 1.00, '4:12', 152, 163, 180), lap('Recovery', '1:00', 0.10, '9:45', 159, 163, 103), lap('Rep 3', '4:11.6', 1.00, '4:12', 155, 163, 179),
@@ -2007,7 +2029,7 @@ const SEED = {
       { title: 'Recovery', asc: 55, cal: 436, sweat: 496, cad: 160, stride: 0.75, moving: '50:17', best: '5:32', zones: Z('4:59', '44:55', '0:01', '', ''), laps: [
         lap('Run 1', '25:05', 3.00, '8:22', 109, 128, 161), lap('Run 2', '24:39', 3.00, '8:13', 115, 135, 159), lap('Cool down', '0:33.2', 0.07, '7:29', 107, 110, 167)] }),
     run('2026-10-14', '19:13', 'Repeats', 9.46, '1:04:49', 134, 184,
-      '1k repeats: 4:04, 4:03, 4:05, 3:58/km. 1 min recovery. Garmin flagged a new personal record', 'Reps 3-4 HR (avg 145 and 150) looks low for pace, possible strap issue. The 184 max was in the first recovery lap (avg 174), not a rep', TOR,
+      '1k repeats: 4:04, 4:03, 4:05, 3:58/km. 1 min recovery. Garmin PRs: fastest 1 km 3:56.9 and fastest mile 6:59.7', 'Reps 3-4 HR (avg 145 and 150) looks low for pace, possible strap issue. The 184 max was in the first recovery lap (avg 174), not a rep', TOR,
       { title: '1k repeats', asc: 101, cal: 719, sweat: 763, cad: 154, stride: 0.92, moving: '1:04:15', best: '3:38', zones: Z('0:13', '37:12', '17:23', '3:07', '6:45'), laps: [
         lap('Warm up', '21:28', 2.49, '8:37', 130, 160, 147), lap('Rep 1', '4:04.3', 1.00, '4:04', 155, 177, 182), lap('Recovery', '1:00', 0.10, '10:26', 174, 184, 133),
         lap('Rep 2', '4:02.9', 1.00, '4:03', 164, 173, 179), lap('Recovery', '1:00', 0.10, '9:44', 161, 174, 128), lap('Rep 3', '4:05.1', 1.00, '4:05', 145, 155, 181),
@@ -2020,10 +2042,14 @@ const SEED = {
     { id: 'g3', event: '5K', distKm: 5, race: 'Redcar parkrun', date: '2027-09-26', target: '21:00', notes: '' }
   ],
   pbs: [
-    { id: 'p1', event: '5K parkrun', place: 'Redcar', time: '21:06', when: 'Apr 2025', notes: 'Garmin, 19 Apr 2025: 21:07, 5.00 km, avg HR 179 / max 201, effort 9/10' },
+    { id: 'p1', event: '5K parkrun', place: 'Redcar', time: '21:06', when: 'Apr 2025', notes: 'Garmin record 21:06.5 on 19 Apr 2025, avg HR 179 / max 201, effort 9/10' },
     { id: 'p2', event: 'Half marathon', place: 'Bristol', time: '1:46:50', when: 'May 2025', notes: 'Great Bristol Run, 11 May. Garmin: 21.10 km, avg HR 180 / max 196' },
-    { id: 'p3', event: '10K', place: '', time: '46:46', when: 'Before Garmin', notes: 'True 10K PB, not on Garmin' },
+    { id: 'p3', event: '10K', place: '', time: '46:46', when: '12 May 2019', notes: 'True 10K PB (Garmin record, no HR data)' },
     { id: 'p5', event: '10K (best on Garmin)', place: 'Bath', time: '46:58', when: '7 Jun 2026', notes: 'Second-fastest overall. Avg HR 174 / max 190. Garmin summary edited: laps total 9.63 km vs 10.00 km' },
+    { id: 'p6', event: '1 km (fastest)', place: 'Bath', time: '3:56.9', when: '14 Oct 2026', notes: 'Garmin PR during the 1k repeats. Previous best 4:08.9 on 7 Oct 2026' },
+    { id: 'p7', event: '1 mile (fastest)', place: 'Bath', time: '6:59.7', when: '14 Oct 2026', notes: 'Garmin PR, same session' },
+    { id: 'p8', event: 'Marathon', place: 'Bath', time: '4:41:04', when: '18 Aug 2024', notes: 'Road, 42.64 km at 6:35/km' },
+    { id: 'p9', event: 'Longest run', place: 'Redcar and Cleveland', time: '5:26:24', when: '12 Apr 2026', notes: 'Trail marathon, 45.28 km, 804 m ascent, avg HR 153' },
     { id: 'p4', event: 'Half marathon (not a PB)', place: 'Bath', time: '2:11:33', when: '16 Aug 2026', notes: '22.11 km, avg 5:57/km, avg HR 159. Ultra block' }
   ],
   plan: [
@@ -2112,6 +2138,7 @@ const SEED = {
     { id: 'c6', note: '11 Oct 3:38 PM: a 6.61 km walk. Not logged as a run, but it is in Garmin\'s Torin 9 total (103.2 km)' },
     { id: 'c8', note: 'Max HR on Garmin: 201 (5K Apr 2025), 196 (HM May 2025), 190 (10K Jun 2026), 186 (HM Aug 2026). HR zones start Z5 at 160 bpm, about 80% of 201 (85% of the old 188). Revisit zone boundaries once max HR is confirmed' },
     { id: 'c9', note: 'Garmin summary data was edited on the 2025 PBs and the 7 Jun 2026 10K. Lap distances do not match the summary on the Bristol HM (21.25 vs 21.10 km) or the 10K (9.63 vs 10.00 km)' },
+    { id: 'c10', note: 'HR zones: with resting HR 40 and max about 198, %HR-reserve zones would be about Z1 119-134, Z2 135-150, Z3 151-166, Z4 167-182, Z5 183-198. Race HRs (10K 174, HM 180, 5K 179) fall in that Z4, so the current Garmin zones (Z5 from 160) read about one zone low. Not changed yet, to decide together.' },
     { id: 'c7', note: 'Garmin "best pace" values (e.g. 2:08/km on 3 Oct trail run) are GPS artefacts, ignore them' }
   ]
 };
