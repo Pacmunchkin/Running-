@@ -28,7 +28,7 @@ const SEED = {
      "mon": "Steady high Z2, 8-9 km (HR 125-134)",
      "wed": "Rest (pyramid skipped to save energy for Thursday)",
      "opt": "Thu: trail run/hike 27.3 km, 3:08 h, easy Z2",
-     "fuel": "Tempo: nothing during. Thursday trail: 1 gel + 1 drink every hour plus a bar in small pieces (see the schedule).",
+     "fuel": "Tempo: nothing during. Thursday trail: 1 gel + 1 drink + 1 homemade bar every hour (see the schedule).",
      "note": "Wednesday pyramid skipped, so the week is about 50 km (Sat 8.4, Sun 6.0, Mon 8-9, Thu 27.3). The 24 Oct week is unchanged."
     },
     {
@@ -2071,7 +2071,7 @@ const SEED = {
     { id: 's3', date: '2026-10-19', session: 'Steady, high Z2', details: 'HR about 125-134. 8-9 km', fuel: "None during. Sweat test: weigh before and after, no drinking. Snack 2 h before if it is an evening run." },
     { id: 's4', date: '2026-10-20', session: 'Rest', details: '', fuel: "Normal meals, carbs at dinner." },
         { id: 's5', date: '2026-10-21', session: 'Rest', details: 'Pyramid skipped to save energy for Thursday', fuel: "Normal meals, extra carbs at dinner ahead of Thursday." },
-        { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min, plus a bar in small pieces (aim for about 60-70 g carbs an hour in total, so half a bar if it has over 30 g). Water as well. After: carbs + protein." },
+            { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink + 1 homemade bar every hour from about 40 min (about 70 g carbs an hour). Water as well. After: carbs + protein." },
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '', fuel: "None." },
     { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
     { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Pure recovery (HR under 125). Half term', fuel: "None." },
@@ -2140,6 +2140,7 @@ const SEED = {
     { id: 'n2', item: 'Race gel (per gel)', use: 'Race', kcal: 110, carbs: 30, sodium: 120, notes: 'Planned 2/hr = 60 g carbs, 240 mg sodium' },
     { id: 'n3', item: 'Endurance drink, 500 ml', use: 'Training', kcal: 90, carbs: 25, sodium: 300, notes: '' },
     { id: 'n4', item: 'Race endurance drink, 500 ml', use: 'Race', kcal: 100, carbs: 30, sodium: 400, notes: 'Planned 1/hr' },
+    { id: 'n6', item: 'Homemade energy bar (per bar)', use: 'Training', kcal: 130, carbs: 20, sodium: null, notes: 'Oats, pea protein, fructose, glucose syrup, dates, seeds, salt. Protein is nearer 6 g than 3 g by my count. Rapeseed oil is in the method but not the ingredients (about 9 kcal per g). Sodium depends on the pinch of salt, roughly 50-150 mg' },
     { id: 'n5', item: 'Protein', use: 'Recovery', kcal: null, carbs: null, sodium: null, notes: '20-30 g after Z4-5 sessions' }
   ],
   caveats: [
