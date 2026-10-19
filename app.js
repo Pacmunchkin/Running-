@@ -59,6 +59,7 @@ function renderStats() {
     ['Avg pace', fmtPace(secs, km)], ['Longest', fmtDist(longest) + ' ' + units],
     ['Avg HR (time-weighted)', hrSecs ? Math.round(withHr.reduce((a, r) => a + r.hr * r.secs, 0) / hrSecs) : '–'],
     ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m'],
+    ...(db.bp && db.bp.length ? [['Blood pressure (' + parseD(db.bp[db.bp.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.bp[db.bp.length - 1].sys + '/' + db.bp[db.bp.length - 1].dia]] : []),
     ...(db.weight && db.weight.length ? [['Weight (' + parseD(db.weight[db.weight.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.weight[db.weight.length - 1].kg + ' kg']] : [])
   ];
   $('stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
@@ -455,6 +456,16 @@ function renderWeight() {
     { t0: parseD(first.date).getTime() - 14 * 864e5, minSpan: 4, steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Body weight over time' });
   $('weight-note').textContent = wts.length > 1 ? `${wts.length} weigh-ins since ${fmtDate(first.date)}. Change: ${change > 0 ? '+' : ''}${change.toFixed(1)} kg.` : `One weigh-in so far: ${last.kg} kg on ${fmtDate(last.date)}.`;
 }
+function renderBp() {
+  const bp = [...(db.bp || [])].sort((a, b) => a.date < b.date ? -1 : 1);
+  if (!bp.length) { $('chart-bp').innerHTML = '<p class="muted">No readings yet.</p>'; return; }
+  const last = bp[bp.length - 1], tip = (b, k) => `${fmtDate(b.date)}: ${b.sys}/${b.dia}${b.note ? '. ' + b.note : ''}`;
+  lineChart($('chart-bp'), [
+    { kind: 'line', cls: 'c1', endLabel: `${last.sys} sys`, pts: bp.map(b => ({ t: parseD(b.date).getTime(), v: b.sys, tip: tip(b) })) },
+    { kind: 'line', cls: 'c2', endLabel: `${last.dia} dia`, pts: bp.map(b => ({ t: parseD(b.date).getTime(), v: b.dia, tip: tip(b) })) }],
+    { t0: parseD(bp[0].date).getTime() - 14 * 864e5, minSpan: 60, steps: [5, 10, 20], fmt: v => v.toFixed(0), faster: 'up', label: 'Blood pressure over time' });
+  $('bp-note').textContent = `${bp.length} reading${bp.length > 1 ? 's' : ''}. Latest ${last.sys}/${last.dia} on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.`;
+}
 function renderRhr() {
   const G = db.garmin; if (!G || !G.rhrDaily.length) return;
   const pts = G.rhrDaily.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `${fmtDate(d)}: resting HR ${v}` })), last = G.rhrDaily[G.rhrDaily.length - 1];
@@ -463,7 +474,7 @@ function renderRhr() {
   $('rhr-note').textContent = `Latest ${last[1]} bpm on ${fmtDate(last[0])}. Baseline about ${G.rhrBaseline} bpm. Source: Garmin daily summaries.`;
 }
 function renderTrends() {
-  renderWeight(); renderRhr();
+  renderWeight(); renderBp(); renderRhr();
   const now = weekStart(today());
   const runs = db.runs.filter(r => r.date >= db.block.start);
   const start = weekStart(runs.map(r => r.date).sort()[0] || db.block.start), planKm = db.plan.filter(p => p.km);

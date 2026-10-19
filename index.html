@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=31">
+<link rel="stylesheet" href="style.css?v=32">
 </head>
 <body>
 <div class="layout">
@@ -167,6 +167,12 @@
       <p class="muted">Weigh in once a week, first thing in the morning, and read the trend, not single readings. It is context for pace, efficiency and fuelling, not a target.</p>
     </section>
     <section class="card">
+      <h2>Blood pressure</h2>
+      <div id="chart-bp" class="chart"></div>
+      <p class="muted" id="bp-note"></p>
+      <p class="muted">Systolic and diastolic, in mmHg. A single reading, especially straight after a run, says little. For a clean trend measure at the same time each time: seated, rested for 5 minutes, two readings and the average.</p>
+    </section>
+    <section class="card">
       <h2>Resting heart rate</h2>
       <div id="chart-rhr" class="chart"></div>
       <p class="muted" id="rhr-note"></p>
@@ -272,7 +278,7 @@
 
 </div>
 </div>
-<script src="data.js?v=31"></script>
-<script src="app.js?v=31"></script>
+<script src="data.js?v=32"></script>
+<script src="app.js?v=32"></script>
 </body>
 </html>
