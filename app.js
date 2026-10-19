@@ -157,6 +157,8 @@ const COLS = {
     }]]
   },
   nutrition: { single: 'item', fields: [['item', 'Item', 'text', 1], ['use', 'Use', 'text'], ['kcal', 'kcal', 'number'], ['carbs', 'Carbs (g)', 'number'], ['sodium', 'Sodium (mg)', 'number'], ['notes', 'Notes', 'text']] },
+  sweat: { single: 'test', fields: [['date', 'Date', 'date'], ['run', 'Run', 'text', 0, 1], ['before', 'Before (kg)', 'number'], ['after', 'After (kg)', 'number'], ['garmin', 'Garmin estimate (ml)', 'number'],
+    ['conditions', 'Conditions', 'text', 0, 1], ['result', 'Result', 'text'], ['note', 'Note', 'text', 0, 1]], extra: [['Weight change', t => (t.before - t.after).toFixed(1) + ' kg']] },
   pbs: { single: 'result', fields: [['event', 'Event', 'text', 1], ['time', 'Time', 'text', 1], ['place', 'Place', 'text'], ['when', 'When', 'text'], ['notes', 'Notes', 'text']] },
   caveats: { single: 'caveat', fields: [['note', 'Caveat', 'text', 1]] }
 };
