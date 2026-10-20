@@ -468,6 +468,12 @@ function renderBp() {
     { t0: parseD(bp[0].date).getTime() - 14 * 864e5, minSpan: 60, steps: [5, 10, 20], fmt: v => v.toFixed(0), faster: 'up', label: 'Blood pressure over time' });
   $('bp-note').textContent = `${bp.length} reading${bp.length > 1 ? 's' : ''}. Latest ${last.sys}/${last.dia} on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.`;
 }
+function renderMeals() {
+  const M = db.meals; if (!M) return;
+  $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
+  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`).join('');
+  $('meals-standing').innerHTML = '<table><thead><tr><th>Meal</th><th>What</th></tr></thead><tbody>' + M.standing.map(m => `<tr><td><b>${esc(m.meal)}</b></td><td class="notes">${esc(m.what)}</td></tr>`).join('') + '</tbody></table>';
+}
 function renderRhr() {
   const G = db.garmin; if (!G || !G.rhrDaily.length) return;
   const pts = G.rhrDaily.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `${fmtDate(d)}: resting HR ${v}` })), last = G.rhrDaily[G.rhrDaily.length - 1];
@@ -650,7 +656,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals();
   Object.keys(COLS).forEach(renderCol);
 }
 

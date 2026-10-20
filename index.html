@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=35">
+<link rel="stylesheet" href="style.css?v=36">
 </head>
 <body>
 <div class="layout">
@@ -22,6 +22,7 @@
     <button data-tab="history">History</button>
     <button data-tab="plan">Plan &amp; goals</button>
     <button data-tab="gear">Gear &amp; fuel</button>
+    <button data-tab="meals">Meals</button>
     <button data-tab="profile">Profile</button>
   </nav>
 </aside>
@@ -261,6 +262,18 @@
     </section>
   </div>
 
+  <div data-panel="meals" hidden>
+    <section class="card">
+      <h2>Evening meals</h2>
+      <p class="muted" id="meals-intro"></p>
+      <div id="meals-weeks" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Standing meals</h2>
+      <div class="table-wrap" id="meals-standing"></div>
+    </section>
+  </div>
+
   <div data-panel="profile" hidden>
     <section class="card">
       <h2>Runner</h2>
@@ -283,7 +296,7 @@
 
 </div>
 </div>
-<script src="data.js?v=35"></script>
-<script src="app.js?v=35"></script>
+<script src="data.js?v=36"></script>
+<script src="app.js?v=36"></script>
 </body>
 </html>

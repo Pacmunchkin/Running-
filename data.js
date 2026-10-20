@@ -1950,6 +1950,79 @@ const SEED = {
   bp: [
     { date: '2026-10-19', sys: 137, dia: 71, note: 'First entry, timing not recorded' }
   ],
+  meals: {
+   "source": "Quick Roasting Tin",
+   "method": "Prep on Sunday, store in the fridge, roast on the day.",
+   "weeks": [
+    {
+     "week": 1,
+     "order": "2026-09-11",
+     "dishes": [
+      "Tikka-spiced paneer salad with chickpeas, mint and naan croutons",
+      "Chickpea, halloumi and red onion salad with giant couscous",
+      "Burgers"
+     ]
+    },
+    {
+     "week": 2,
+     "order": "2026-09-18",
+     "dishes": [
+      "Tandoori-style salmon with sweet potatoes, tomatoes and red onion",
+      "Cinnamon-spiced aubergines with feta, olives and herbed bulgur wheat"
+     ]
+    },
+    {
+     "week": 3,
+     "order": "",
+     "dishes": [
+      "Roasted halloumi with aubergines, tomatoes and pine nuts",
+      "All-in-one nigella-spiced whole tomato dhal"
+     ]
+    },
+    {
+     "week": 4,
+     "order": "",
+     "dishes": [
+      "Roast sweet potato with oregano, feta and charred lemon",
+      "Sesame and thyme roasted cauliflower pilaf"
+     ]
+    },
+    {
+     "week": 5,
+     "order": "",
+     "dishes": [
+      "Sticky soy and honey roasted salmon with asparagus and sugar snap peas",
+      "Crispy thyme roasted leek and mushroom pasta bake"
+     ]
+    },
+    {
+     "week": 6,
+     "order": "",
+     "dishes": [
+      "Summer sausage traybake",
+      "Thyme roasted ricotta with vine tomatoes, baby aubergines and red onion"
+     ]
+    }
+   ],
+   "standing": [
+    {
+     "meal": "Adults' lunch",
+     "what": "Tofu salad with fruit"
+    },
+    {
+     "meal": "Children's packed lunch",
+     "what": "Pasta, pretzels, apple, cucumber and chocolate biscuits"
+    },
+    {
+     "meal": "Daily breakfast",
+     "what": "Porridge with chia seeds, nuts and berries, made with almond milk"
+    },
+    {
+     "meal": "Daily snacks",
+     "what": "PhD whey protein shake and a chocolate biscuit"
+    }
+   ]
+  },
   sweat: [
     { id: 'w1', date: '2026-10-19', run: 'Easy run, 60 min, 6.4 km (HR 126)', before: 77.8, after: 77.8, garmin: 668, conditions: '12 C, feels like 9 C. Shorts, long sleeve top, cap, buff (off halfway). No drink, food or toilet.',
       result: 'Not usable', note: 'No change on a scale that reads to 0.1 kg. Even in cool weather an hour of running should cost about 0.4-0.7 kg (sweat plus breathing). Check clothing state at each weigh-in and recent drinks. Repeat on the Thursday trail, where the loss will be much bigger.' }
