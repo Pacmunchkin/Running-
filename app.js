@@ -474,6 +474,50 @@ function renderMeals() {
   $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`).join('');
   $('meals-standing').innerHTML = '<table><thead><tr><th>Meal</th><th>What</th></tr></thead><tbody>' + M.standing.map(m => `<tr><td><b>${esc(m.meal)}</b></td><td class="notes">${esc(m.what)}</td></tr>`).join('') + '</tbody></table>';
 }
+const gbp = v => '£' + v.toFixed(2);
+function renderShop() {
+  const S = db.shop; if (!S || !S.orders.length) return;
+  const O = S.orders.slice().sort((a, b) => a.date < b.date ? -1 : 1), n = O.length;
+  const shortD = d => parseD(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const sum = (items, f) => Math.round(items.filter(f || (() => true)).reduce((a, i) => a + i[2], 0) * 100) / 100;
+  const paid = O.map(o => o.paid), total = Math.round(paid.reduce((a, b) => a + b, 0) * 100) / 100, avg = total / n;
+  barChart($('chart-shop'), O.map(o => ({ label: shortD(o.date) })), [{ name: 'Paid', cls: 'bar bc1', vals: paid }],
+    { refs: [{ v: avg, label: `Average ${gbp(avg)}` }], fmt: gbp, axisFmt: v => '£' + v, steps: [20, 50], label: 'Weekly shop, amount paid' });
+  const nonFood = O.map(o => sum(o.items, i => i[3] === 'home' || i[3] === 'supp')), food = O.map((o, k) => sum(o.items) - nonFood[k]);
+  const foodAvg = food.reduce((a, b) => a + b, 0) / n;
+  $('shop-note').textContent = `${n} Sainsbury's orders, ${fmtDate(O[0].date)} to ${fmtDate(O[n - 1].date)}. ${gbp(total)} paid in total, average ${gbp(avg)} a week (range ${gbp(Math.min(...paid))} to ${gbp(Math.max(...paid))}). Food and drink alone averages ${gbp(foodAvg)} a week before coupons.`;
+  const catRows = S.cats.map(c => {
+    const v = O.map(o => sum(o.items, i => i[3] === c.id)), t = v.reduce((a, b) => a + b, 0);
+    return { c, v, t };
+  }), grand = catRows.reduce((a, r) => a + r.t, 0);
+  const td = x => `<td class="num">${x ? gbp(x) : '<span class="muted">-</span>'}</td>`;
+  $('shop-cats').innerHTML = `<table><thead><tr><th>Category</th>${O.map(o => `<th class="num">${shortD(o.date)}</th>`).join('')}<th class="num">Total</th><th class="num">Per week</th><th class="num">Share</th></tr></thead><tbody>` +
+    catRows.map(r => `<tr><td><b>${esc(r.c.label)}</b></td>${r.v.map(td).join('')}<td class="num"><b>${gbp(r.t)}</b></td><td class="num">${gbp(r.t / n)}</td><td class="num">${(100 * r.t / grand).toFixed(0)}%</td></tr>`).join('') +
+    `<tr><td><b>Items</b></td>${O.map(o => td(sum(o.items))).join('')}<td class="num"><b>${gbp(grand)}</b></td><td class="num">${gbp(grand / n)}</td><td></td></tr>` +
+    `<tr><td>Coupons</td>${O.map(o => o.coupons ? `<td class="num">-${gbp(o.coupons)}</td>` : '<td class="num"><span class="muted">-</span></td>').join('')}<td class="num">-${gbp(O.reduce((a, o) => a + o.coupons, 0))}</td><td></td><td></td></tr>` +
+    `<tr><td><b>Paid</b></td>${O.map(o => `<td class="num"><b>${gbp(o.paid)}</b></td>`).join('')}<td class="num"><b>${gbp(total)}</b></td><td class="num"><b>${gbp(avg)}</b></td><td></td></tr></tbody></table>`;
+  const agg = {};
+  O.forEach(o => o.items.forEach(i => { const k = i[1].replace(/ [\d.]+kg$/, ''); const a = agg[k] || (agg[k] = { name: k, spend: 0, wk: new Set(), cat: i[3] }); a.spend += i[2]; a.wk.add(o.date); }));
+  const catName = id => (S.cats.find(c => c.id === id) || {}).label || id;
+  $('shop-top').innerHTML = '<table><thead><tr><th>Item</th><th>Category</th><th class="num">Weeks</th><th class="num">Spent</th></tr></thead><tbody>' +
+    Object.values(agg).sort((a, b) => b.spend - a.spend).slice(0, 15).map(a => `<tr><td>${esc(a.name)}</td><td class="notes">${esc(catName(a.cat))}</td><td class="num">${a.wk.size} of ${n}</td><td class="num">${gbp(a.spend)}</td></tr>`).join('') + '</tbody></table>';
+  const M = db.meals;
+  if (M) {
+    const short = s => s.replace(/ [\d.]+(kg|g|ml)$/, '').replace(/, Taste the Difference/, '').replace(/ Loose$/, '');
+    const costs = [];
+    const rows = M.weeks.map(w => {
+      const o = O.find(x => x.date === w.order);
+      if (!o) return `<tr><td><b>Week ${w.week}</b></td><td class="notes">${w.dishes.map(esc).join('<br>')}</td><td colspan="3" class="muted">No order matched yet</td></tr>`;
+      const its = o.items.filter(i => i[4] === w.week), cost = sum(its); costs.push(cost);
+      return `<tr><td><b>Week ${w.week}</b><br><span class="muted">${shortD(o.date)}</span></td><td class="notes">${w.dishes.map(esc).join('<br>')}</td><td class="notes">${its.map(i => esc(short(i[1]))).join(', ')}</td><td class="num"><b>${gbp(cost)}</b></td><td class="num">${(100 * cost / o.paid).toFixed(0)}%</td></tr>`;
+    });
+    $('shop-tin').innerHTML = '<table><thead><tr><th>Week</th><th>Dishes</th><th>Ingredients found on that order</th><th class="num">Cost</th><th class="num">Of shop</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
+    const ca = costs.reduce((a, b) => a + b, 0) / (costs.length || 1);
+    $('shop-tin-note').textContent = costs.length ? `Average ${gbp(ca)} a week for the ingredients I could match, so roughly ${gbp(ca / 2)} a dish.` : '';
+  }
+  $('shop-orders').innerHTML = O.slice().reverse().map(o => `<details><summary>${fmtDate(o.date)}: ${gbp(o.paid)} (${o.items.reduce((a, i) => a + i[0], 0)} items)</summary>${o.notes ? `<p class="muted">${esc(o.notes)}</p>` : ''}<table><thead><tr><th>Qty</th><th>Item</th><th>Category</th><th class="num">Price</th></tr></thead><tbody>` +
+    o.items.map(i => `<tr><td>${i[0]}</td><td>${esc(i[1])}${i[4] ? ` <span class="muted">(tin wk ${i[4]})</span>` : ''}</td><td class="notes">${esc(catName(i[3]))}</td><td class="num">${gbp(i[2])}</td></tr>`).join('') + '</tbody></table></details>').join('');
+}
 function renderRhr() {
   const G = db.garmin; if (!G || !G.rhrDaily.length) return;
   const pts = G.rhrDaily.map(([d, v]) => ({ t: parseD(d).getTime(), v, tip: `${fmtDate(d)}: resting HR ${v}` })), last = G.rhrDaily[G.rhrDaily.length - 1];
@@ -656,7 +700,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop();
   Object.keys(COLS).forEach(renderCol);
 }
 
