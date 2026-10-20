@@ -502,21 +502,31 @@ function renderShop() {
   $('shop-top').innerHTML = '<table><thead><tr><th>Item</th><th>Category</th><th class="num">Weeks</th><th class="num">Spent</th></tr></thead><tbody>' +
     Object.values(agg).sort((a, b) => b.spend - a.spend).slice(0, 15).map(a => `<tr><td>${esc(a.name)}</td><td class="notes">${esc(catName(a.cat))}</td><td class="num">${a.wk.size} of ${n}</td><td class="num">${gbp(a.spend)}</td></tr>`).join('') + '</tbody></table>';
   const M = db.meals;
-  if (M) {
-    const short = s => s.replace(/ [\d.]+(kg|g|ml)$/, '').replace(/, Taste the Difference/, '').replace(/ Loose$/, '');
-    const costs = [];
-    const rows = M.weeks.map(w => {
-      const o = O.find(x => x.date === w.order);
-      if (!o) return `<tr><td><b>Week ${w.week}</b></td><td class="notes">${w.dishes.map(esc).join('<br>')}</td><td colspan="3" class="muted">No order matched yet</td></tr>`;
-      const its = o.items.filter(i => i[4] === w.week), cost = sum(its); costs.push(cost);
-      return `<tr><td><b>Week ${w.week}</b><br><span class="muted">${shortD(o.date)}</span></td><td class="notes">${w.dishes.map(esc).join('<br>')}</td><td class="notes">${its.map(i => esc(short(i[1]))).join(', ')}</td><td class="num"><b>${gbp(cost)}</b></td><td class="num">${(100 * cost / o.paid).toFixed(0)}%</td></tr>`;
+  if (M && M.recipes) {
+    const price = (r, ing) => { // [text, buy, f, od, note] -> matched receipt line and cost
+      if (!ing[1]) return null;
+      const w = M.weeks.find(x => x.week === r.week), o = O.find(x => x.date === (ing[3] || (w && w.order)));
+      const it = o && o.items.find(i => i[1].toLowerCase().includes(ing[1].toLowerCase()));
+      return it ? { it, cost: it[2] * ing[2], d: o.date } : null;
+    };
+    const dishes = M.recipes.map(r => {
+      const rows = r.ing.map(g => ({ g, m: price(r, g) })), cost = rows.reduce((a, x) => a + (x.m ? x.m.cost : 0), 0);
+      return { r, rows, cost, miss: rows.filter(x => !x.m).length };
     });
-    $('shop-tin').innerHTML = '<table><thead><tr><th>Week</th><th>Dishes</th><th>Ingredients found on that order</th><th class="num">Cost</th><th class="num">Of shop</th></tr></thead><tbody>' + rows.join('') + '</tbody></table>';
-    const ca = costs.reduce((a, b) => a + b, 0) / (costs.length || 1);
-    $('shop-tin-note').textContent = costs.length ? `Average ${gbp(ca)} a week for the ingredients I could match, so roughly ${gbp(ca / 2)} a dish.` : '';
+    const weekRows = M.weeks.map(w => {
+      const ds = dishes.filter(d => d.r.week === w.week), o = O.find(x => x.date === w.order), wc = ds.reduce((a, d) => a + d.cost, 0);
+      return `<h4>Week ${w.week} ${o ? `<span class="muted">(order ${shortD(o.date)}, paid ${gbp(o.paid)}, dishes ${gbp(wc)} = ${(100 * wc / o.paid).toFixed(0)}% of the shop)</span>` : ''}</h4>` +
+        ds.map(d => `<details><summary>${esc(d.r.dish)}: <b>${gbp(d.cost)}</b>${d.r.n ? ` <span class="muted">(${gbp(d.cost / d.r.n)} a portion, serves ${esc(d.r.serves)})</span>` : ''}${d.miss ? ` <span class="muted">${d.miss} not on receipts</span>` : ''}</summary>` +
+          '<table><thead><tr><th>Recipe</th><th>Receipt item</th><th class="num">Share used</th><th class="num">Cost</th></tr></thead><tbody>' +
+          d.rows.map(x => `<tr><td>${esc(x.g[0])}</td><td class="notes">${x.m ? esc(x.m.it[1]) + (x.g[3] ? ` (${shortD(x.m.d)} order)` : '') : '<span class="muted">not on receipts</span>'}${x.g[4] ? `<br><span class="muted">${esc(x.g[4])}</span>` : ''}</td><td class="num">${x.m ? Math.round(x.g[2] * 100) + '%' : ''}</td><td class="num">${x.m ? gbp(x.m.cost) : ''}</td></tr>`).join('') + '</tbody></table></details>').join('');
+    });
+    $('shop-tin').innerHTML = weekRows.join('');
+    const all = dishes.filter(d => d.r.n), per = all.reduce((a, d) => a + d.cost / d.r.n, 0) / all.length, tot = dishes.reduce((a, d) => a + d.cost, 0);
+    const wks = new Set(dishes.map(d => d.r.week)).size;
+    $('shop-tin-note').textContent = `Across the ${dishes.length} dishes the matched ingredients come to ${gbp(tot)}, about ${gbp(tot / wks)} a week and ${gbp(per)} a portion on average.`;
   }
   $('shop-orders').innerHTML = O.slice().reverse().map(o => `<details><summary>${fmtDate(o.date)}: ${gbp(o.paid)} (${o.items.reduce((a, i) => a + i[0], 0)} items)</summary>${o.notes ? `<p class="muted">${esc(o.notes)}</p>` : ''}<table><thead><tr><th>Qty</th><th>Item</th><th>Category</th><th class="num">Price</th></tr></thead><tbody>` +
-    o.items.map(i => `<tr><td>${i[0]}</td><td>${esc(i[1])}${i[4] ? ` <span class="muted">(tin wk ${i[4]})</span>` : ''}</td><td class="notes">${esc(catName(i[3]))}</td><td class="num">${gbp(i[2])}</td></tr>`).join('') + '</tbody></table></details>').join('');
+    o.items.map(i => `<tr><td>${i[0]}</td><td>${esc(i[1])}</td><td class="notes">${esc(catName(i[3]))}</td><td class="num">${gbp(i[2])}</td></tr>`).join('') + '</tbody></table></details>').join('');
 }
 function renderRhr() {
   const G = db.garmin; if (!G || !G.rhrDaily.length) return;
