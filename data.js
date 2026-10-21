@@ -2224,6 +2224,30 @@ const SEED = {
       ingredients: ['10 g rolled oats', '5 g pea protein powder', '5 g fructose', '8 g glucose syrup', '4 g chopped raisins or dates', '2 g mixed seeds (pumpkin, chia, sesame)', 'Pinch of salt, or 0.2 g sodium citrate', 'Rapeseed oil (amount not in the original recipe)', 'Optional: a few drops of lime or rhubarb flavouring', 'Optional: pinch of nutritional yeast flakes (for B12)'],
       method: ['Mix the oats, protein, fructose, seeds, nutritional yeast and salt (or sodium citrate).', 'Warm the glucose syrup slightly, then mix in the dried fruit, flavouring drops and rapeseed oil.', 'Cook at 150 C for 15 minutes.'],
       notes: 'Multiply the amounts by the number of bars you are making. Check: protein works out nearer 6 g than 3 g. The rapeseed oil has no amount, so note what you use next time (about 9 kcal per g).'
+    },
+    {
+      name: 'Homemade energy gel', per: 'Makes one gel', targets: '100 kcal, 25 g carbs, 100 mg sodium',
+      ingredients: ['0.2 g gellan gum (high acyl)', '15 g glucose syrup', '7 g maltodextrin', '3 g fructose', 'Pinch of sodium citrate (0.2 g)', 'A few drops of lime or rhubarb flavouring', 'Optional: 1 tbsp water to adjust the consistency'],
+      method: ['Mix everything to a smooth, gel-like consistency.', 'Store in a soft flask or reusable gel pouch.'],
+      notes: 'Carbs add up to 25 g. Sodium check: 0.2 g of sodium citrate gives roughly 50 mg of sodium, not 100 mg (it is about 23% sodium by weight). About 0.4 g would give 100 mg.'
+    },
+    {
+      name: 'Homemade endurance drink', per: '500 ml bottle', targets: '90 kcal, 25 g carbs, 300 mg sodium, optional 100 mg potassium',
+      ingredients: ['15 g maltodextrin', '5 g fructose', '5 g dextrose', '0.25 g sodium citrate', '0.1 g citric acid (tartness, helps absorption)', '1 g beetroot powder', 'Optional: potassium chloride for about 100 mg potassium (amount not in the original recipe)'],
+      method: ['Mix the powders first, then dissolve in 500 ml of water.', 'Shake until completely dissolved.'],
+      notes: 'Carbs add up to 25 g. Sodium check: 0.25 g of sodium citrate gives roughly 60 mg of sodium, not 300 mg. For 300 mg you would need about 1.3 g of sodium citrate, or about 0.75 g of table salt. Worth correcting before it matters on a long run.'
+    },
+    {
+      name: 'Race day gel', per: 'Makes one gel', targets: '110 kcal, 30 g carbs, about 120 mg sodium',
+      ingredients: ['0.2 g gellan gum (high acyl)', '18 g glucose syrup (up from 15 g)', '9 g maltodextrin (up from 7 g)', '3 g fructose (same)', '0.25 g sodium citrate (up from 0.2 g)', 'Lime or rhubarb flavouring drops', '1 tbsp water if needed'],
+      method: ['Mix everything to a smooth, gel-like consistency.', 'Store in a soft flask or reusable gel pouch.'],
+      notes: 'Race intake: 2 gels an hour is 60 g carbs and 240 mg sodium on paper. The same sodium check applies: 0.25 g of sodium citrate is nearer 60 mg.'
+    },
+    {
+      name: 'Race day endurance drink', per: '500 ml bottle', targets: '100 kcal, 30 g carbs, about 400 mg sodium',
+      ingredients: ['18 g maltodextrin (up from 15 g)', '6 g fructose (up from 5 g)', '6 g dextrose (up from 5 g)', '0.35 g sodium citrate (up from 0.25 g)', '0.1 g citric acid', '1 g beetroot powder'],
+      method: ['Mix the powders first, then dissolve in 500 ml of water.', 'Shake until completely dissolved.'],
+      notes: 'Race intake: 1 bottle an hour is 30 g carbs on paper. 0.35 g of sodium citrate gives roughly 80 mg of sodium, not 400 mg, so the race plan is well short on sodium as written.'
     }
   ],
   nutrition: [
