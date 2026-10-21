@@ -2218,6 +2218,14 @@ const SEED = {
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
   ],
+  fuelRecipes: [
+    {
+      name: 'Homemade energy bar', per: 'Makes one bar', targets: '130 kcal, 20 g carbs, 3 g protein, moderate sodium',
+      ingredients: ['10 g rolled oats', '5 g pea protein powder', '5 g fructose', '8 g glucose syrup', '4 g chopped raisins or dates', '2 g mixed seeds (pumpkin, chia, sesame)', 'Pinch of salt, or 0.2 g sodium citrate', 'Rapeseed oil (amount not in the original recipe)', 'Optional: a few drops of lime or rhubarb flavouring', 'Optional: pinch of nutritional yeast flakes (for B12)'],
+      method: ['Mix the oats, protein, fructose, seeds, nutritional yeast and salt (or sodium citrate).', 'Warm the glucose syrup slightly, then mix in the dried fruit, flavouring drops and rapeseed oil.', 'Cook at 150 C for 15 minutes.'],
+      notes: 'Multiply the amounts by the number of bars you are making. Check: protein works out nearer 6 g than 3 g. The rapeseed oil has no amount, so note what you use next time (about 9 kcal per g).'
+    }
+  ],
   nutrition: [
     { id: 'n1', item: 'Training gel (per gel)', use: 'Training', kcal: 100, carbs: 25, sodium: 100, notes: '' },
     { id: 'n2', item: 'Race gel (per gel)', use: 'Race', kcal: 110, carbs: 30, sodium: 120, notes: 'Planned 2/hr = 60 g carbs, 240 mg sodium' },

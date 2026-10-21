@@ -468,6 +468,10 @@ function renderBp() {
     { t0: parseD(bp[0].date).getTime() - 14 * 864e5, minSpan: 60, steps: [5, 10, 20], fmt: v => v.toFixed(0), faster: 'up', label: 'Blood pressure over time' });
   $('bp-note').textContent = `${bp.length} reading${bp.length > 1 ? 's' : ''}. Latest ${last.sys}/${last.dia} on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.`;
 }
+function renderFuelRecipes() {
+  const R = db.fuelRecipes || [];
+  $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
+}
 function renderMeals() {
   const M = db.meals; if (!M) return;
   $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
@@ -710,7 +714,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop(); renderFuelRecipes();
   Object.keys(COLS).forEach(renderCol);
 }
 
