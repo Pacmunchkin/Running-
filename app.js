@@ -486,11 +486,14 @@ function renderGarden() {
   $('garden-layout-note').textContent = G.layoutNote;
   const M = 'JFMAMJJASOND'.split('');
   $('garden-cal').innerHTML = `<table class="cal"><thead><tr><th>Crop</th>${M.map(m => `<th>${m}</th>`).join('')}</tr></thead><tbody>` +
-    G.crops.map(c => `<tr><td>${esc(c.n)}</td>${M.map((_, i) => { const m = i + 1; return `<td>${c.si.includes(m) ? '<i class="cI"></i>' : ''}${c.so.includes(m) ? '<i class="cO"></i>' : ''}${c.h.includes(m) ? '<i class="cH"></i>' : ''}</td>`; }).join('')}</tr>`).join('') + '</tbody></table>';
+    G.crops.map(c => `<tr><td>${esc(c.n)}</td>${M.map((_, i) => { const m = i + 1; return `<td>${c.m.includes(m) ? '<i class="cI"></i>' : ''}${c.p.includes(m) ? '<i class="cO"></i>' : ''}${c.h.includes(m) ? '<i class="cH"></i>' : ''}</td>`; }).join('')}</tr>`).join('') + '</tbody></table>';
   $('garden-crops').innerHTML = '<table><thead><tr><th>Variety</th><th>Group</th><th>Space</th><th>Notes</th></tr></thead><tbody>' +
     G.crops.map(c => `<tr><td><b>${esc(c.n)}</b></td><td class="notes">${esc(famLabel(c.fam))}</td><td class="notes">${esc(c.sp)}</td><td class="notes">${esc(c.note)}</td></tr>`).join('') + '</tbody></table>';
   $('garden-jobs').innerHTML = '<table><tbody>' + G.jobs.map(j => `<tr><td><b>${esc(j[0])}</b></td><td class="notes">${esc(j[1])}</td></tr>`).join('') + '</tbody></table>';
   $('garden-rotation').textContent = G.rotation;
+  $('garden-modules').innerHTML = '<table><thead><tr><th>Crop</th><th>Module and seeds</th><th>Time in modules</th><th>Notes and spares</th></tr></thead><tbody>' +
+    (G.modules || []).map(r => `<tr><td><b>${esc(r[0])}</b></td>${r.slice(1).map(x => `<td class="notes">${esc(x)}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
+  $('garden-spares').innerHTML = (G.spares || []).map(s => `<li>${esc(s)}</li>`).join('');
   $('garden-site').innerHTML = (G.site || []).map(s => `<li>${esc(s)}</li>`).join('');
   $('garden-principles').innerHTML = (G.principles || []).map(s => `<li>${esc(s)}</li>`).join('');
   $('garden-succession').innerHTML = '<table><thead><tr><th>Area</th><th>Spring</th><th>Summer</th><th>Autumn and winter</th></tr></thead><tbody>' +
