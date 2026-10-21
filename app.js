@@ -475,11 +475,13 @@ function renderFuelRecipes() {
 function renderGarden() {
   const G = db.garden; if (!G) return;
   $('garden-intro').textContent = `${G.plot} plot. ${G.intro}`;
-  const S = 90, pad = 6, W = 5 * S + pad * 2, famLabel = id => (G.families.find(f => f.id === id) || {}).label || id;
-  $('garden-layout').innerHTML = `<svg viewBox="0 0 ${W} ${W + 14}" role="img" aria-label="Garden layout, 5 by 5 metres">` +
-    `<text x="${W / 2}" y="10" text-anchor="middle" class="gl">North</text>` +
-    G.layout.map(r => `<rect x="${pad + r.x * S}" y="${14 + r.y * S}" width="${r.w * S - 2}" height="${r.h * S - 2}" rx="4" class="gf gf-${r.f}"><title>${esc(r.t)} (${(r.w * r.h).toFixed(1)} m2)</title></rect>` +
-      `<foreignObject x="${pad + r.x * S + 3}" y="${14 + r.y * S + 3}" width="${r.w * S - 8}" height="${r.h * S - 8}"><div xmlns="http://www.w3.org/1999/xhtml" class="gt">${esc(r.t)}</div></foreignObject>`).join('') + '</svg>';
+  const famLabel = id => (G.families.find(f => f.id === id) || {}).label || id;
+  const S = 90, pad = 16, W = 5 * S + pad * 2, C = G.compass || {}, top = 18;
+  $('garden-layout').innerHTML = `<svg viewBox="0 0 ${W} ${5 * S + top + 18}" role="img" aria-label="Garden layout, 5 by 5 metres, south at the top">` +
+    `<text x="${W / 2}" y="12" text-anchor="middle" class="gl">${esc(C.top)}</text><text x="${W / 2}" y="${5 * S + top + 14}" text-anchor="middle" class="gl">${esc(C.bottom)}</text>` +
+    `<text x="11" y="${top + 5 * S / 2}" class="gl" transform="rotate(-90 11 ${top + 5 * S / 2})" text-anchor="middle">${esc(C.left)}</text><text x="${W - 5}" y="${top + 5 * S / 2}" class="gl" transform="rotate(90 ${W - 5} ${top + 5 * S / 2})" text-anchor="middle">${esc(C.right)}</text>` +
+    G.layout.map(r => `<rect x="${pad + r.x * S}" y="${top + r.y * S}" width="${r.w * S - 2}" height="${r.h * S - 2}" rx="4" class="gf gf-${r.f}"><title>${esc(r.t)} (${(r.w * r.h).toFixed(1)} m2)</title></rect>` +
+      `<foreignObject x="${pad + r.x * S + 3}" y="${top + r.y * S + 3}" width="${r.w * S - 8}" height="${r.h * S - 8}"><div xmlns="http://www.w3.org/1999/xhtml" class="gt${r.h > r.w * 2 ? ' gtv' : ''}">${esc(r.t)}</div></foreignObject>`).join('') + '</svg>';
   $('garden-legend').innerHTML = G.families.map(f => `<span class="gk"><i class="gf gf-${f.id}"></i>${esc(f.label)}</span>`).join(' ');
   $('garden-layout-note').textContent = G.layoutNote;
   const M = 'JFMAMJJASOND'.split('');
@@ -489,6 +491,10 @@ function renderGarden() {
     G.crops.map(c => `<tr><td><b>${esc(c.n)}</b></td><td class="notes">${esc(famLabel(c.fam))}</td><td class="notes">${esc(c.sp)}</td><td class="notes">${esc(c.note)}</td></tr>`).join('') + '</tbody></table>';
   $('garden-jobs').innerHTML = '<table><tbody>' + G.jobs.map(j => `<tr><td><b>${esc(j[0])}</b></td><td class="notes">${esc(j[1])}</td></tr>`).join('') + '</tbody></table>';
   $('garden-rotation').textContent = G.rotation;
+  $('garden-site').innerHTML = (G.site || []).map(s => `<li>${esc(s)}</li>`).join('');
+  $('garden-principles').innerHTML = (G.principles || []).map(s => `<li>${esc(s)}</li>`).join('');
+  $('garden-succession').innerHTML = '<table><thead><tr><th>Area</th><th>Spring</th><th>Summer</th><th>Autumn and winter</th></tr></thead><tbody>' +
+    (G.succession || []).map(r => `<tr><td><b>${esc(r[0])}</b></td>${r.slice(1).map(x => `<td class="notes">${esc(x)}</td>`).join('')}</tr>`).join('') + '</tbody></table>';
 }
 function renderMeals() {
   const M = db.meals; if (!M) return;
