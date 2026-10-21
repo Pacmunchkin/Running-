@@ -472,6 +472,24 @@ function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
 }
+function renderGarden() {
+  const G = db.garden; if (!G) return;
+  $('garden-intro').textContent = `${G.plot} plot. ${G.intro}`;
+  const S = 90, pad = 6, W = 5 * S + pad * 2, famLabel = id => (G.families.find(f => f.id === id) || {}).label || id;
+  $('garden-layout').innerHTML = `<svg viewBox="0 0 ${W} ${W + 14}" role="img" aria-label="Garden layout, 5 by 5 metres">` +
+    `<text x="${W / 2}" y="10" text-anchor="middle" class="gl">North</text>` +
+    G.layout.map(r => `<rect x="${pad + r.x * S}" y="${14 + r.y * S}" width="${r.w * S - 2}" height="${r.h * S - 2}" rx="4" class="gf gf-${r.f}"><title>${esc(r.t)} (${(r.w * r.h).toFixed(1)} m2)</title></rect>` +
+      `<foreignObject x="${pad + r.x * S + 3}" y="${14 + r.y * S + 3}" width="${r.w * S - 8}" height="${r.h * S - 8}"><div xmlns="http://www.w3.org/1999/xhtml" class="gt">${esc(r.t)}</div></foreignObject>`).join('') + '</svg>';
+  $('garden-legend').innerHTML = G.families.map(f => `<span class="gk"><i class="gf gf-${f.id}"></i>${esc(f.label)}</span>`).join(' ');
+  $('garden-layout-note').textContent = G.layoutNote;
+  const M = 'JFMAMJJASOND'.split('');
+  $('garden-cal').innerHTML = `<table class="cal"><thead><tr><th>Crop</th>${M.map(m => `<th>${m}</th>`).join('')}</tr></thead><tbody>` +
+    G.crops.map(c => `<tr><td>${esc(c.n)}</td>${M.map((_, i) => { const m = i + 1; return `<td>${c.si.includes(m) ? '<i class="cI"></i>' : ''}${c.so.includes(m) ? '<i class="cO"></i>' : ''}${c.h.includes(m) ? '<i class="cH"></i>' : ''}</td>`; }).join('')}</tr>`).join('') + '</tbody></table>';
+  $('garden-crops').innerHTML = '<table><thead><tr><th>Variety</th><th>Group</th><th>Space</th><th>Notes</th></tr></thead><tbody>' +
+    G.crops.map(c => `<tr><td><b>${esc(c.n)}</b></td><td class="notes">${esc(famLabel(c.fam))}</td><td class="notes">${esc(c.sp)}</td><td class="notes">${esc(c.note)}</td></tr>`).join('') + '</tbody></table>';
+  $('garden-jobs').innerHTML = '<table><tbody>' + G.jobs.map(j => `<tr><td><b>${esc(j[0])}</b></td><td class="notes">${esc(j[1])}</td></tr>`).join('') + '</tbody></table>';
+  $('garden-rotation').textContent = G.rotation;
+}
 function renderMeals() {
   const M = db.meals; if (!M) return;
   $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
@@ -714,7 +732,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop(); renderFuelRecipes();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop(); renderFuelRecipes(); renderGarden();
   Object.keys(COLS).forEach(renderCol);
 }
 

@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=41">
+<link rel="stylesheet" href="style.css?v=42">
 </head>
 <body>
 <div class="layout">
@@ -24,6 +24,7 @@
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="meals">Meals</button>
     <button data-tab="shop">Shopping</button>
+    <button data-tab="garden">Garden</button>
     <button data-tab="profile">Profile</button>
   </nav>
 </aside>
@@ -305,6 +306,30 @@
     </section>
   </div>
 
+  <div data-panel="garden" hidden>
+    <section class="card">
+      <h2>Garden plan</h2>
+      <p class="muted" id="garden-intro"></p>
+      <div id="garden-layout" class="chart garden"></div>
+      <p id="garden-legend"></p>
+      <p class="muted" id="garden-layout-note"></p>
+    </section>
+    <section class="card">
+      <h2>Sowing and harvest calendar</h2>
+      <p class="muted"><span class="gk"><i class="cI"></i>Sow indoors</span> <span class="gk"><i class="cO"></i>Sow outdoors</span> <span class="gk"><i class="cH"></i>Harvest</span></p>
+      <div class="table-wrap" id="garden-cal"></div>
+    </section>
+    <section class="card">
+      <h2>Varieties</h2>
+      <div class="table-wrap" id="garden-crops"></div>
+    </section>
+    <section class="card">
+      <h2>Jobs through the year</h2>
+      <div class="table-wrap" id="garden-jobs"></div>
+      <p class="muted" id="garden-rotation"></p>
+    </section>
+  </div>
+
   <div data-panel="profile" hidden>
     <section class="card">
       <h2>Runner</h2>
@@ -327,7 +352,7 @@
 
 </div>
 </div>
-<script src="data.js?v=41"></script>
-<script src="app.js?v=41"></script>
+<script src="data.js?v=42"></script>
+<script src="app.js?v=42"></script>
 </body>
 </html>
