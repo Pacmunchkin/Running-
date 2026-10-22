@@ -29,7 +29,7 @@ const SEED = {
      "wed": "Rest (pyramid skipped to save energy for Thursday)",
      "opt": "Thu: trail run/hike 27.3 km, 3:08 h, easy Z2",
      "fuel": "Tempo: nothing during. Thursday trail: 1 gel + 1 drink + 1 homemade bar every hour (see the schedule).",
-     "note": "Wednesday pyramid skipped, so the week is about 50 km (Sat 8.4, Sun 6.0, Mon 8-9, Thu 27.3). The 24 Oct week is unchanged."
+     "note": "Wednesday pyramid skipped. The Thursday trail came in at 20.5 km instead of the planned 27.3 km, so the week is about 41 km (Sat 8.4, Sun 6.0, Mon 6.4, Thu 20.5). The 24 Oct week is unchanged."
     },
     {
      "start": "2026-10-24",
@@ -2131,7 +2131,11 @@ const SEED = {
     run('2026-10-19', '19:08', 'Easy', 6.44, '1:00:02', 126, 143,
       'Planned steady high Z2, 8-9 km. Ran 6.4 km at 9:19/km, avg HR 126. Same HR as the 5 Oct easy run (127) but about 2 min/km slower, so still carrying fatigue from the Saturday tempo. 12 C (feels like 9 C)',
       'Sweat test run: weight 77.8 kg before and after, which is not a usable result (see Gear & fuel)', TOR,
-      { title: 'Easy', asc: 79, cal: 593, sweat: 668, cad: 144, stride: 0.75, moving: '59:58', best: '4:34', zones: Z('0:24', '50:06', '9:16', '', '') })
+      { title: 'Easy', asc: 79, cal: 593, sweat: 668, cad: 144, stride: 0.75, moving: '59:58', best: '4:34', zones: Z('0:24', '50:06', '9:16', '', '') }),
+    run('2026-10-22', '07:54', 'Trail', 20.46, '2:59:04', 133, 161,
+      'Weary traveller statue run, an event in itself rather than a session to judge against the current block. Planned 27.3 km in about 3:08 h; ran 20.46 km in 2:59 with 543 m of climbing. Avg HR 133 (right on the Z2/Z3 boundary), 52% of the time in Z3 on the climbs and 43% in Z2, only 0:11 in Z5. Moving pace 8:25/km and cadence 139 spm, so a lot of walking. Longest run since the 16 Aug half marathon. Recovery HR 14. Garmin estimates 2,104 ml sweat loss',
+      'Distance 20.46 km, not the planned 27.3 km. Start time estimated from the upload time. Fuel taken and the before and after weights are not recorded yet', TOR,
+      { title: 'Running', asc: 543, cal: 1845, sweat: 2104, cad: 139, stride: 0.82, moving: '2:52:17', best: '5:17', zones: Z('5:14', '1:18:29', '1:34:14', '0:56', '0:11') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2214,7 +2218,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 103.2, asOf: '2026-10-14', notes: 'In use since 11 Sep. Garmin: 14 activities, 103.2 km at 14 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 144.5, asOf: '2026-10-22', notes: 'In use since 11 Sep. Garmin: 18 activities, 144.5 km at 22 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
