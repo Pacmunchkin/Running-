@@ -487,13 +487,17 @@ function renderNutrition() {
   const row = (label, f, bold) => `<tr><td>${bold ? '<b>' : ''}${esc(label)}${bold ? '</b>' : ''}</td>${cols.map(([k]) => `<td class="num">${bold ? '<b>' : ''}${r1(sum(f, k))}${bold ? '</b>' : ''}</td>`).join('')}</tr>`;
   $('nut-macros').innerHTML = `<table><thead><tr><th>Meal</th>${cols.map(c => `<th class="num">${c[1]}</th>`).join('')}</tr></thead><tbody>` + meals.map(m => row(m, i => i[0] === m)).join('') + row('Total', () => true, true) + '</tbody></table>' +
     (kg ? `<p class="muted">At ${kg} kg that is ${(sum(() => true, 'p') / kg).toFixed(1)} g protein, ${(sum(() => true, 'c') / kg).toFixed(1)} g carbs and ${(sum(() => true, 'f') / kg).toFixed(1)} g fat per kg. Energy split: ${Math.round(400 * sum(() => true, 'p') / sum(() => true, 'kcal'))}% protein, ${Math.round(400 * sum(() => true, 'c') / sum(() => true, 'kcal'))}% carbs, ${Math.round(900 * sum(() => true, 'f') / sum(() => true, 'kcal'))}% fat.</p>` : '');
-  $('nut-micros').innerHTML = '<table><thead><tr><th>Nutrient</th><th class="num">Estimate a day</th><th class="num">Target</th><th class="num">Of target</th><th>Verdict</th></tr></thead><tbody>' +
-    Object.keys(N.targets).map(k => { const v = sum(() => true, k), [t, u] = N.targets[k], pc = 100 * v / t, st = pc >= 100 ? 'OK' : pc >= 70 ? 'Watch' : 'Low';
-      return `<tr><td><b>${esc(N.labels[k])}</b></td><td class="num">${r1(v)} ${u}</td><td class="num">${t} ${u}</td><td class="num">${Math.round(pc)}%</td><td><span class="st st-${st}">${st}</span></td></tr>`; }).join('') + '</tbody></table>';
+  $('nut-micros').innerHTML = '<table><thead><tr><th>Nutrient</th><th class="num">Estimate a day</th><th class="num">Target</th><th class="num">Of target</th><th>Verdict</th><th class="num">With supplements</th></tr></thead><tbody>' +
+    Object.keys(N.targets).map(k => { const v = sum(() => true, k), [t, u] = N.targets[k], pc = 100 * v / t, st = pc >= 100 ? 'OK' : pc >= 70 ? 'Watch' : 'Low', s = (N.supplements || {})[k];
+      return `<tr><td><b>${esc(N.labels[k])}</b></td><td class="num">${r1(v)} ${u}</td><td class="num">${t} ${u}</td><td class="num">${Math.round(pc)}%</td><td><span class="st st-${st}">${st}</span></td><td class="num">${s ? r1(v + s) + ' ' + u : ''}</td></tr>`; }).join('') + '</tbody></table>';
   $('nut-items').innerHTML = '<table><thead><tr><th>Food</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Carbs</th><th class="num">Fat</th></tr></thead><tbody>' +
     N.items.map(i => `<tr><td>${esc(i[1])}</td><td class="num">${i[2]}</td><td class="num">${i[3]}</td><td class="num">${i[4]}</td><td class="num">${i[5]}</td></tr>`).join('') + '</tbody></table>';
   $('nut-notes').innerHTML = N.notes.map(x => `<li>${esc(x)}</li>`).join('');
   $('nut-assume').innerHTML = N.assumptions.map(x => `<li>${esc(x)}</li>`).join('');
+}
+function renderSupplements() {
+  const S = db.supplements || [];
+  $('c-supp').innerHTML = S.length ? '<table><thead><tr><th>Supplement</th><th>Dose</th><th>When</th><th>Why</th></tr></thead><tbody>' + S.map(s => `<tr><td><b>${esc(s.name)}</b><br><span class="muted">from ${fmtDate(s.start)}</span></td><td>${esc(s.dose)}</td><td class="notes">${esc(s.when)}</td><td class="notes">${esc(s.why)}${s.note ? `<br><span class="muted">${esc(s.note)}</span>` : ''}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">None.</p>';
 }
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
@@ -768,7 +772,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderGarden();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden();
   Object.keys(COLS).forEach(renderCol);
 }
 
