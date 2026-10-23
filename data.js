@@ -1947,6 +1947,12 @@ const SEED = {
     { date: '2026-10-16', kg: 77.8, note: 'First entry' },
     { date: '2026-10-18', kg: 77.6, note: '' }
   ],
+  peakflow: {
+    best: null,
+    readings: [
+      { date: '2026-10-23', lpm: 460, note: 'First entry, timing not recorded' }
+    ]
+  },
   bp: [
     { date: '2026-10-19', sys: 137, dia: 71, note: 'First entry, timing not recorded' }
   ],

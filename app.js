@@ -60,6 +60,7 @@ function renderStats() {
     ['Avg HR (time-weighted)', hrSecs ? Math.round(withHr.reduce((a, r) => a + r.hr * r.secs, 0) / hrSecs) : '–'],
     ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m'],
     ...(db.bp && db.bp.length ? [['Blood pressure (' + parseD(db.bp[db.bp.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.bp[db.bp.length - 1].sys + '/' + db.bp[db.bp.length - 1].dia]] : []),
+    ...(db.peakflow && db.peakflow.readings.length ? [['Peak flow (' + parseD(db.peakflow.readings[db.peakflow.readings.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.peakflow.readings[db.peakflow.readings.length - 1].lpm + ' L/min']] : []),
     ...(db.weight && db.weight.length ? [['Weight (' + parseD(db.weight[db.weight.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.weight[db.weight.length - 1].kg + ' kg']] : [])
   ];
   $('stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
@@ -468,6 +469,16 @@ function renderBp() {
     { t0: parseD(bp[0].date).getTime() - 14 * 864e5, minSpan: 60, steps: [5, 10, 20], fmt: v => v.toFixed(0), faster: 'up', label: 'Blood pressure over time' });
   $('bp-note').textContent = `${bp.length} reading${bp.length > 1 ? 's' : ''}. Latest ${last.sys}/${last.dia} on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.`;
 }
+function renderPeakFlow() {
+  const P = db.peakflow || {}, pf = [...(P.readings || [])].sort((a, b) => a.date < b.date ? -1 : 1);
+  if (!pf.length) { $('chart-pef').innerHTML = '<p class="muted">No readings yet.</p>'; return; }
+  const last = pf[pf.length - 1], tip = r => `${fmtDate(r.date)}: ${r.lpm} L/min${r.note ? '. ' + r.note : ''}`;
+  const refs = P.best ? [[1, 'Best ' + P.best], [0.8, '80%'], [0.5, '50%']].map(([f, n]) => ({ kind: 'ref', name: n, pts: [{ t: 0, v: Math.round(P.best * f) }] })) : [];
+  lineChart($('chart-pef'), [...refs, { kind: 'line', cls: 'c3', endLabel: `${last.lpm} L/min`, pts: pf.map(r => ({ t: parseD(r.date).getTime(), v: r.lpm, tip: tip(r) })) }],
+    { t0: parseD(pf[0].date).getTime() - 14 * 864e5, minSpan: 100, steps: [10, 20, 50], fmt: v => v.toFixed(0), faster: 'up', label: 'Peak flow over time' });
+  $('pef-note').textContent = `${pf.length} reading${pf.length > 1 ? 's' : ''}. Latest ${last.lpm} L/min on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.` +
+    (P.best ? ` Personal best ${P.best}, so the latest is ${Math.round(100 * last.lpm / P.best)}% of best.` : ' Personal best not set yet, so no green, amber or red bands.');
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -567,7 +578,7 @@ function renderRhr() {
   $('rhr-note').textContent = `Latest ${last[1]} bpm on ${fmtDate(last[0])}. Baseline about ${G.rhrBaseline} bpm. Source: Garmin daily summaries.`;
 }
 function renderTrends() {
-  renderWeight(); renderBp(); renderRhr();
+  renderWeight(); renderBp(); renderPeakFlow(); renderRhr();
   const now = weekStart(today());
   const runs = db.runs.filter(r => r.date >= db.block.start);
   const start = weekStart(runs.map(r => r.date).sort()[0] || db.block.start), planKm = db.plan.filter(p => p.km);
