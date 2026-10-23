@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=48">
+<link rel="stylesheet" href="style.css?v=49">
 </head>
 <body>
 <div class="layout">
@@ -281,6 +281,19 @@
       <div id="meals-weeks" class="review"></div>
     </section>
     <section class="card">
+      <h2>Daily nutrition estimate</h2>
+      <p class="muted">An estimate for a typical day of breakfast, lunch and one roasting tin dinner. It is rough: portions are guesses and the dinner is an average.</p>
+      <div class="table-wrap" id="nut-macros"></div>
+      <h3>Vitamins and minerals</h3>
+      <div class="table-wrap" id="nut-micros"></div>
+      <h3>What it suggests</h3>
+      <ul id="nut-notes"></ul>
+      <details><summary>Foods and assumptions</summary>
+        <div class="table-wrap" id="nut-items"></div>
+        <ul id="nut-assume"></ul>
+      </details>
+    </section>
+    <section class="card">
       <h2>Standing meals</h2>
       <div class="table-wrap" id="meals-standing"></div>
     </section>
@@ -372,7 +385,7 @@
 
 </div>
 </div>
-<script src="data.js?v=48"></script>
-<script src="app.js?v=48"></script>
+<script src="data.js?v=49"></script>
+<script src="app.js?v=49"></script>
 </body>
 </html>

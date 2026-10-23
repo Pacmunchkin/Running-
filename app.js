@@ -479,6 +479,22 @@ function renderPeakFlow() {
   $('pef-note').textContent = `${pf.length} reading${pf.length > 1 ? 's' : ''}. Latest ${last.lpm} L/min on ${fmtDate(last.date)}${last.note ? ' (' + last.note + ')' : ''}.` +
     (P.best ? ` Personal best ${P.best}, so the latest is ${Math.round(100 * last.lpm / P.best)}% of best.` : ' Personal best not set yet, so no green, amber or red bands.');
 }
+function renderNutrition() {
+  const N = (db.meals || {}).nutrition; if (!N) return;
+  const K = N.keys, sum = (f, k) => N.items.filter(f).reduce((a, i) => a + i[2 + K.indexOf(k)], 0), kg = (db.weight && db.weight.length) ? db.weight[db.weight.length - 1].kg : null;
+  const r1 = v => v >= 100 ? Math.round(v) : v.toFixed(1).replace(/\.0$/, '');
+  const meals = ['Breakfast', 'Lunch', 'Dinner'], cols = [['kcal', 'kcal'], ['p', 'Protein g'], ['c', 'Carbs g'], ['f', 'Fat g'], ['fib', 'Fibre g']];
+  const row = (label, f, bold) => `<tr><td>${bold ? '<b>' : ''}${esc(label)}${bold ? '</b>' : ''}</td>${cols.map(([k]) => `<td class="num">${bold ? '<b>' : ''}${r1(sum(f, k))}${bold ? '</b>' : ''}</td>`).join('')}</tr>`;
+  $('nut-macros').innerHTML = `<table><thead><tr><th>Meal</th>${cols.map(c => `<th class="num">${c[1]}</th>`).join('')}</tr></thead><tbody>` + meals.map(m => row(m, i => i[0] === m)).join('') + row('Total', () => true, true) + '</tbody></table>' +
+    (kg ? `<p class="muted">At ${kg} kg that is ${(sum(() => true, 'p') / kg).toFixed(1)} g protein, ${(sum(() => true, 'c') / kg).toFixed(1)} g carbs and ${(sum(() => true, 'f') / kg).toFixed(1)} g fat per kg. Energy split: ${Math.round(400 * sum(() => true, 'p') / sum(() => true, 'kcal'))}% protein, ${Math.round(400 * sum(() => true, 'c') / sum(() => true, 'kcal'))}% carbs, ${Math.round(900 * sum(() => true, 'f') / sum(() => true, 'kcal'))}% fat.</p>` : '');
+  $('nut-micros').innerHTML = '<table><thead><tr><th>Nutrient</th><th class="num">Estimate a day</th><th class="num">Target</th><th class="num">Of target</th><th>Verdict</th></tr></thead><tbody>' +
+    Object.keys(N.targets).map(k => { const v = sum(() => true, k), [t, u] = N.targets[k], pc = 100 * v / t, st = pc >= 100 ? 'OK' : pc >= 70 ? 'Watch' : 'Low';
+      return `<tr><td><b>${esc(N.labels[k])}</b></td><td class="num">${r1(v)} ${u}</td><td class="num">${t} ${u}</td><td class="num">${Math.round(pc)}%</td><td><span class="st st-${st}">${st}</span></td></tr>`; }).join('') + '</tbody></table>';
+  $('nut-items').innerHTML = '<table><thead><tr><th>Food</th><th class="num">kcal</th><th class="num">Protein</th><th class="num">Carbs</th><th class="num">Fat</th></tr></thead><tbody>' +
+    N.items.map(i => `<tr><td>${esc(i[1])}</td><td class="num">${i[2]}</td><td class="num">${i[3]}</td><td class="num">${i[4]}</td><td class="num">${i[5]}</td></tr>`).join('') + '</tbody></table>';
+  $('nut-notes').innerHTML = N.notes.map(x => `<li>${esc(x)}</li>`).join('');
+  $('nut-assume').innerHTML = N.assumptions.map(x => `<li>${esc(x)}</li>`).join('');
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -752,7 +768,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderShop(); renderFuelRecipes(); renderGarden();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderGarden();
   Object.keys(COLS).forEach(renderCol);
 }
 
