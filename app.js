@@ -487,6 +487,17 @@ function renderNutrition() {
   const row = (label, f, bold) => `<tr><td>${bold ? '<b>' : ''}${esc(label)}${bold ? '</b>' : ''}</td>${cols.map(([k]) => `<td class="num">${bold ? '<b>' : ''}${r1(sum(f, k))}${bold ? '</b>' : ''}</td>`).join('')}</tr>`;
   $('nut-macros').innerHTML = `<table><thead><tr><th>Meal</th>${cols.map(c => `<th class="num">${c[1]}</th>`).join('')}</tr></thead><tbody>` + meals.map(m => row(m, i => i[0] === m)).join('') + row('Total', () => true, true) + '</tbody></table>' +
     (kg ? `<p class="muted">At ${kg} kg that is ${(sum(() => true, 'p') / kg).toFixed(1)} g protein, ${(sum(() => true, 'c') / kg).toFixed(1)} g carbs and ${(sum(() => true, 'f') / kg).toFixed(1)} g fat per kg. Energy split: ${Math.round(400 * sum(() => true, 'p') / sum(() => true, 'kcal'))}% protein, ${Math.round(400 * sum(() => true, 'c') / sum(() => true, 'kcal'))}% carbs, ${Math.round(900 * sum(() => true, 'f') / sum(() => true, 'kcal'))}% fat.</p>` : '');
+  if (N.ranges && kg) {
+    const kcal = sum(() => true, 'kcal');
+    $('nut-ranges').innerHTML = '<table><thead><tr><th>Macro</th><th class="num">Estimate</th><th class="num">Healthy range</th><th>Verdict</th><th>Notes</th></tr></thead><tbody>' + N.ranges.map(r => {
+      const v = sum(() => true, r.k); let lo, hi, val, rng;
+      if (r.perKg) { lo = r.perKg[0] * kg; hi = r.perKg[1] * kg; val = `${Math.round(v)} g (${(v / kg).toFixed(1)} g/kg)`; rng = `${Math.round(lo)} to ${Math.round(hi)} g (${r.perKg[0]} to ${r.perKg[1]} g/kg)`; }
+      else if (r.pctEnergy) { lo = r.pctEnergy[0] / 900 * kcal; hi = r.pctEnergy[1] / 900 * kcal; val = `${Math.round(v)} g (${Math.round(900 * v / kcal)}% of energy)`; rng = `${Math.round(lo)} to ${Math.round(hi)} g (${r.pctEnergy[0]} to ${r.pctEnergy[1]}%)`; }
+      else { lo = r.min; hi = Infinity; val = `${Math.round(v)} g`; rng = `${r.min} g or more`; }
+      const st = v < lo ? 'Low' : v > hi ? 'High' : 'OK';
+      return `<tr><td><b>${esc(r.label)}</b></td><td class="num">${val}</td><td class="num">${rng}</td><td><span class="st st-${st}">${st}</span></td><td class="notes">${esc(r.note)}</td></tr>`;
+    }).join('') + '</tbody></table><p class="muted">Energy is not rated: it depends on the training day, and your weight is steady at about ' + kg + ' kg, so total intake is probably higher than the meals listed here.</p>';
+  }
   $('nut-micros').innerHTML = '<table><thead><tr><th>Nutrient</th><th class="num">From food</th><th class="num">Supplement</th><th class="num">Total a day</th><th class="num">Target</th><th class="num">Of target</th><th>Verdict</th></tr></thead><tbody>' +
     Object.keys(N.targets).map(k => { const f = sum(() => true, k), s = (N.supplements || {})[k] || 0, v = f + s, [t, u] = N.targets[k], pc = 100 * v / t, st = pc >= 100 ? 'OK' : pc >= 70 ? 'Watch' : 'Low';
       return `<tr><td><b>${esc(N.labels[k])}</b></td><td class="num">${r1(f)} ${u}</td><td class="num">${s ? '+' + s + ' ' + u : ''}</td><td class="num"><b>${r1(v)} ${u}</b></td><td class="num">${t} ${u}</td><td class="num">${pc > 500 ? '>500%' : Math.round(pc) + '%'}</td><td><span class="st st-${st}">${st}</span></td></tr>`; }).join('') + '</tbody></table>';
