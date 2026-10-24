@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=61">
+<link rel="stylesheet" href="style.css?v=62">
 </head>
 <body>
 <div class="layout">
@@ -25,6 +25,7 @@
     <button data-tab="meals">Meals</button>
     <button data-tab="shop">Shopping</button>
     <button data-tab="garden">Garden</button>
+    <button data-tab="pack">Packing</button>
     <button data-tab="profile">Profile</button>
   </nav>
 </aside>
@@ -368,6 +369,20 @@
     </section>
   </div>
 
+  <div data-panel="pack" hidden>
+    <section class="card">
+      <h2>One-bag packing</h2>
+      <p class="muted" id="pack-intro"></p>
+      <p><b id="pack-count"></b> <button class="ghost" id="pack-clear" type="button">Clear ticks</button></p>
+      <div id="pack-list"></div>
+    </section>
+    <section class="card">
+      <h2>Worth adding?</h2>
+      <p class="muted">Not on your list yet. Tell me which to add.</p>
+      <ul id="pack-sugg"></ul>
+    </section>
+  </div>
+
   <div data-panel="profile" hidden>
     <section class="card">
       <h2>Runner</h2>
@@ -390,7 +405,7 @@
 
 </div>
 </div>
-<script src="data.js?v=61"></script>
-<script src="app.js?v=61"></script>
+<script src="data.js?v=62"></script>
+<script src="app.js?v=62"></script>
 </body>
 </html>

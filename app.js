@@ -511,6 +511,18 @@ function renderSupplements() {
   const S = db.supplements || [];
   $('c-supp').innerHTML = S.length ? '<table><thead><tr><th>Supplement</th><th>Dose</th><th>When</th><th>Why</th></tr></thead><tbody>' + S.map(s => `<tr><td><b>${esc(s.name)}</b><br><span class="muted">from ${fmtDate(s.start)}</span></td><td>${esc(s.dose)}</td><td class="notes">${esc(s.when)}</td><td class="notes">${esc(s.why)}${s.note ? `<br><span class="muted">${esc(s.note)}</span>` : ''}</td></tr>`).join('') + '</tbody></table>' : '<p class="muted">None.</p>';
 }
+function renderPacking() {
+  const P = db.packing; if (!P) return;
+  let saved = {}; try { saved = JSON.parse(localStorage.getItem('packed') || '{}'); } catch (e) { }
+  const key = (g, i) => g + '|' + i, total = P.groups.reduce((a, g) => a + g.items.length, 0);
+  const update = () => { const n = Object.values(saved).filter(Boolean).length; $('pack-count').textContent = `${n} of ${total} packed`; };
+  $('pack-intro').textContent = P.intro;
+  $('pack-list').innerHTML = P.groups.map(g => `<h3>${esc(g.name)}</h3><ul class="pack">` + g.items.map(i => `<li><label><input type="checkbox" data-k="${esc(key(g.name, i[0]))}"${saved[key(g.name, i[0])] ? ' checked' : ''}> ${esc(i[0])}${i[1] > 1 ? ` x ${i[1]}` : ''}</label></li>`).join('') + '</ul>').join('');
+  $('pack-sugg').innerHTML = (P.suggestions || []).map(s => `<li>${esc(s)}</li>`).join('');
+  $('pack-list').onchange = e => { const k = e.target.dataset.k; if (!k) return; saved[k] = e.target.checked; try { localStorage.setItem('packed', JSON.stringify(saved)); } catch (x) { } update(); };
+  $('pack-clear').onclick = () => { saved = {}; try { localStorage.removeItem('packed'); } catch (x) { } renderPacking(); };
+  update();
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -784,7 +796,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking();
   Object.keys(COLS).forEach(renderCol);
 }
 
