@@ -515,10 +515,13 @@ function renderPacking() {
   const P = db.packing; if (!P) return;
   let saved = {}; try { saved = JSON.parse(localStorage.getItem('packed') || '{}'); } catch (e) { }
   const key = (g, i) => g + '|' + i, total = P.groups.reduce((a, g) => a + g.items.length, 0);
+  const gw = g => g.items.reduce((a, i) => a + i[1] * (i[2] || 0), 0), gv = g => g.items.reduce((a, i) => a + i[1] * (i[3] || 0), 0);
+  const kgf = v => (v / 1000).toFixed(1) + ' kg', lf = v => (v / 1000).toFixed(1) + ' L';
   const update = () => { const n = Object.values(saved).filter(Boolean).length; $('pack-count').textContent = `${n} of ${total} packed`;
     P.groups.forEach(g => { const c = g.items.filter(i => saved[key(g.name, i[0])]).length; document.querySelectorAll('.gcount').forEach(e => { if (e.dataset.g === g.name) e.textContent = `${c} of ${g.items.length}`; }); }); };
   $('pack-intro').textContent = P.intro;
-  $('pack-list').innerHTML = P.groups.map(g => `<h3>${esc(g.name)} <span class="muted gcount" data-g="${esc(g.name)}"></span></h3><ul class="pack">` + g.items.map(i => `<li><label><input type="checkbox" data-k="${esc(key(g.name, i[0]))}"${saved[key(g.name, i[0])] ? ' checked' : ''}> ${esc(i[0])}${i[1] > 1 ? ` x ${i[1]}` : ''}</label></li>`).join('') + '</ul>').join('');
+  $('pack-list').innerHTML = P.groups.map(g => `<h3>${esc(g.name)} <span class="muted gcount" data-g="${esc(g.name)}"></span> <span class="muted">${kgf(gw(g))}, ${lf(gv(g))}</span></h3><ul class="pack">` + g.items.map(i => `<li><label><input type="checkbox" data-k="${esc(key(g.name, i[0]))}"${saved[key(g.name, i[0])] ? ' checked' : ''}> <span>${esc(i[0])}${i[1] > 1 ? ` x ${i[1]}` : ''} <span class="muted">${i[2] ? Math.round(i[1] * i[2]) + ' g, ' + Math.round(i[1] * i[3]) + ' ml' : ''}</span></span></label></li>`).join('') + '</ul>').join('');
+  $('pack-sum').innerHTML = '<table><thead><tr><th>Person</th><th class="num">Items</th><th class="num">Weight</th><th class="num">Volume</th></tr></thead><tbody>' + P.groups.map(g => `<tr><td><b>${esc(g.name)}</b></td><td class="num">${g.items.length}</td><td class="num">${kgf(gw(g))}</td><td class="num">${lf(gv(g))}</td></tr>`).join('') + `<tr><td><b>Everyone</b></td><td class="num"><b>${total}</b></td><td class="num"><b>${kgf(P.groups.reduce((a, g) => a + gw(g), 0))}</b></td><td class="num"><b>${lf(P.groups.reduce((a, g) => a + gv(g), 0))}</b></td></tr></tbody></table><p class="muted">${esc(P.note || '')}</p>`;
   $('pack-sugg').innerHTML = (P.suggestions || []).map(s => `<li>${esc(s)}</li>`).join('');
   $('pack-list').onchange = e => { const k = e.target.dataset.k; if (!k) return; saved[k] = e.target.checked; try { localStorage.setItem('packed', JSON.stringify(saved)); } catch (x) { } update(); };
   $('pack-clear').onclick = () => { saved = {}; try { localStorage.removeItem('packed'); } catch (x) { } renderPacking(); };
