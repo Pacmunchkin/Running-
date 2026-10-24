@@ -2139,10 +2139,14 @@ const SEED = {
       'Planned steady high Z2, 8-9 km. Ran 6.4 km at 9:19/km, avg HR 126. Same HR as the 5 Oct easy run (127) but about 2 min/km slower, so still carrying fatigue from the Saturday tempo. 12 C (feels like 9 C)',
       'Sweat test run: weight 77.8 kg before and after, which is not a usable result (see Gear & fuel)', TOR,
       { title: 'Easy', asc: 79, cal: 593, sweat: 668, cad: 144, stride: 0.75, moving: '59:58', best: '4:34', zones: Z('0:24', '50:06', '9:16', '', '') }),
-    run('2026-10-22', '07:54', 'Trail', 20.46, '2:59:04', 133, 161,
+    run('2026-10-22', '10:53', 'Trail', 20.46, '2:59:04', 133, 161,
       'Weary traveller statue run, an event in itself rather than a session to judge against the current block. Shortened from the planned 27.3 km to get back in the allotted time. 20.46 km in 2:59 with 543 m of climbing. Felt really good and could have kept going. Avg HR 133 (right on the Z2/Z3 boundary), 52% of the time in Z3 on the climbs and 43% in Z2, only 0:11 in Z5. Walking was mainly the hills and junctions to check the route (moving pace 8:25/km, cadence 139 spm). Longest run since the 16 Aug half marathon. Recovery HR 14. Fuel: 3 x 500 ml drinks (1.5 L), 3 gels and 3 bars, all homemade, with the corrected sodium amounts. That is about 210 g carbs (70 g an hour) and 960 kcal, against Garmin 1,845 kcal burned. Sodium about 450-500 mg an hour (drinks 305 mg each, gels 101 mg each, bars roughly 50-100 mg each). Fluid 1.5 L against a Garmin sweat estimate of 2.1 L',
-      'Distance 20.46 km, not the planned 27.3 km. Start time estimated from the upload time. No before and after weights, so no sweat test', TOR,
-      { title: 'Running', asc: 543, cal: 1845, sweat: 2104, cad: 139, stride: 0.82, moving: '2:52:17', best: '5:17', zones: Z('5:14', '1:18:29', '1:34:14', '0:56', '0:11') })
+      'Distance 20.46 km, not the planned 27.3 km. No before and after weights, so no sweat test', TOR,
+      { title: 'Running', asc: 543, cal: 1845, sweat: 2104, cad: 139, stride: 0.82, moving: '2:52:17', best: '5:17', zones: Z('5:14', '1:18:29', '1:34:14', '0:56', '0:11') }),
+    run('2026-10-24', '09:02', 'Parkrun', 4.87, '23:27', 145, 164,
+      'Planned 5K parkrun at Z4 (155-159 bpm), half term week away from Bath. GPS 4.87 km in 23:27, 4:49/km (4:46 moving), steady pace throughout. HR climbed from about 110 to the 150s in the first 8 min, then held 150-165: 44% of the time in Z4/Z5 (6:23 and 4:04), max 164 so a little above the Z4 ceiling. Cadence 180. About 20 s/km faster than the plan benchmark (5:09/km at HR 157 on 12 Sep) but slower than the 17 Oct tempo at a similar HR (4:30 at 158, 4:34 at 166), which fits a tired Saturday after the 3 h trail run on Thursday and resting HR 44 on Friday',
+      'GPS short of 5 km, official parkrun time not recorded. Resting HR this morning not recorded', TOR,
+      { title: 'Running', loc: 'Harrogate', asc: 59, cal: 332, sweat: 299, cad: 180, stride: 1.15, moving: '23:11', best: '3:49', zones: Z('0:42', '5:05', '7:01', '6:23', '4:04') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2225,7 +2229,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 144.5, asOf: '2026-10-22', notes: 'In use since 11 Sep. Garmin: 18 activities, 144.5 km at 22 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 149.3, asOf: '2026-10-24', notes: 'In use since 11 Sep. Garmin: 19 activities, 149.3 km at 24 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
