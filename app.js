@@ -515,9 +515,10 @@ function renderPacking() {
   const P = db.packing; if (!P) return;
   let saved = {}; try { saved = JSON.parse(localStorage.getItem('packed') || '{}'); } catch (e) { }
   const key = (g, i) => g + '|' + i, total = P.groups.reduce((a, g) => a + g.items.length, 0);
-  const update = () => { const n = Object.values(saved).filter(Boolean).length; $('pack-count').textContent = `${n} of ${total} packed`; };
+  const update = () => { const n = Object.values(saved).filter(Boolean).length; $('pack-count').textContent = `${n} of ${total} packed`;
+    P.groups.forEach(g => { const c = g.items.filter(i => saved[key(g.name, i[0])]).length; document.querySelectorAll('.gcount').forEach(e => { if (e.dataset.g === g.name) e.textContent = `${c} of ${g.items.length}`; }); }); };
   $('pack-intro').textContent = P.intro;
-  $('pack-list').innerHTML = P.groups.map(g => `<h3>${esc(g.name)}</h3><ul class="pack">` + g.items.map(i => `<li><label><input type="checkbox" data-k="${esc(key(g.name, i[0]))}"${saved[key(g.name, i[0])] ? ' checked' : ''}> ${esc(i[0])}${i[1] > 1 ? ` x ${i[1]}` : ''}</label></li>`).join('') + '</ul>').join('');
+  $('pack-list').innerHTML = P.groups.map(g => `<h3>${esc(g.name)} <span class="muted gcount" data-g="${esc(g.name)}"></span></h3><ul class="pack">` + g.items.map(i => `<li><label><input type="checkbox" data-k="${esc(key(g.name, i[0]))}"${saved[key(g.name, i[0])] ? ' checked' : ''}> ${esc(i[0])}${i[1] > 1 ? ` x ${i[1]}` : ''}</label></li>`).join('') + '</ul>').join('');
   $('pack-sugg').innerHTML = (P.suggestions || []).map(s => `<li>${esc(s)}</li>`).join('');
   $('pack-list').onchange = e => { const k = e.target.dataset.k; if (!k) return; saved[k] = e.target.checked; try { localStorage.setItem('packed', JSON.stringify(saved)); } catch (x) { } update(); };
   $('pack-clear').onclick = () => { saved = {}; try { localStorage.removeItem('packed'); } catch (x) { } renderPacking(); };
