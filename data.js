@@ -35,15 +35,15 @@ const SEED = {
      "start": "2026-10-24",
      "phase": "found",
      "type": "build",
-     "km": 53,
+     "km": 31,
      "long": 10,
-     "sat": "5K parkrun at Z4 (HR-led)",
-     "sun": "Pure recovery run (HR under 125)",
-     "mon": "5K at Z3 (HR 135-154), first planned Z3 session",
+     "sat": "5K parkrun at Z4 (HR-led), done: 4.87 km at 4:49/km",
+     "sun": "Rest",
+     "mon": "Rest",
      "wed": "5 x 1 km @ about 4:00-4:05, 1 min jog",
-     "opt": "Tue easy, Thu recovery, Fri steady (half term, run every day)",
+     "opt": "Tue easy, Thu recovery, Fri easy",
      "fuel": "None during any run this week. Breakfast before parkrun.",
-     "note": "Second big week. Stay under the weekly cap on the easy days."
+     "note": "Two rest days after a heavy few days, so this is a light week of about 31 km. The Z3 session moves to a later week."
     },
     {
      "start": "2026-10-31",
@@ -1945,7 +1945,8 @@ const SEED = {
   },
   weight: [
     { date: '2026-10-16', kg: 77.8, note: 'First entry' },
-    { date: '2026-10-18', kg: 77.6, note: '' }
+    { date: '2026-10-18', kg: 77.6, note: '' },
+    { date: '2026-10-25', kg: 77.1, note: '' }
   ],
   peakflow: {
     best: null,
@@ -2174,12 +2175,12 @@ const SEED = {
             { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink + 1 homemade bar every hour from about 40 min (about 70 g carbs an hour). Water as well. After: carbs + protein." },
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '', fuel: "None." },
     { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
-    { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Pure recovery (HR under 125). Half term', fuel: "None." },
-    { id: 's10', date: '2026-10-26', session: '5K at Z3', details: 'HR 135-154, first planned Z3 session. Start in low Z3. Half term', fuel: "None. Snack 2 h before if it is an evening run." },
+    { id: 's9', date: '2026-10-25', session: 'Rest', details: 'Rest after a heavy few days (3 h trail run, parkrun, long drive, short sleep). Half term', fuel: "Normal meals, add carbs at lunch and dinner." },
+    { id: 's10', date: '2026-10-26', session: 'Rest', details: 'Second rest day. The 5K at Z3 moves to a later week. Half term', fuel: "Normal meals, add carbs at lunch and dinner." },
     { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None." },
     { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
     { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term', fuel: "None." },
-    { id: 's14', date: '2026-10-30', session: 'Steady run', details: 'Half term', fuel: "None." }
+    { id: 's14', date: '2026-10-30', session: 'Easy run', details: 'Easy Z2, keeps Saturday fresh. Half term', fuel: "None." }
   ],
   estimates: [
     { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
