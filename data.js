@@ -35,15 +35,15 @@ const SEED = {
      "start": "2026-10-24",
      "phase": "found",
      "type": "build",
-     "km": 31,
+     "km": 36,
      "long": 10,
      "sat": "5K parkrun at Z4 (HR-led), done: 4.87 km at 4:49/km",
-     "sun": "Rest",
+     "sun": "Rest (ran a 5.4 km recovery run instead, HR 116)",
      "mon": "Rest",
      "wed": "5 x 1 km @ about 4:00-4:05, 1 min jog",
      "opt": "Tue easy, Thu recovery, Fri easy",
      "fuel": "None during any run this week. Breakfast before parkrun.",
-     "note": "Two rest days after a heavy few days, so this is a light week of about 31 km. The Z3 session moves to a later week."
+     "note": "Two rest days after a heavy few days, so this is a light week of about 36 km. The Z3 session moves to a later week."
     },
     {
      "start": "2026-10-31",
@@ -2151,7 +2151,11 @@ const SEED = {
     run('2026-10-24', '09:02', 'Parkrun', 4.87, '23:27', 145, 164,
       'Planned 5K parkrun at Z4 (155-159 bpm), half term week away from Bath. GPS 4.87 km in 23:27, 4:49/km (4:46 moving), steady pace throughout. HR climbed from about 110 to the 150s in the first 8 min, then held 150-165: 44% of the time in Z4/Z5 (6:23 and 4:04), max 164 so a little above the Z4 ceiling. Cadence 180. About 20 s/km faster than the plan benchmark (5:09/km at HR 157 on 12 Sep) but slower than the 17 Oct tempo at a similar HR (4:30 at 158, 4:34 at 166), which fits a tired Saturday after the 3 h trail run on Thursday and resting HR 44 on Friday',
       'GPS short of 5 km, official parkrun time not recorded. Resting HR this morning not recorded', TOR,
-      { title: 'Running', loc: 'Harrogate', asc: 59, cal: 332, sweat: 299, cad: 180, stride: 1.15, moving: '23:11', best: '3:49', zones: Z('0:42', '5:05', '7:01', '6:23', '4:04') })
+      { title: 'Running', loc: 'Harrogate', asc: 59, cal: 332, sweat: 299, cad: 180, stride: 1.15, moving: '23:11', best: '3:49', zones: Z('0:42', '5:05', '7:01', '6:23', '4:04') }),
+    run('2026-10-25', '08:28', 'Recovery', 5.39, '40:01', 116, 126,
+      'Pure recovery run, done instead of the planned rest day after resting HR 39 and body battery 100%. Avg HR 116 and max 126, 98% of the time in Z2. 7:26/km at HR 116 is much better than the last two recoveries (8:17/km at HR 112 on 11 Oct, 8:55/km at HR 120 on 18 Oct), so the tiredness from Thursday and Saturday is clearing',
+      '', TOR,
+      { title: 'Running', loc: 'Redcar and Cleveland', asc: 21, cal: 390, sweat: 411, cad: 167, stride: 0.81, moving: '40:01', best: '6:40', zones: Z('0:41', '39:20', '', '', '') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2178,7 +2182,7 @@ const SEED = {
             { id: 's6', date: '2026-10-22', km: 27.3, session: 'Trail run / hike', details: '3:08 h, 27.3 km, 430 m ascent. Day off work. Take it easy, Z2 (about 6:53/km average)', fuel: "Before: big carb breakfast 2-3 h before. During: 1 gel + 1 drink + 1 homemade bar every hour from about 40 min (about 70 g carbs an hour). Water as well. After: carbs + protein." },
     { id: 's7', date: '2026-10-23', session: 'Rest or yoga', details: '', fuel: "None." },
     { id: 's8', date: '2026-10-24', session: '5K parkrun, Z4', details: 'Z4 (155-159 bpm). Half term week', fuel: "Before: breakfast 2 h before. During: nothing. After: protein." },
-    { id: 's9', date: '2026-10-25', session: 'Rest', details: 'Rest after a heavy few days (3 h trail run, parkrun, long drive, short sleep). Half term', fuel: "Normal meals, add carbs at lunch and dinner." },
+    { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Planned as a rest day. Ran 5.4 km at HR 116 instead, pure recovery. Half term', fuel: "None. Add carbs at lunch and dinner." },
     { id: 's10', date: '2026-10-26', session: 'Rest', details: 'Second rest day. The 5K at Z3 moves to a later week. Half term', fuel: "Normal meals, add carbs at lunch and dinner." },
     { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None." },
     { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
@@ -2234,7 +2238,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 149.3, asOf: '2026-10-24', notes: 'In use since 11 Sep. Garmin: 19 activities, 149.3 km at 24 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 154.7, asOf: '2026-10-25', notes: 'In use since 11 Sep. Garmin: 20 activities, 154.7 km at 25 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
