@@ -689,6 +689,41 @@ function renderTrends() {
 
 
 // ---------- history tab (Garmin CSV, 2019 to now) ----------
+function renderAnnual() {
+  const H = db.history; if (!H || !H.runsAll) return;
+  const all = H.runsAll.map(([date, km, secs, hr, asc, cal, tm]) => ({ date, km, secs, hr, asc, cal, tm }))
+    .concat(db.runs.filter(r => r.date > H.exportEnd).map(r => ({ date: r.date, km: r.km, secs: r.secs, hr: r.hr, asc: r.asc || 0, cal: r.cal || 0, tm: 0 })));
+  const t = today(), md = t.slice(5), years = [...new Set(all.map(r => +r.date.slice(0, 4)))].sort((a, b) => a - b), cur = +t.slice(0, 4);
+  const ymax = Math.max(...years);
+  const S = years.map(y => {
+    const rs = all.filter(r => +r.date.slice(0, 4) === y), km = rs.reduce((a, r) => a + r.km, 0), s = rs.reduce((a, r) => a + r.secs, 0);
+    const W = {}, M = {}; rs.forEach(r => { const w = weekStart(r.date); W[w] = (W[w] || 0) + r.km; const m = r.date.slice(0, 7); M[m] = (M[m] || 0) + r.km; });
+    const hrs = rs.filter(r => r.hr), hw = hrs.reduce((a, r) => a + r.hr * r.secs, 0) / (hrs.reduce((a, r) => a + r.secs, 0) || 1);
+    const bw = Object.entries(W).sort((a, b) => b[1] - a[1])[0], bm = Object.entries(M).sort((a, b) => b[1] - a[1])[0];
+    const to = rs.filter(r => r.date.slice(5) <= md);
+    return { y, runs: rs.length, km, h: s / 3600, asc: rs.reduce((a, r) => a + r.asc, 0), cal: rs.reduce((a, r) => a + r.cal, 0), pace: km ? s / km : 0, hr: hw,
+      longest: Math.max(...rs.map(r => r.km)), n10: rs.filter(r => r.km >= 10).length, n15: rs.filter(r => r.km >= 15).length, n20: rs.filter(r => r.km >= 20).length,
+      wks: Object.keys(W).length, perWk: km / Object.keys(W).length, bw, bm, tm: rs.filter(r => r.tm).length, ytdKm: to.reduce((a, r) => a + r.km, 0), ytdRuns: to.length, ytdH: to.reduce((a, r) => a + r.secs, 0) / 3600 };
+  });
+  const partial = y => y === years[0] || y === ymax;
+  const lab = s => ({ label: s.y + (partial(s.y) ? '*' : '') });
+  const f0 = v => Math.round(v).toLocaleString('en-GB'), f1 = v => v.toFixed(1);
+  const md2 = parseD(t).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' });
+  const totKm = S.reduce((a, s) => a + s.km, 0), totH = S.reduce((a, s) => a + s.h, 0), totRuns = S.reduce((a, s) => a + s.runs, 0), totAsc = S.reduce((a, s) => a + s.asc, 0);
+  $('annual-note').textContent = `${f0(totRuns)} runs, ${f0(totKm)} km and ${f0(totH)} hours on your feet since ${fmtDate(all[0].date)}, with ${f0(totAsc)} m of climbing. The best year so far is ${S.slice().sort((a, b) => b.km - a.km)[0].y} with ${f0(S.slice().sort((a, b) => b.km - a.km)[0].km)} km.`;
+  barChart($('chart-yr-km'), S.map(lab), [{ name: 'Distance', cls: 'bar bc1', vals: S.map(s => s.km) }], { fmt: v => f0(v) + ' km', axisFmt: v => v, steps: [100, 200, 250], label: 'Distance per year' });
+  barChart($('chart-yr-h'), S.map(lab), [{ name: 'Time on feet', cls: 'bar bc3', vals: S.map(s => s.h) }], { fmt: v => f0(v) + ' h', axisFmt: v => v, steps: [20, 25, 50], label: 'Time on feet per year' });
+  barChart($('chart-yr-runs'), S.map(lab), [{ name: 'Activities', cls: 'bar bc2', vals: S.map(s => s.runs) }], { fmt: v => f0(v), axisFmt: v => v, steps: [20, 25, 50], label: 'Runs per year' });
+  const cols = [['Year', s => `<b>${s.y}${partial(s.y) ? '*' : ''}</b>`], ['Runs', s => s.runs], ['Distance km', s => f0(s.km)], ['Time on feet h', s => f1(s.h)], ['Climb m', s => f0(s.asc)], ['Calories', s => f0(s.cal)],
+    ['Avg pace /km', s => fmtTime(s.pace)], ['Avg HR', s => s.hr ? Math.round(s.hr) : ''], ['Longest km', s => f1(s.longest)], ['Runs 10 km+', s => s.n10], ['Runs 15 km+', s => s.n15], ['Runs 20 km+', s => s.n20],
+    ['Weeks with a run', s => s.wks], ['km per active week', s => f1(s.perWk)], ['Biggest week km', s => `${f1(s.bw[1])} <span class="muted">${parseD(s.bw[0]).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })}</span>`],
+    ['Biggest month km', s => `${f0(s.bm[1])} <span class="muted">${parseD(s.bm[0] + '-01').toLocaleDateString('en-GB', { month: 'short', year: '2-digit' })}</span>`], ['Treadmill runs', s => s.tm || ''], [`km to ${md2}`, s => f0(s.ytdKm)]];
+  $('annual-table').innerHTML = `<table><thead><tr>${cols.map((c, i) => `<th${i ? ' class="num"' : ''}>${c[0]}</th>`).join('')}</tr></thead><tbody>` +
+    S.map(s => `<tr>${cols.map((c, i) => `<td${i ? ' class="num"' : ''}>${c[1](s)}</td>`).join('')}</tr>`).join('') +
+    `<tr><td><b>All</b></td><td class="num"><b>${f0(totRuns)}</b></td><td class="num"><b>${f0(totKm)}</b></td><td class="num"><b>${f1(totH)}</b></td><td class="num"><b>${f0(totAsc)}</b></td><td class="num"><b>${f0(S.reduce((a, s) => a + s.cal, 0))}</b></td>${'<td></td>'.repeat(12)}</tr></tbody></table>`;
+  const oth = H.other || {}, ys = Object.keys(oth);
+  $('annual-other').textContent = ys.length ? 'Other activities logged in the export: ' + ys.map(y => `${y}: ` + Object.entries(oth[y]).map(([k, v]) => `${v} ${k.toLowerCase()}`).join(', ')).join('. ') + '.' : '';
+}
 function renderHistory() {
   const H = db.history; if (!H) return;
   $('history-notes').innerHTML = H.notes.map(sec => `<h4>${esc(sec.heading)}</h4><ul>${sec.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>`).join('');
@@ -816,7 +851,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking();
   Object.keys(COLS).forEach(renderCol);
 }
 

@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=70">
+<link rel="stylesheet" href="style.css?v=71">
 </head>
 <body>
 <div class="layout">
@@ -200,6 +200,19 @@
       <h2>What your Garmin history says</h2>
       <p class="muted">From your Garmin activity export (2019 to 14 Oct 2026). Compared with the 2025/26 block for the April 2026 trail marathon, which built different things: vertical, durability and slow long runs.</p>
       <div id="history-notes" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Year by year</h2>
+      <p class="muted" id="annual-note"></p>
+      <h3>Distance</h3>
+      <div id="chart-yr-km" class="chart"></div>
+      <h3>Time on feet</h3>
+      <div id="chart-yr-h" class="chart"></div>
+      <h3>Number of runs</h3>
+      <div id="chart-yr-runs" class="chart"></div>
+      <div class="table-wrap" id="annual-table"></div>
+      <p class="muted">* Part year: the export starts on 17 Mar 2019, and this year is up to date. Years before 2023 look incomplete in the Garmin export, so treat them as a floor. Running, trail and treadmill runs only, and the 11 Oct 2026 walk is left out. Runs logged on this site after 14 Oct are added.</p>
+      <p class="muted" id="annual-other"></p>
     </section>
     <section class="card">
       <h2>Weekly distance: this block vs the marathon block</h2>
@@ -413,7 +426,7 @@
 
 </div>
 </div>
-<script src="data.js?v=70"></script>
-<script src="app.js?v=70"></script>
+<script src="data.js?v=71"></script>
+<script src="app.js?v=71"></script>
 </body>
 </html>
