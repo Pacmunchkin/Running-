@@ -619,6 +619,7 @@ function renderHome() {
     const all = [...new Set(NT.counties.flatMap(c => c.places))], vs = (NT.visited || []).map(v => Array.isArray(v) ? v : [v, '']).sort((a, b) => a[1] < b[1] ? -1 : 1), lv = last(vs);
     cards.push(card('nt', 'National Trust', kv([['Visited', `${vs.length} of ${all.length}`], lv && ['Latest', `${esc(lv[0])}${lv[1] ? ` <span class="muted">${fd(lv[1])}</span>` : ''}`]])));
   }
+  (db.routines || []).forEach(r => cards.push(card('routines', 'Routines', kv([[r.name, `${r.steps.length} steps, ${r.steps.reduce((a, s) => a + s[1], 0)} min`], ['First', esc(r.steps[0][0])]]))));
   const MD = db.media;
   if (MD) {
     const now = MD.items.filter(i => i.status === 'Now'), done = MD.items.filter(i => i.status === 'Finished'), rt = done.filter(i => i.rating);
@@ -641,6 +642,89 @@ function renderMedia() {
       (i.highlight ? `<div class="best">\u2605 ${esc(i.highlight)}</div>` : '') + (i.pages || i.year ? `<div class="muted">${[i.pages ? i.pages + ' pages' : '', i.year || ''].filter(Boolean).join(', ')}</div>` : '') + (i.tags ? `<div class="tags">${esc(i.tags)}</div>` : '') + (i.review ? `<p>${esc(i.review)}</p>` : '') + '</div>').join('') + '</div>' : '<p class="muted">Nothing matches.</p>';
   $('media-search').oninput = renderMedia; $('media-type').onchange = renderMedia; $('media-status').onchange = renderMedia;
   if (!$('media-type').options.length) { $('media-type').innerHTML = '<option value="">All types</option>' + M.types.map(t => `<option>${esc(t)}</option>`).join(''); $('media-status').innerHTML = '<option value="">All</option>' + M.statuses.map(t => `<option>${esc(t)}</option>`).join(''); $('media-type').value = ft; $('media-status').value = fs; }
+}
+// ---------- routines: press Go and it runs step by step ----------
+const RT = { state: null, timer: null, audio: null, lock: null, swReg: null };
+const rtPrefs = () => { try { return Object.assign({ sound: true, vibrate: true, notify: false }, JSON.parse(localStorage.getItem('rtPrefs') || '{}')); } catch (e) { return { sound: true, vibrate: true, notify: false }; } };
+const rtSavePrefs = p => { try { localStorage.setItem('rtPrefs', JSON.stringify(p)); } catch (e) { } };
+const rtSave = () => { try { RT.state ? localStorage.setItem('rtState', JSON.stringify(RT.state)) : localStorage.removeItem('rtState'); } catch (e) { } };
+const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+function rtRoutine() { return RT.state && (db.routines || []).find(r => r.id === RT.state.rid); }
+function rtChime() {
+  const p = rtPrefs();
+  if (p.vibrate && navigator.vibrate) navigator.vibrate([300, 150, 300]);
+  if (p.sound && RT.audio) {
+    const c = RT.audio, t0 = c.currentTime;
+    [0, 0.25].forEach((dt, k) => { const o = c.createOscillator(), g = c.createGain(); o.frequency.value = k ? 880 : 660; o.connect(g); g.connect(c.destination);
+      g.gain.setValueAtTime(0.0001, t0 + dt); g.gain.exponentialRampToValueAtTime(0.4, t0 + dt + 0.02); g.gain.exponentialRampToValueAtTime(0.0001, t0 + dt + 0.22); o.start(t0 + dt); o.stop(t0 + dt + 0.25); });
+  }
+}
+function rtNotify(title, body) {
+  if (!rtPrefs().notify || !('Notification' in window) || Notification.permission !== 'granted') return;
+  const opt = { body, tag: 'routine', renotify: true, vibrate: [300, 150, 300] };
+  if (RT.swReg) RT.swReg.showNotification(title, opt).catch(() => { }); else { try { new Notification(title, opt); } catch (e) { } }
+}
+async function rtWake(on) {
+  try { if (on && 'wakeLock' in navigator && !RT.lock) { RT.lock = await navigator.wakeLock.request('screen'); RT.lock.addEventListener('release', () => { RT.lock = null; }); } if (!on && RT.lock) { await RT.lock.release(); RT.lock = null; } } catch (e) { RT.lock = null; }
+}
+document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && RT.state && RT.state.running) rtWake(true); });
+function rtStep(announce) {
+  const R = rtRoutine(), s = RT.state;
+  if (s.i >= R.steps.length) { const mins = Math.round((Date.now() - s.started) / 60000); RT.state = null; rtSave(); rtWake(false); rtChime(); rtNotify(`${R.name} routine done`, `All ${R.steps.length} steps finished in ${mins} min.`); $('rt-run').innerHTML = `<div class="rtdone"><b>${esc(R.name)} done</b><span class="muted">${R.steps.length} steps in ${mins} min</span><button class="ghost" data-rt="close">Close</button></div>`; clearInterval(RT.timer); return false; }
+  if (announce) { const st = R.steps[s.i], nx = R.steps[s.i + 1]; rtChime(); rtNotify(`${st[0]} (${st[1]} min)`, nx ? `Next: ${nx[0]}` : 'Last step'); }
+  return true;
+}
+function rtTick() {
+  const s = RT.state; if (!s) return;
+  const R = rtRoutine();
+  if (s.running) {
+    let moved = false;
+    while (Date.now() >= s.end) { s.i++; moved = true; if (s.i >= R.steps.length) break; s.end += R.steps[s.i][1] * 60000; }
+    if (moved) { rtSave(); if (!rtStep(true)) return; }
+  }
+  const st = R.steps[s.i], left = s.running ? s.end - Date.now() : s.left, dur = st[1] * 60000;
+  const restMs = R.steps.slice(s.i + 1).reduce((a, x) => a + x[1] * 60000, 0) + left, totMs = R.steps.reduce((a, x) => a + x[1] * 60000, 0);
+  $('rt-run').innerHTML = `<div class="rtrun"><div class="muted">${esc(R.name)}, step ${s.i + 1} of ${R.steps.length}</div><div class="rtname">${esc(st[0])}</div><div class="rtclock">${mmss(left)}</div>` +
+    `<div class="rtbar"><i style="width:${(100 * (1 - left / dur)).toFixed(1)}%"></i></div><div class="muted">${R.steps[s.i + 1] ? 'Next: ' + esc(R.steps[s.i + 1][0]) + ` (${R.steps[s.i + 1][1]} min)` : 'Last step'}</div>` +
+    `<div class="rtbar thin"><i style="width:${(100 * (1 - restMs / totMs)).toFixed(1)}%"></i></div><div class="muted">${mmss(restMs)} left in total</div>` +
+    `<div class="rtbtns"><button class="ghost" data-rt="back">Back</button><button data-rt="${s.running ? 'pause' : 'resume'}">${s.running ? 'Pause' : 'Resume'}</button><button class="ghost" data-rt="skip">Skip</button><button class="ghost" data-rt="plus">+1 min</button><button class="ghost" data-rt="stop">Stop</button></div></div>`;
+}
+function rtStart(rid) {
+  const R = (db.routines || []).find(r => r.id === rid); if (!R) return;
+  try { RT.audio = RT.audio || new (window.AudioContext || window.webkitAudioContext)(); RT.audio.resume(); } catch (e) { }
+  RT.state = { rid, i: 0, running: true, started: Date.now(), end: Date.now() + R.steps[0][1] * 60000 };
+  rtSave(); rtWake(true); rtStep(true); clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick();
+  $('rt-run').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+function rtAction(act) {
+  const s = RT.state, R = rtRoutine();
+  if (act === 'close') { $('rt-run').innerHTML = ''; return; }
+  if (!s) return;
+  if (act === 'pause') { s.left = s.end - Date.now(); s.running = false; rtWake(false); }
+  if (act === 'resume') { s.end = Date.now() + s.left; s.running = true; rtWake(true); }
+  if (act === 'plus') { if (s.running) s.end += 60000; else s.left += 60000; }
+  if (act === 'skip' || act === 'back') {
+    s.i = act === 'skip' ? s.i + 1 : Math.max(0, s.i - 1);
+    if (s.i < R.steps.length) { const ms = R.steps[s.i][1] * 60000; if (s.running) s.end = Date.now() + ms; else s.left = ms; }
+    rtSave(); if (!rtStep(true)) return;
+  }
+  if (act === 'stop') { RT.state = null; rtSave(); rtWake(false); clearInterval(RT.timer); $('rt-run').innerHTML = ''; return; }
+  rtSave(); rtTick();
+}
+function renderRoutines() {
+  const L = db.routines || []; if (!$('rt-list')) return;
+  const p = rtPrefs();
+  $('rt-list').innerHTML = L.map(r => { const tot = r.steps.reduce((a, s) => a + s[1], 0);
+    return `<section class="card"><div class="row"><h2>${esc(r.name)} <small>${r.steps.length} steps, ${tot} min</small></h2><button data-rt-go="${esc(r.id)}">Go</button></div><ol class="rtsteps">${r.steps.map(s => `<li><span>${esc(s[0])}</span><span class="muted">${s[1]} min</span></li>`).join('')}</ol></section>`; }).join('');
+  $('rt-prefs').innerHTML = `<label><input type="checkbox" data-rp="sound"${p.sound ? ' checked' : ''}> Chime</label> <label><input type="checkbox" data-rp="vibrate"${p.vibrate ? ' checked' : ''}> Vibrate</label> <label><input type="checkbox" data-rp="notify"${p.notify ? ' checked' : ''}> Notifications</label>` +
+    (('Notification' in window) ? (Notification.permission === 'denied' ? ' <span class="muted">Notifications are blocked for this site in the browser settings.</span>' : '') : ' <span class="muted">This browser does not support notifications.</span>');
+  $('rt-prefs').onchange = async e => { const k = e.target.dataset.rp; if (!k) return; const q = rtPrefs(); q[k] = e.target.checked;
+    if (k === 'notify' && q.notify && 'Notification' in window && Notification.permission !== 'granted') { const res = await Notification.requestPermission(); q.notify = res === 'granted'; }
+    rtSavePrefs(q); renderRoutines(); };
+  $('rt-list').onclick = e => { const g = e.target.dataset && e.target.dataset.rtGo; if (g) rtStart(g); };
+  $('rt-run').onclick = e => { const a = e.target.dataset && e.target.dataset.rt; if (a) rtAction(a); };
+  if (!RT.swReg && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').then(r => { RT.swReg = r; }).catch(() => { });
+  if (!RT.state) { try { const s = JSON.parse(localStorage.getItem('rtState') || 'null'); if (s && L.find(r => r.id === s.rid)) { RT.state = s; clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick(); if (s.running) rtWake(true); } } catch (e) { } }
 }
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
@@ -958,7 +1042,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }

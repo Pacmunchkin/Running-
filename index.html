@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=93">
+<link rel="stylesheet" href="style.css?v=94">
 </head>
 <body>
 <div class="layout">
@@ -19,6 +19,7 @@
     <button data-tab="home">Home</button>
     <button data-tab="running">Running</button>
     <button data-tab="health">Health</button>
+    <button data-tab="routines">Routines</button>
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="meals">Meals</button>
     <button data-tab="shop">Shopping</button>
@@ -442,11 +443,21 @@
     </section>
   </div>
 
+  <div data-panel="routines" hidden>
+    <div id="rt-run"></div>
+    <div id="rt-list"></div>
+    <section class="card">
+      <h2>Settings</h2>
+      <p id="rt-prefs"></p>
+      <p class="muted">Press Go and the routine runs step by step, with a chime, a vibration and (if you allow it) a notification at each change. The screen stays on while it runs. If the screen locks, Android may hold the alarm back until you unlock it, so keep the page open. A routine in progress survives a page reload. Settings are saved in this browser.</p>
+    </section>
+  </div>
+
 </main>
 
 </div>
 </div>
-<script src="data.js?v=93"></script>
-<script src="app.js?v=93"></script>
+<script src="data.js?v=94"></script>
+<script src="app.js?v=94"></script>
 </body>
 </html>
