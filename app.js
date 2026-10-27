@@ -619,7 +619,28 @@ function renderHome() {
     const all = [...new Set(NT.counties.flatMap(c => c.places))], vs = (NT.visited || []).map(v => Array.isArray(v) ? v : [v, '']).sort((a, b) => a[1] < b[1] ? -1 : 1), lv = last(vs);
     cards.push(card('nt', 'National Trust', kv([['Visited', `${vs.length} of ${all.length}`], lv && ['Latest', `${esc(lv[0])}${lv[1] ? ` <span class="muted">${fd(lv[1])}</span>` : ''}`]])));
   }
+  const MD = db.media;
+  if (MD) {
+    const now = MD.items.filter(i => i.status === 'Now'), done = MD.items.filter(i => i.status === 'Finished'), rt = done.filter(i => i.rating);
+    cards.push(card('media', 'Media', kv([['Now', now.length ? now.map(i => esc(i.title)).join(', ') : (MD.items.length ? 'Nothing' : 'Nothing logged yet')], ['Finished', MD.items.length ? `${done.length}${rt.length ? `, average ${(rt.reduce((a, i) => a + i.rating, 0) / rt.length).toFixed(1)} / 5` : ''}` : '']])));
+  }
   $('home-grid').innerHTML = cards.join('');
+}
+function renderMedia() {
+  const M = db.media; if (!M) return;
+  const items = M.items.slice().sort((a, b) => (b.finished || b.started || '') < (a.finished || a.started || '') ? -1 : 1), yr = today().slice(0, 4);
+  const stars = r => r ? '\u2605'.repeat(Math.round(r)) + '\u2606'.repeat(5 - Math.round(r)) : '';
+  const fin = items.filter(i => i.status === 'Finished'), thisYr = fin.filter(i => (i.finished || '').startsWith(yr)), rated = fin.filter(i => i.rating);
+  const avg = rated.length ? rated.reduce((a, i) => a + i.rating, 0) / rated.length : 0;
+  $('media-stats').innerHTML = items.length ? [[items.filter(i => i.status === 'Now').length, 'Now'], [thisYr.length, `Finished in ${yr}`], [fin.length, 'Finished in all'], [avg ? avg.toFixed(1) + ' / 5' : '-', 'Average rating']].map(([v, l]) => `<div class="stat"><b>${v}</b><span>${esc(l)}</span></div>`).join('') : '';
+  const q = ($('media-search').value || '').toLowerCase(), ft = $('media-type').value, fs = $('media-status').value;
+  const list = items.filter(i => (!q || [i.title, i.creator, i.review].join(' ').toLowerCase().includes(q)) && (!ft || i.type === ft) && (!fs || i.status === fs));
+  $('media-list').innerHTML = !items.length ? '<p class="muted">Nothing here yet. Tell me what you are reading, watching or listening to, what you think of it, and a rating out of 5, and I will add it.</p>' :
+    list.length ? '<div class="media">' + list.map(i => `<div class="mediacard"><div class="mh"><b>${esc(i.title)}</b> <span class="muted">${esc(i.type)}${i.creator ? ', ' + esc(i.creator) : ''}</span></div>` +
+      `<div class="ms"><span class="st st-${i.status === 'Finished' ? 'OK' : i.status === 'Now' ? 'Watch' : i.status === 'Gave up' ? 'Low' : 'High'}">${esc(i.status)}</span> <span class="stars">${stars(i.rating)}</span> <span class="muted">${i.finished ? fmtDate(i.finished) : i.started ? 'started ' + fmtDate(i.started) : ''}</span></div>` +
+      (i.review ? `<p>${esc(i.review)}</p>` : '') + '</div>').join('') + '</div>' : '<p class="muted">Nothing matches.</p>';
+  $('media-search').oninput = renderMedia; $('media-type').onchange = renderMedia; $('media-status').onchange = renderMedia;
+  if (!$('media-type').options.length) { $('media-type').innerHTML = '<option value="">All types</option>' + M.types.map(t => `<option>${esc(t)}</option>`).join(''); $('media-status').innerHTML = '<option value="">All</option>' + M.statuses.map(t => `<option>${esc(t)}</option>`).join(''); $('media-type').value = ft; $('media-status').value = fs; }
 }
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
@@ -937,7 +958,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }

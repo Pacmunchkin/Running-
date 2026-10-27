@@ -128,3 +128,4 @@ tr.past td{opacity:.65}details table{margin-bottom:8px}
 h2.sec{margin:12px 0 0;padding-top:8px;font-size:20px;border-top:1px solid var(--line)}h2.sec:first-of-type{border-top:0;margin-top:0}
 .jump{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}.jump a{padding:6px 12px;border:1px solid var(--line);border-radius:999px;color:var(--text);text-decoration:none;font-size:13px}.jump a:hover{border-color:var(--accent)}
 [data-panel="running"],[data-panel="health"]{display:grid;gap:16px}[data-panel][hidden]{display:none}
+.media{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:12px}.mediacard{border:1px solid var(--line);border-radius:10px;padding:12px;background:var(--bg)}.mediacard p{margin:8px 0 0;font-size:14px}.stars{color:#fcc419;letter-spacing:2px}.mh{margin-bottom:6px}

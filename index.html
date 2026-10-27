@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=86">
+<link rel="stylesheet" href="style.css?v=87">
 </head>
 <body>
 <div class="layout">
@@ -25,6 +25,7 @@
     <button data-tab="garden">Garden</button>
     <button data-tab="pack">Packing</button>
     <button data-tab="nt">National Trust</button>
+    <button data-tab="media">Media</button>
   </nav>
 </aside>
 <div class="content">
@@ -431,11 +432,21 @@
       <p class="muted">Visits are recorded here in the site, so they show on every device. Tell me which places you have visited (and a date if you know it) and I will update the list.</p>
     </section>
   </div>
+  <div data-panel="media" hidden>
+    <section class="card">
+      <h2>Media</h2>
+      <p class="muted">Books, films, TV, podcasts, games, music and articles, with what I think of them.</p>
+      <div id="media-stats" class="stats"></div>
+      <p><input id="media-search" type="search" placeholder="Search titles and thoughts" aria-label="Search"> <select id="media-type" aria-label="Type"></select> <select id="media-status" aria-label="Status"></select></p>
+      <div id="media-list"></div>
+    </section>
+  </div>
+
 </main>
 
 </div>
 </div>
-<script src="data.js?v=86"></script>
-<script src="app.js?v=86"></script>
+<script src="data.js?v=87"></script>
+<script src="app.js?v=87"></script>
 </body>
 </html>
