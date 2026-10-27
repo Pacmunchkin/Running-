@@ -543,6 +543,23 @@ function renderPacking() {
   $('pack-clear').onclick = () => { saved = {}; try { localStorage.removeItem('packed'); } catch (x) { } renderPacking(); };
   update();
 }
+function renderNT() {
+  const N = db.nt; if (!N) return;
+  let local = []; try { local = JSON.parse(localStorage.getItem('ntVisited') || '[]'); } catch (e) { }
+  const done = new Set([...(N.visited || []), ...local]), all = [...new Set(N.counties.flatMap(c => c.places))];
+  const q = ($('nt-search').value || '').toLowerCase(), mode = $('nt-filter').value || 'all';
+  const show = p => (!q || p.toLowerCase().includes(q)) && (mode === 'all' || (mode === 'visited') === done.has(p));
+  const n = all.filter(p => done.has(p)).length;
+  $('nt-count').textContent = `${n} of ${all.length} visited (${(100 * n / all.length).toFixed(1)}%)`;
+  $('nt-note').textContent = N.note + ' Source: ' + N.source + '.';
+  $('nt-list').innerHTML = N.counties.map(c => {
+    const vis = c.places.filter(p => done.has(p)).length, ps = c.places.filter(show);
+    if (!ps.length) return '';
+    return `<details${q || mode !== 'all' ? ' open' : ''}><summary>${esc(c.name)} <span class="muted">${vis} of ${c.places.length}</span></summary><ul class="pack">${ps.map(p => `<li><label><input type="checkbox" data-p="${esc(p)}"${done.has(p) ? ' checked' : ''}> ${esc(p)}</label></li>`).join('')}</ul></details>`;
+  }).join('') || '<p class="muted">Nothing matches.</p>';
+  $('nt-list').onchange = e => { const p = e.target.dataset.p; if (!p) return; const s = new Set(local); e.target.checked ? s.add(p) : s.delete(p); try { localStorage.setItem('ntVisited', JSON.stringify([...s])); } catch (x) { } renderNT(); };
+  $('nt-search').oninput = renderNT; $('nt-filter').onchange = renderNT;
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -851,7 +868,7 @@ $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.targe
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT();
   Object.keys(COLS).forEach(renderCol);
 }
 

@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=73">
+<link rel="stylesheet" href="style.css?v=74">
 </head>
 <body>
 <div class="layout">
@@ -26,6 +26,7 @@
     <button data-tab="shop">Shopping</button>
     <button data-tab="garden">Garden</button>
     <button data-tab="pack">Packing</button>
+    <button data-tab="nt">National Trust</button>
     <button data-tab="profile">Profile</button>
   </nav>
 </aside>
@@ -404,6 +405,17 @@
     </section>
   </div>
 
+  <div data-panel="nt" hidden>
+    <section class="card">
+      <h2>National Trust places</h2>
+      <p><b id="nt-count"></b></p>
+      <p class="muted" id="nt-note"></p>
+      <p><input id="nt-search" type="search" placeholder="Search places" aria-label="Search places"> <select id="nt-filter" aria-label="Filter"><option value="all">All</option><option value="visited">Visited</option><option value="not">Not yet</option></select></p>
+      <div id="nt-list"></div>
+      <p class="muted">Ticks are saved in this browser only, so your visits are not published. To keep them on every device, tell me which you have visited and I will record them in the site data.</p>
+    </section>
+  </div>
+
   <div data-panel="profile" hidden>
     <section class="card">
       <h2>Runner</h2>
@@ -426,7 +438,7 @@
 
 </div>
 </div>
-<script src="data.js?v=73"></script>
-<script src="app.js?v=73"></script>
+<script src="data.js?v=74"></script>
+<script src="app.js?v=74"></script>
 </body>
 </html>
