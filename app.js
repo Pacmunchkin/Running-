@@ -552,10 +552,15 @@ function renderNT() {
   const n = all.filter(p => V[p]).length;
   $('nt-count').textContent = `${n} of ${all.length} visited (${(100 * n / all.length).toFixed(1)}%)`;
   $('nt-note').textContent = N.note + ' Source: ' + N.source + '.';
-  $('nt-list').innerHTML = N.counties.map(c => {
-    const vis = c.places.filter(p => V[p]).length, ps = c.places.filter(show);
-    if (!ps.length) return '';
-    return `<details${q || mode !== 'all' ? ' open' : ''}><summary>${esc(c.name)} <span class="muted">${vis} of ${c.places.length}</span></summary><ul class="pack">${ps.map(p => `<li class="${V[p] ? 'ntyes' : 'ntno'}"><span class="ntmark">${V[p] ? '&#10003;' : '&#9675;'}</span> ${esc(p)}${typeof V[p] === 'string' ? ` <span class="muted">${fmtDate(V[p])}</span>` : ''}</li>`).join('')}</ul></details>`;
+  const countries = [...new Set(N.counties.map(c => c.country || 'England'))];
+  $('nt-list').innerHTML = countries.map(co => {
+    const cs = N.counties.filter(c => (c.country || 'England') === co), ps0 = [...new Set(cs.flatMap(c => c.places))];
+    const body = cs.map(c => {
+      const vis = c.places.filter(p => V[p]).length, ps = c.places.filter(show);
+      if (!ps.length) return '';
+      return `<details${q || mode !== 'all' ? ' open' : ''}><summary>${esc(c.name)} <span class="muted">${vis} of ${c.places.length}</span></summary><ul class="pack">${ps.map(p => `<li class="${V[p] ? 'ntyes' : 'ntno'}"><span class="ntmark">${V[p] ? '&#10003;' : '&#9675;'}</span> ${esc(p)}${typeof V[p] === 'string' ? ` <span class="muted">${fmtDate(V[p])}</span>` : ''}</li>`).join('')}</ul></details>`;
+    }).join('');
+    return body ? `<h3>${esc(co)} <span class="muted">${ps0.filter(p => V[p]).length} of ${ps0.length}</span></h3>${body}` : '';
   }).join('') || '<p class="muted">Nothing matches.</p>';
   $('nt-search').oninput = renderNT; $('nt-filter').onchange = renderNT;
 }
