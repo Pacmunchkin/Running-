@@ -9,42 +9,48 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=83">
+<link rel="stylesheet" href="style.css?v=86">
 </head>
 <body>
 <div class="layout">
 <aside id="side">
   <div class="brand"><span class="logo">🏃</span><div><b>Run Log</b><div id="who" class="muted"></div></div></div>
   <nav id="tabs">
-    <button data-tab="train">Training</button>
-    <button data-tab="review">Review</button>
-    <button data-tab="trends">Trends</button>
-    <button data-tab="history">History</button>
-    <button data-tab="plan">Plan &amp; goals</button>
+    <button data-tab="home">Home</button>
+    <button data-tab="running">Running</button>
+    <button data-tab="health">Health</button>
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="meals">Meals</button>
     <button data-tab="shop">Shopping</button>
     <button data-tab="garden">Garden</button>
     <button data-tab="pack">Packing</button>
     <button data-tab="nt">National Trust</button>
-    <button data-tab="profile">Profile</button>
   </nav>
 </aside>
 <div class="content">
 <main>
-  <div data-panel="train">
-    <section class="stats" id="stats"></section>
-
+  <div data-panel="home">
     <section class="card">
-      <h2>Next up</h2>
-      <ul id="next" class="plain"></ul>
+      <h2 id="home-title">Overview</h2>
+      <p class="muted" id="home-date"></p>
     </section>
+    <div class="home-grid" id="home-grid"></div>
+  </div>
 
+  <div data-panel="running" hidden>
+    <nav class="jump" aria-label="Jump to"><a href="#running" data-jump="run-charts">Charts</a> <a href="#running" data-jump="run-summary">This week and reviews</a> <a href="#running" data-jump="run-plan">Plan</a> <a href="#running" data-jump="run-runs">All runs</a> <a href="#running" data-jump="run-history">History and profile</a></nav>
+    <h2 class="sec" id="run-charts">Charts</h2>
+    <section class="card">
+      <div class="row"><h2>Estimated race pace</h2>
+        <span class="seg-btns"><button class="ghost on" data-pv="race">To race day</button><button class="ghost" data-pv="now">Progress so far</button></span></div>
+      <div id="pace-tiles" class="stats wide"></div>
+      <div id="chart-pace"></div>
+      <p class="muted">Solid: estimated pace if raced now (with the estimated finish time). Dotted: projected improvement to race day, a central case that assumes training goes to plan. Dashed: goal pace. Higher on the chart is faster.</p>
+    </section>
     <section class="card">
       <h2>Weekly distance <small>(last 12 weeks, Sat–Fri)</small></h2>
       <div id="chart"></div>
     </section>
-
     <section class="card">
       <h2>Training plan: weekly distance to race day</h2>
       <div id="chart-plan-km" class="chart"></div>
@@ -57,91 +63,9 @@
       <p class="muted">Bars: your longest run each week. Dotted line: the planned long run. This is the main lever for the half marathon and the 10K.</p>
     </section>
     <section class="card">
-      <h2>The year at a glance</h2>
-      <div class="table-wrap" id="plan-phases"></div>
-      <div id="plan-assumptions" class="review"></div>
-    </section>
-    <section class="card">
-      <h2>Week by week: plan vs actual</h2>
-      <p class="muted">Status compares a finished week's km with the plan: on plan is within 15%.</p>
-      <div id="plan-weeks"></div>
-    </section>
-    <section class="card">
-      <h2>Checkpoints</h2>
-      <div class="table-wrap" id="plan-checkpoints"></div>
-    </section>
-    <section class="card">
-      <h2>Principles</h2>
-      <div id="plan-principles" class="review"></div>
-    </section>
-    <section class="card">
-      <h2>Race plans</h2>
-      <div id="plan-races" class="review"></div>
-    </section>
-
-    <section class="card">
-      <div class="row">
-        <h2>All runs</h2>
-        <input type="search" id="search" placeholder="Search notes/type…">
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr>
-            <th data-sort="date">Date</th><th>Type</th><th data-sort="dist">Distance</th><th data-sort="secs">Time</th>
-            <th data-sort="pace">Pace</th><th data-sort="hr">HR avg / max</th><th>Notes</th><th></th>
-          </tr></thead>
-          <tbody id="rows"></tbody>
-        </table>
-      </div>
-      <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
-    </section>
-  </div>
-
-  <div data-panel="review" hidden>
-    <section class="card">
-      <div class="row"><h2>Estimated race pace</h2>
-        <span class="seg-btns"><button class="ghost on" data-pv="race">To race day</button><button class="ghost" data-pv="now">Progress so far</button></span></div>
-      <div id="pace-tiles" class="stats wide"></div>
-      <div id="chart-pace"></div>
-      <p class="muted">Solid: estimated pace if raced now (with the estimated finish time). Dotted: projected improvement to race day, a central case that assumes training goes to plan. Dashed: goal pace. Higher on the chart is faster.</p>
-    </section>
-    <section class="card">
       <h2>Time in HR zones <small id="zones-title"></small></h2>
       <div id="block-zones"></div>
     </section>
-    <section class="card">
-      <div class="row"><h2>Latest review</h2></div>
-      <div id="review-latest" class="review"></div>
-    </section>
-    <section class="card">
-      <h2>Estimated finish times</h2>
-      <div class="table-wrap" id="est-table"></div>
-      <p class="muted" id="est-note"></p>
-    </section>
-    <section class="card">
-      <h2>Estimated VO2 max</h2>
-      <div id="chart-vo2"></div>
-      <p class="muted">Daniels VDOT from the average pace of each week's quality reps. A model estimate, not Garmin's VO2 max reading. Dashed lines are your race-equivalent VDOT from past PBs.</p>
-    </section>
-    <section class="card">
-      <h2>How the estimates work</h2>
-      <p>VDOT is calculated from the average pace of each week's quality reps, treated as about maximal-aerobic effort. Race estimates are the Daniels race-time equivalent of that VDOT multiplied by an endurance factor per distance (half marathon ×1.136, 10K ×1.052, 5K ×1.014). The factors were calibrated to the 14 Oct estimates and are adjusted each Wednesday from long runs and tempo sessions. Earlier points use the same factors and are marked retrospective.</p>
-      <p><b>Projection (dotted line).</b> From the latest estimate, VDOT rises by up to +1.5 over the coming year (gains slow down, 26-week time constant) and the endurance factors ease towards ×1.09 (HM), ×1.04 (10K) and ×1.005 (5K) with a 20-week time constant. The HM floor is close to your 2025 half marathon (×1.10). It is a central case, not a promise: it needs consistent weeks and a growing long run, and it is re-anchored every Wednesday from the latest session.</p>
-    </section>
-    <section class="card">
-      <h2>Block stats <small id="block-title"></small></h2>
-      <div id="block-stats" class="stats"></div>
-      <h3>Weeks (Sat–Fri)</h3><div class="table-wrap" id="block-weeks"></div>
-      <h3>Quality work</h3><div class="table-wrap" id="block-quality"></div>
-      <h3>Easy and recovery runs</h3><div class="table-wrap" id="block-easy"></div>
-    </section>
-    <section class="card">
-      <h2>Earlier reviews</h2>
-      <div id="review-older"><p class="muted">None yet.</p></div>
-    </section>
-  </div>
-
-  <div data-panel="trends" hidden>
     <section class="card">
       <h2>Long run progression</h2>
       <div id="chart-long" class="chart"></div>
@@ -166,41 +90,14 @@
       <p class="muted">Hours per week in each zone (the grey part is below Z1: walking, warm-up and jogging). Totals include warm-ups, cool-downs and recoveries.</p>
     </section>
     <section class="card">
-      <h2>Body weight</h2>
-      <div id="chart-weight" class="chart"></div>
-      <p class="muted" id="weight-note"></p>
-      <p class="muted">Weigh in once a week, first thing in the morning, and read the trend, not single readings. It is context for pace, efficiency and fuelling, not a target.</p>
-    </section>
-    <section class="card">
-      <h2>Blood pressure</h2>
-      <div id="chart-bp" class="chart"></div>
-      <p class="muted" id="bp-note"></p>
-      <p class="muted">Systolic and diastolic, in mmHg. A single reading, especially straight after a run, says little. For a clean trend measure at the same time each time: seated, rested for 5 minutes, two readings and the average.</p>
-    </section>
-    <section class="card">
-      <h2>Peak flow</h2>
-      <div id="chart-pef" class="chart"></div>
-      <p class="muted" id="pef-note"></p>
-      <p class="muted">Litres per minute, from a peak flow meter. For a clean trend, use the same meter and the same time of day, and take the best of three blows. Note whether it was before or after a run or reliever, since exercise can change it. The usual bands are green at 80% or more of your personal best, amber at 50 to 80%, red below 50%. Your asthma action plan, if you have one, comes first.</p>
-    </section>
-    <section class="card">
-      <h2>Resting heart rate</h2>
-      <div id="chart-rhr" class="chart"></div>
-      <p class="muted" id="rhr-note"></p>
-      <p class="muted">Garmin's daily resting HR. In September it rose from 40 to 44 across the week of the illness and took until 7 Oct to settle. Three or more bpm above baseline for two mornings is a cue for an easy day.</p>
-    </section>
-    <section class="card">
       <h2>Weekly training load</h2>
       <div id="chart-load" class="chart"></div>
       <p class="muted">Zone-weighted load: minutes in each zone multiplied by the zone number (Z1 ×1 up to Z5 ×5). The line is the average of the last four weeks, so you can see a week against your recent norm.</p>
     </section>
-  </div>
-
-  <div data-panel="history" hidden>
     <section class="card">
-      <h2>What your Garmin history says</h2>
-      <p class="muted">From your Garmin activity export (2019 to 14 Oct 2026). Compared with the 2025/26 block for the April 2026 trail marathon, which built different things: vertical, durability and slow long runs.</p>
-      <div id="history-notes" class="review"></div>
+      <h2>Estimated VO2 max</h2>
+      <div id="chart-vo2"></div>
+      <p class="muted">Daniels VDOT from the average pace of each week's quality reps. A model estimate, not Garmin's VO2 max reading. Dashed lines are your race-equivalent VDOT from past PBs.</p>
     </section>
     <section class="card">
       <h2>Year by year</h2>
@@ -242,18 +139,42 @@
       <p class="muted">Monthly average of the watch's running VO2 max. It peaked at 54 in April and May 2025 and has sat at 47 to 49 since last autumn.</p>
     </section>
     <section class="card">
-      <h2>Resting heart rate since 2024</h2>
-      <div id="chart-hist-rhr" class="chart"></div>
-      <p class="muted">Weekly average. It has drifted down from about 44 to about 40 bpm over two years.</p>
-    </section>
-    <section class="card">
       <h2>Fitness from race efforts (VDOT)</h2>
       <div id="chart-hist-vdot" class="chart"></div>
       <p class="muted">Each dot is a 5K, 10K or half marathon effort converted to VDOT. Grey dots are the 2026 steady half marathons (not races). The dashed line is the current estimate from your reps.</p>
     </section>
-  </div>
-
-  <div data-panel="plan" hidden>
+    <h2 class="sec" id="run-summary">This week and reviews</h2>
+    <section class="stats" id="stats"></section>
+    <section class="card">
+      <h2>Next up</h2>
+      <ul id="next" class="plain"></ul>
+    </section>
+    <section class="card">
+      <div class="row"><h2>Latest review</h2></div>
+      <div id="review-latest" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Estimated finish times</h2>
+      <div class="table-wrap" id="est-table"></div>
+      <p class="muted" id="est-note"></p>
+    </section>
+    <section class="card">
+      <h2>How the estimates work</h2>
+      <p>VDOT is calculated from the average pace of each week's quality reps, treated as about maximal-aerobic effort. Race estimates are the Daniels race-time equivalent of that VDOT multiplied by an endurance factor per distance (half marathon ×1.136, 10K ×1.052, 5K ×1.014). The factors were calibrated to the 14 Oct estimates and are adjusted each Wednesday from long runs and tempo sessions. Earlier points use the same factors and are marked retrospective.</p>
+      <p><b>Projection (dotted line).</b> From the latest estimate, VDOT rises by up to +1.5 over the coming year (gains slow down, 26-week time constant) and the endurance factors ease towards ×1.09 (HM), ×1.04 (10K) and ×1.005 (5K) with a 20-week time constant. The HM floor is close to your 2025 half marathon (×1.10). It is a central case, not a promise: it needs consistent weeks and a growing long run, and it is re-anchored every Wednesday from the latest session.</p>
+    </section>
+    <section class="card">
+      <h2>Block stats <small id="block-title"></small></h2>
+      <div id="block-stats" class="stats"></div>
+      <h3>Weeks (Sat–Fri)</h3><div class="table-wrap" id="block-weeks"></div>
+      <h3>Quality work</h3><div class="table-wrap" id="block-quality"></div>
+      <h3>Easy and recovery runs</h3><div class="table-wrap" id="block-easy"></div>
+    </section>
+    <section class="card">
+      <h2>Earlier reviews</h2>
+      <div id="review-older"><p class="muted">None yet.</p></div>
+    </section>
+    <h2 class="sec" id="run-plan">Plan and goals</h2>
     <section class="card">
       <h2>Goals</h2>
       <div class="table-wrap" id="c-goals"></div>
@@ -266,7 +187,102 @@
       <h2>Missed / changed</h2>
       <div class="table-wrap" id="c-missed"></div>
     </section>
+    <section class="card">
+      <h2>The year at a glance</h2>
+      <div class="table-wrap" id="plan-phases"></div>
+      <div id="plan-assumptions" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Week by week: plan vs actual</h2>
+      <p class="muted">Status compares a finished week's km with the plan: on plan is within 15%.</p>
+      <div id="plan-weeks"></div>
+    </section>
+    <section class="card">
+      <h2>Checkpoints</h2>
+      <div class="table-wrap" id="plan-checkpoints"></div>
+    </section>
+    <section class="card">
+      <h2>Principles</h2>
+      <div id="plan-principles" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Race plans</h2>
+      <div id="plan-races" class="review"></div>
+    </section>
+    <h2 class="sec" id="run-runs">All runs</h2>
+    <section class="card">
+      <div class="row">
+        <h2>All runs</h2>
+        <input type="search" id="search" placeholder="Search notes/type…">
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th data-sort="date">Date</th><th>Type</th><th data-sort="dist">Distance</th><th data-sort="secs">Time</th>
+            <th data-sort="pace">Pace</th><th data-sort="hr">HR avg / max</th><th>Notes</th><th></th>
+          </tr></thead>
+          <tbody id="rows"></tbody>
+        </table>
+      </div>
+      <p id="empty" class="muted" hidden>No runs yet — add your first one above.</p>
+    </section>
+    <h2 class="sec" id="run-history">History and profile</h2>
+    <section class="card">
+      <h2>What your Garmin history says</h2>
+      <p class="muted">From your Garmin activity export (2019 to 14 Oct 2026). Compared with the 2025/26 block for the April 2026 trail marathon, which built different things: vertical, durability and slow long runs.</p>
+      <div id="history-notes" class="review"></div>
+    </section>
+    <section class="card">
+      <h2>Runner</h2>
+      <dl id="profile"></dl>
+    </section>
+    <section class="card">
+      <h2>Heart-rate zones</h2>
+      <div class="table-wrap" id="zones"></div>
+    </section>
+    <section class="card">
+      <h2>Personal bests &amp; prior races</h2>
+      <div class="table-wrap" id="c-pbs"></div>
+    </section>
+    <section class="card">
+      <h2>Data caveats</h2>
+      <div class="table-wrap" id="c-caveats"></div>
+    </section>
   </div>
+
+  <div data-panel="health" hidden>
+    <section class="stats" id="health-stats"></section>
+    <section class="card">
+      <h2>Body weight</h2>
+      <div id="chart-weight" class="chart"></div>
+      <p class="muted" id="weight-note"></p>
+      <p class="muted">Weigh in once a week, first thing in the morning, and read the trend, not single readings. It is context for pace, efficiency and fuelling, not a target.</p>
+    </section>
+    <section class="card">
+      <h2>Blood pressure</h2>
+      <div id="chart-bp" class="chart"></div>
+      <p class="muted" id="bp-note"></p>
+      <p class="muted">Systolic and diastolic, in mmHg. A single reading, especially straight after a run, says little. For a clean trend measure at the same time each time: seated, rested for 5 minutes, two readings and the average.</p>
+    </section>
+    <section class="card">
+      <h2>Peak flow</h2>
+      <div id="chart-pef" class="chart"></div>
+      <p class="muted" id="pef-note"></p>
+      <p class="muted">Litres per minute, from a peak flow meter. For a clean trend, use the same meter and the same time of day, and take the best of three blows. Note whether it was before or after a run or reliever, since exercise can change it. The usual bands are green at 80% or more of your personal best, amber at 50 to 80%, red below 50%. Your asthma action plan, if you have one, comes first.</p>
+    </section>
+    <section class="card">
+      <h2>Resting heart rate</h2>
+      <div id="chart-rhr" class="chart"></div>
+      <p class="muted" id="rhr-note"></p>
+      <p class="muted">Garmin's daily resting HR. In September it rose from 40 to 44 across the week of the illness and took until 7 Oct to settle. Three or more bpm above baseline for two mornings is a cue for an easy day.</p>
+    </section>
+    <section class="card">
+      <h2>Resting heart rate since 2024</h2>
+      <div id="chart-hist-rhr" class="chart"></div>
+      <p class="muted">Weekly average. It has drifted down from about 44 to about 40 bpm over two years.</p>
+    </section>
+  </div>
+
 
   <div data-panel="gear" hidden>
     <section class="card">
@@ -415,30 +431,11 @@
       <p class="muted">Visits are recorded here in the site, so they show on every device. Tell me which places you have visited (and a date if you know it) and I will update the list.</p>
     </section>
   </div>
-
-  <div data-panel="profile" hidden>
-    <section class="card">
-      <h2>Runner</h2>
-      <dl id="profile"></dl>
-    </section>
-    <section class="card">
-      <h2>Heart-rate zones</h2>
-      <div class="table-wrap" id="zones"></div>
-    </section>
-    <section class="card">
-      <h2>Personal bests &amp; prior races</h2>
-      <div class="table-wrap" id="c-pbs"></div>
-    </section>
-    <section class="card">
-      <h2>Data caveats</h2>
-      <div class="table-wrap" id="c-caveats"></div>
-    </section>
-  </div>
 </main>
 
 </div>
 </div>
-<script src="data.js?v=83"></script>
-<script src="app.js?v=83"></script>
+<script src="data.js?v=86"></script>
+<script src="app.js?v=86"></script>
 </body>
 </html>

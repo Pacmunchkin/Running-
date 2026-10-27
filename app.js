@@ -59,11 +59,13 @@ function renderStats() {
     ['Avg pace', fmtPace(secs, km)], ['Longest', fmtDist(longest) + ' ' + units],
     ['Avg HR (time-weighted)', hrSecs ? Math.round(withHr.reduce((a, r) => a + r.hr * r.secs, 0) / hrSecs) : '–'],
     ['Total time', fmtTime(secs)], ['Total ascent', runs.reduce((a, r) => a + (r.asc || 0), 0) + ' m'],
-    ...(db.bp && db.bp.length ? [['Blood pressure (' + parseD(db.bp[db.bp.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.bp[db.bp.length - 1].sys + '/' + db.bp[db.bp.length - 1].dia]] : []),
-    ...(db.peakflow && db.peakflow.readings.length ? [['Peak flow (' + parseD(db.peakflow.readings[db.peakflow.readings.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.peakflow.readings[db.peakflow.readings.length - 1].lpm + ' L/min']] : []),
-    ...(db.weight && db.weight.length ? [['Weight (' + parseD(db.weight[db.weight.length - 1].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) + ')', db.weight[db.weight.length - 1].kg + ' kg']] : [])
   ];
   $('stats').innerHTML = items.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
+  const dm = d => parseD(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), last = arr => arr && arr.length ? arr[arr.length - 1] : null;
+  const hs = [], wt = last(db.weight), bpr = last(db.bp), pf = last((db.peakflow || {}).readings), rh = db.garmin && db.garmin.rhrDaily && last(db.garmin.rhrDaily);
+  if (wt) hs.push([`Weight (${dm(wt.date)})`, wt.kg + ' kg']); if (bpr) hs.push([`Blood pressure (${dm(bpr.date)})`, bpr.sys + '/' + bpr.dia]);
+  if (pf) hs.push([`Peak flow (${dm(pf.date)})`, pf.lpm + ' L/min']); if (rh) hs.push([`Resting HR (${dm(rh[0])})`, rh[1] + ' bpm']);
+  $('health-stats').innerHTML = hs.map(([l, v]) => `<div class="stat"><b>${esc(v)}</b><span>${esc(l)}</span></div>`).join('');
 }
 
 function renderNext() {
@@ -564,6 +566,61 @@ function renderNT() {
   }).join('') || '<p class="muted">Nothing matches.</p>';
   $('nt-search').oninput = renderNT; $('nt-filter').onchange = renderNT;
 }
+function renderHome() {
+  if (!$('home-grid')) return;
+  const fd = d => parseD(d).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }), last = arr => arr && arr.length ? arr[arr.length - 1] : null, t = today();
+  $('home-date').textContent = `${parseD(t).toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}. Click a card to open it.`;
+  const kv = rows => '<div class="kv">' + rows.filter(r => r && r[1] != null && r[1] !== '').map(([k, v]) => `<div class="kvr"><span class="k">${esc(k)}</span><span class="v">${v}</span></div>`).join('') + '</div>';
+  const card = (tab, title, body) => `<a class="card home-card" href="#${tab}" data-go="${tab}"><h2>${esc(title)}</h2>${body}</a>`;
+  const cards = [];
+  // running
+  const runs = db.runs.slice().sort((a, b) => a.date < b.date ? -1 : 1), lr = last(runs), wk = weekStart(t);
+  const wkKm = runs.filter(r => weekStart(r.date) === wk).reduce((a, r) => a + r.km, 0);
+  const nx = db.plan.filter(p => p.date > t || (p.date === t && !runs.some(r => r.date === t))).sort((a, b) => a.date < b.date ? -1 : 1).slice(0, 3);
+  cards.push(card('running', 'Running', kv([
+    ['This week', fmtDist(wkKm) + ' ' + units], ['Latest run', lr ? `${fd(lr.date)}: ${lr.type}, ${fmtDist(lr.km)} ${units} at ${fmtPace(lr.secs, lr.km)}${lr.hr ? ', HR ' + lr.hr : ''}` : ''],
+    ...nx.map((p, i) => [i ? '' : 'Next up', `${fd(p.date)}: ${esc(p.session)}${p.km ? ' ' + p.km + ' km' : ''}`])]) + `<div class="stats wide small">${$('pace-tiles').innerHTML}</div>`));
+  // health
+  const wt = last(db.weight), bp = last(db.bp), pf = last((db.peakflow || {}).readings), rh = db.garmin && db.garmin.rhrDaily && last(db.garmin.rhrDaily);
+  cards.push(card('health', 'Health', kv([wt && ['Weight', `${wt.kg} kg <span class="muted">${fd(wt.date)}</span>`], bp && ['Blood pressure', `${bp.sys}/${bp.dia} <span class="muted">${fd(bp.date)}</span>`],
+    pf && ['Peak flow', `${pf.lpm} L/min <span class="muted">${fd(pf.date)}</span>`], rh && ['Resting HR', `${rh[1]} bpm <span class="muted">${fd(rh[0])}</span>`]])));
+  // gear and fuel
+  const shoe0 = (db.shoes || []).find(g => g.status === 'In use' && g.km), sups = db.supplements || [];
+  const shoe = shoe0 && { name: shoe0.name, km: (shoe0.km + db.runs.filter(r => r.shoe === shoe0.name && (!shoe0.asOf || r.date > shoe0.asOf)).reduce((a, r) => a + r.km, 0)).toFixed(1) };
+  cards.push(card('gear', 'Gear & fuel', kv([shoe && ['Shoes', `${esc(shoe.name)}: ${shoe.km} km`], ['Supplements', sups.map(s => esc(s.name + ' ' + s.dose)).join(', ')], ['Fuel recipes', (db.fuelRecipes || []).length + ' recipes']])));
+  // meals
+  const N = (db.meals || {}).nutrition, M = db.meals;
+  if (N) {
+    const K = N.keys, sum = k => N.items.reduce((a, i) => a + i[2 + K.indexOf(k)], 0), kg = wt ? wt.kg : 77, cr = (N.ranges || []).find(r => r.k === 'c'), cv = sum('c');
+    const cl = cr && cr.perKg ? (cv < cr.perKg[0] * kg ? 'Low' : cv > cr.perKg[1] * kg ? 'High' : 'OK') : '';
+    const wkLast = M.weeks.filter(w => w.order && w.order <= t).slice(-1)[0];
+    cards.push(card('meals', 'Meals', kv([['Typical day', `${Math.round(sum('kcal'))} kcal, ${Math.round(sum('p'))} g protein`], ['Carbs', `${Math.round(cv)} g ${cl ? `<span class="st st-${cl}">${cl}</span>` : ''}`],
+      wkLast && ['Latest week', `Week ${wkLast.week}: ${wkLast.dishes.length} dishes`]])));
+  }
+  // shopping
+  const S = db.shop;
+  if (S && S.orders.length) {
+    const os = S.orders.slice().sort((a, b) => a.date < b.date ? -1 : 1), lo = last(os), avg = os.reduce((a, o) => a + o.paid, 0) / os.length;
+    cards.push(card('shop', 'Shopping', kv([['Last order', `£${lo.paid.toFixed(2)} <span class="muted">${fd(lo.date)}</span>`], ['Average a week', `£${avg.toFixed(2)} over ${os.length} orders`]])));
+  }
+  // garden
+  const G = db.garden;
+  if (G) { const nj = G.jobs[0]; cards.push(card('garden', 'Garden', kv([['Plot', `${esc(G.plot)}, ${G.crops.length} varieties`], ['Next job', `${esc(nj[0])}: ${esc(nj[1].split('. ')[0])}`]]))); }
+  // packing
+  const P = db.packing;
+  if (P) {
+    let saved = {}; try { saved = JSON.parse(localStorage.getItem('packed') || '{}'); } catch (e) { }
+    const tot = P.groups.reduce((a, g) => a + g.items.length, 0), n = Object.values(saved).filter(Boolean).length;
+    cards.push(card('pack', 'Packing', kv([['Packed', `${n} of ${tot} items`], ['Everyone', `about ${(P.groups.reduce((a, g) => a + (g.name === 'Luggage' ? 0 : g.items.filter(i => !i[4]).reduce((b, i) => b + i[1] * (i[2] || 0), 0)), 0) / 1000).toFixed(1)} kg`]])));
+  }
+  // national trust
+  const NT = db.nt;
+  if (NT) {
+    const all = [...new Set(NT.counties.flatMap(c => c.places))], vs = (NT.visited || []).map(v => Array.isArray(v) ? v : [v, '']).sort((a, b) => a[1] < b[1] ? -1 : 1), lv = last(vs);
+    cards.push(card('nt', 'National Trust', kv([['Visited', `${vs.length} of ${all.length}`], lv && ['Latest', `${esc(lv[0])}${lv[1] ? ` <span class="muted">${fd(lv[1])}</span>` : ''}`]])));
+  }
+  $('home-grid').innerHTML = cards.join('');
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -862,18 +919,27 @@ function renderPlan() {
 }
 
 // ---------- tabs ----------
+const LEGACY = { train: 'running', review: 'running', trends: 'running', history: 'running', plan: 'running', profile: 'running' };
 function showTab(name) {
-  if (!document.querySelector(`[data-panel="${name}"]`)) name = 'train';
+  name = LEGACY[name] || name;
+  if (!document.querySelector(`[data-panel="${name}"]`)) name = 'home';
   document.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== name);
   document.querySelectorAll('#tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === name));
   history.replaceState(null, '', '#' + name);
+  window.scrollTo(0, 0);
 }
 $('tabs').addEventListener('click', e => e.target.dataset.tab && showTab(e.target.dataset.tab));
+window.addEventListener('hashchange', () => showTab(location.hash.slice(1)));
+document.addEventListener('click', e => {
+  const j = e.target.closest && e.target.closest('[data-jump]');
+  if (j) { e.preventDefault(); const t = document.getElementById(j.dataset.jump); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+});
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
   renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT();
+  renderHome();
   Object.keys(COLS).forEach(renderCol);
 }
 
-render(); showTab(location.hash.slice(1) || 'train');
+render(); showTab(location.hash.slice(1) || 'home');
