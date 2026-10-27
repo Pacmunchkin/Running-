@@ -117,3 +117,5 @@ tr.past td{opacity:.65}details table{margin-bottom:8px}
 .st-OK{background:#20c997;color:#04281f}.st-Watch{background:#fcc419;color:#2b2200}.st-Low{background:#e03131;color:#fff}
 .st-High{background:#fcc419;color:#2b2200}
 .pack{list-style:none;padding:0;margin:0 0 8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 16px}.pack label{display:flex;gap:8px;align-items:center;cursor:pointer;padding:3px 0}.pack input{width:18px;height:18px;padding:0}
+.ntyes{color:var(--c3)}.ntyes .ntmark{font-weight:700}.ntno{color:var(--muted)}.ntmark{display:inline-block;width:1.2em}
+.pack li.ntyes,.pack li.ntno{padding:3px 0}
