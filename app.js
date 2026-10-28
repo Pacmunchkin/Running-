@@ -619,7 +619,8 @@ function renderHome() {
     const all = [...new Set(NT.counties.flatMap(c => c.places))], vs = (NT.visited || []).map(v => Array.isArray(v) ? v : [v, '']).sort((a, b) => a[1] < b[1] ? -1 : 1), lv = last(vs);
     cards.push(card('nt', 'National Trust', kv([['Visited', `${vs.length} of ${all.length}`], lv && ['Latest', `${esc(lv[0])}${lv[1] ? ` <span class="muted">${fd(lv[1])}</span>` : ''}`]])));
   }
-  (db.routines || []).forEach(r => cards.push(card('routines', 'Routines', kv([[r.name, `${r.steps.length} steps, ${r.steps.reduce((a, s) => a + s[1], 0)} min`], ['First', esc(r.steps[0][0])]]))));
+  if ((db.routines || []).length) { const lg = rtAllLog(), lr = lg[0];
+    cards.push(card('routines', 'Routines', kv([...db.routines.map(r => [r.name, `${r.steps.length} steps, ${r.steps.reduce((a, s) => a + s[1], 0)} min`]), ['Last run', lr ? `${esc(lr.name)} ${fmtDate(lr.date)}, ${mmss(lr.active * 1000)}` : 'None yet'], ['Runs logged', String(lg.length)]]))); }
   const MD = db.media;
   if (MD) {
     const now = MD.items.filter(i => i.status === 'Now'), done = MD.items.filter(i => i.status === 'Finished'), rt = done.filter(i => i.rating);
@@ -648,7 +649,10 @@ const RT = { state: null, timer: null, audio: null, lock: null, swReg: null };
 const rtPrefs = () => { try { return Object.assign({ sound: true, vibrate: true, notify: false }, JSON.parse(localStorage.getItem('rtPrefs') || '{}')); } catch (e) { return { sound: true, vibrate: true, notify: false }; } };
 const rtSavePrefs = p => { try { localStorage.setItem('rtPrefs', JSON.stringify(p)); } catch (e) { } };
 const rtSave = () => { try { RT.state ? localStorage.setItem('rtState', JSON.stringify(RT.state)) : localStorage.removeItem('rtState'); } catch (e) { } };
-const mmss = ms => { const s = Math.max(0, Math.ceil(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const rtLocalLog = () => { try { return JSON.parse(localStorage.getItem('rtLog') || '[]'); } catch (e) { return []; } };
+const rtAllLog = () => { const seen = new Set(), out = []; [...(db.routineLog || []), ...rtLocalLog()].forEach(r => { if (!seen.has(r.start)) { seen.add(r.start); out.push(r); } }); return out.sort((a, b) => b.start - a.start); };
+const mmss = ms => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
+const rtClock = ms => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 function rtRoutine() { return RT.state && (db.routines || []).find(r => r.id === RT.state.rid); }
 function rtChime() {
   const p = rtPrefs();
@@ -668,48 +672,88 @@ async function rtWake(on) {
   try { if (on && 'wakeLock' in navigator && !RT.lock) { RT.lock = await navigator.wakeLock.request('screen'); RT.lock.addEventListener('release', () => { RT.lock = null; }); } if (!on && RT.lock) { await RT.lock.release(); RT.lock = null; } } catch (e) { RT.lock = null; }
 }
 document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible' && RT.state && RT.state.running) rtWake(true); });
-function rtStep(announce) {
-  const R = rtRoutine(), s = RT.state;
-  if (s.i >= R.steps.length) { const mins = Math.round((Date.now() - s.started) / 60000); RT.state = null; rtSave(); rtWake(false); rtChime(); rtNotify(`${R.name} routine done`, `All ${R.steps.length} steps finished in ${mins} min.`); $('rt-run').innerHTML = `<div class="rtdone"><b>${esc(R.name)} done</b><span class="muted">${R.steps.length} steps in ${mins} min</span><button class="ghost" data-rt="close">Close</button></div>`; clearInterval(RT.timer); return false; }
-  if (announce) { const st = R.steps[s.i], nx = R.steps[s.i + 1]; rtChime(); rtNotify(`${st[0]} (${st[1]} min)`, nx ? `Next: ${nx[0]}` : 'Last step'); }
-  return true;
+// time actually spent on the current step (pauses excluded); 'at' lets a timed-out step close at its planned end
+const rtElapsed = (s, at) => s.acc + (s.running ? (at || Date.now()) - s.from : 0);
+function rtClose(status, at) { // record the current step and move to the next one
+  const s = RT.state, R = rtRoutine(), st = R.steps[s.i];
+  s.log.push({ name: st[0], planned: st[1], actual: Math.round(rtElapsed(s, at) / 1000), status });
+  s.i++; s.acc = 0; s.from = at || Date.now();
+  if (s.i < R.steps.length) s.end = s.from + R.steps[s.i][1] * 60000;
 }
+function rtFinish() {
+  const s = RT.state, R = rtRoutine(), end = Date.now();
+  const rec = { rid: s.rid, name: R.name, start: s.started, end, date: iso(new Date(s.started)), active: s.log.reduce((a, x) => a + x.actual, 0), planned: R.steps.reduce((a, x) => a + x[1], 0), steps: s.log };
+  const L = rtLocalLog(); L.push(rec); try { localStorage.setItem('rtLog', JSON.stringify(L)); } catch (e) { }
+  RT.state = null; rtSave(); rtWake(false); clearInterval(RT.timer); rtChime();
+  const done = rec.steps.filter(x => x.status !== 'skipped').length;
+  rtNotify(`${R.name} routine done`, `${done} of ${rec.steps.length} steps in ${mmss(rec.active * 1000)}.`);
+  $('rt-run').innerHTML = `<div class="rtdone"><b>${esc(R.name)} done</b><span>${done} of ${rec.steps.length} steps in ${mmss(rec.active * 1000)} (planned ${rec.planned}:00)</span><button class="ghost" data-rt="close">Close</button></div>`;
+  renderRtLog();
+}
+function rtAnnounce() { const R = rtRoutine(), s = RT.state, st = R.steps[s.i], nx = R.steps[s.i + 1]; rtChime(); rtNotify(`${st[0]} (${st[1]} min)`, nx ? `Next: ${nx[0]}` : 'Last step'); }
 function rtTick() {
   const s = RT.state; if (!s) return;
   const R = rtRoutine();
-  if (s.running) {
-    let moved = false;
-    while (Date.now() >= s.end) { s.i++; moved = true; if (s.i >= R.steps.length) break; s.end += R.steps[s.i][1] * 60000; }
-    if (moved) { rtSave(); if (!rtStep(true)) return; }
+  if (s.running && Date.now() >= s.end) {
+    while (s.i < R.steps.length && Date.now() >= s.end) rtClose('time up', s.end);
+    rtSave(); if (s.i >= R.steps.length) return rtFinish(); rtAnnounce();
   }
-  const st = R.steps[s.i], left = s.running ? s.end - Date.now() : s.left, dur = st[1] * 60000;
-  const restMs = R.steps.slice(s.i + 1).reduce((a, x) => a + x[1] * 60000, 0) + left, totMs = R.steps.reduce((a, x) => a + x[1] * 60000, 0);
-  $('rt-run').innerHTML = `<div class="rtrun"><div class="muted">${esc(R.name)}, step ${s.i + 1} of ${R.steps.length}</div><div class="rtname">${esc(st[0])}</div><div class="rtclock">${mmss(left)}</div>` +
-    `<div class="rtbar"><i style="width:${(100 * (1 - left / dur)).toFixed(1)}%"></i></div><div class="muted">${R.steps[s.i + 1] ? 'Next: ' + esc(R.steps[s.i + 1][0]) + ` (${R.steps[s.i + 1][1]} min)` : 'Last step'}</div>` +
+  const st = R.steps[s.i], dur = st[1] * 60000, left = s.running ? s.end - Date.now() : s.left;
+  const restMs = R.steps.slice(s.i + 1).reduce((a, x) => a + x[1] * 60000, 0) + Math.max(0, left), totMs = R.steps.reduce((a, x) => a + x[1] * 60000, 0);
+  $('rt-run').innerHTML = `<div class="rtrun"><div class="muted">${esc(R.name)}, step ${s.i + 1} of ${R.steps.length}</div><div class="rtname">${esc(st[0])}</div><div class="rtclock">${mmss(Math.ceil(Math.max(0, left) / 1000) * 1000)}</div>` +
+    `<div class="rtbar"><i style="width:${Math.min(100, 100 * (1 - left / dur)).toFixed(1)}%"></i></div><div class="muted">${R.steps[s.i + 1] ? 'Next: ' + esc(R.steps[s.i + 1][0]) + ` (${R.steps[s.i + 1][1]} min)` : 'Last step'}</div>` +
     `<div class="rtbar thin"><i style="width:${(100 * (1 - restMs / totMs)).toFixed(1)}%"></i></div><div class="muted">${mmss(restMs)} left in total</div>` +
-    `<div class="rtbtns"><button class="ghost" data-rt="back">Back</button><button data-rt="${s.running ? 'pause' : 'resume'}">${s.running ? 'Pause' : 'Resume'}</button><button class="ghost" data-rt="skip">Skip</button><button class="ghost" data-rt="plus">+1 min</button><button class="ghost" data-rt="stop">Stop</button></div></div>`;
+    `<div class="rtbtns"><button class="rtok" data-rt="complete">Complete</button></div>` +
+    `<div class="rtbtns"><button class="ghost" data-rt="back">Back</button><button class="ghost" data-rt="${s.running ? 'pause' : 'resume'}">${s.running ? 'Pause' : 'Resume'}</button><button class="ghost" data-rt="skip">Skip</button><button class="ghost" data-rt="plus">+1 min</button><button class="ghost" data-rt="stop">Stop</button></div></div>`;
 }
 function rtStart(rid) {
   const R = (db.routines || []).find(r => r.id === rid); if (!R) return;
   try { RT.audio = RT.audio || new (window.AudioContext || window.webkitAudioContext)(); RT.audio.resume(); } catch (e) { }
-  RT.state = { rid, i: 0, running: true, started: Date.now(), end: Date.now() + R.steps[0][1] * 60000 };
-  rtSave(); rtWake(true); rtStep(true); clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick();
+  const now = Date.now();
+  RT.state = { rid, i: 0, running: true, started: now, from: now, acc: 0, end: now + R.steps[0][1] * 60000, log: [] };
+  rtSave(); rtWake(true); rtAnnounce(); clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick();
   $('rt-run').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 function rtAction(act) {
-  const s = RT.state, R = rtRoutine();
   if (act === 'close') { $('rt-run').innerHTML = ''; return; }
-  if (!s) return;
-  if (act === 'pause') { s.left = s.end - Date.now(); s.running = false; rtWake(false); }
-  if (act === 'resume') { s.end = Date.now() + s.left; s.running = true; rtWake(true); }
-  if (act === 'plus') { if (s.running) s.end += 60000; else s.left += 60000; }
-  if (act === 'skip' || act === 'back') {
-    s.i = act === 'skip' ? s.i + 1 : Math.max(0, s.i - 1);
-    if (s.i < R.steps.length) { const ms = R.steps[s.i][1] * 60000; if (s.running) s.end = Date.now() + ms; else s.left = ms; }
-    rtSave(); if (!rtStep(true)) return;
+  if (act === 'clearlog') { if (confirm('Clear the routine history saved in this browser?')) { try { localStorage.removeItem('rtLog'); } catch (e) { } renderRtLog(); } return; }
+  const s = RT.state, R = rtRoutine(); if (!s) return;
+  const now = Date.now();
+  if (act === 'pause' && s.running) { s.acc += now - s.from; s.left = s.end - now; s.running = false; rtWake(false); }
+  else if (act === 'resume' && !s.running) { s.from = now; s.end = now + s.left; s.running = true; rtWake(true); }
+  else if (act === 'plus') { if (s.running) s.end += 60000; else s.left += 60000; }
+  else if (act === 'complete' || act === 'skip') {
+    const wasRunning = s.running; if (!wasRunning) { s.running = true; s.from = now; } // closing a paused step counts its time so far
+    rtClose(act === 'complete' ? 'done' : 'skipped');
+    if (!wasRunning && s.i < R.steps.length) { s.running = false; s.left = R.steps[s.i][1] * 60000; }
+    rtSave(); if (s.i >= R.steps.length) return rtFinish(); rtAnnounce();
   }
-  if (act === 'stop') { RT.state = null; rtSave(); rtWake(false); clearInterval(RT.timer); $('rt-run').innerHTML = ''; return; }
+  else if (act === 'back' && s.i > 0) {
+    s.log.pop(); s.i--; s.acc = 0; s.from = now; const ms = R.steps[s.i][1] * 60000; if (s.running) s.end = now + ms; else s.left = ms; rtAnnounce();
+  }
+  else if (act === 'stop') {
+    if (!confirm('Stop this routine? Steps done so far are saved to the history.')) return;
+    if (s.log.length) { const rec = { rid: s.rid, name: R.name, start: s.started, end: now, date: iso(new Date(s.started)), active: s.log.reduce((a, x) => a + x.actual, 0), planned: R.steps.reduce((a, x) => a + x[1], 0), steps: s.log, stopped: true };
+      const L = rtLocalLog(); L.push(rec); try { localStorage.setItem('rtLog', JSON.stringify(L)); } catch (e) { } }
+    RT.state = null; rtSave(); rtWake(false); clearInterval(RT.timer); $('rt-run').innerHTML = ''; renderRtLog(); return;
+  }
   rtSave(); rtTick();
+}
+function renderRtLog() {
+  if (!$('rt-log')) return;
+  const L = rtAllLog();
+  if (!L.length) { $('rt-log').innerHTML = '<p class="muted">No routines run yet. Each one you run is saved here with the time taken for every step.</p>'; return; }
+  const by = {}; L.forEach(r => (by[r.name] = by[r.name] || []).push(r));
+  const sum = '<table><thead><tr><th>Routine</th><th class="num">Runs</th><th class="num">Average</th><th class="num">Fastest</th><th class="num">Planned</th><th>Last</th></tr></thead><tbody>' +
+    Object.entries(by).map(([n, rs]) => { const full = rs.filter(r => !r.stopped), av = full.length ? full.reduce((a, r) => a + r.active, 0) / full.length : 0;
+      return `<tr><td><b>${esc(n)}</b></td><td class="num">${rs.length}</td><td class="num">${full.length ? mmss(av * 1000) : '-'}</td><td class="num">${full.length ? mmss(Math.min(...full.map(r => r.active)) * 1000) : '-'}</td><td class="num">${rs[0].planned}:00</td><td>${fmtDate(rs[0].date)}</td></tr>`; }).join('') + '</tbody></table>';
+  const runs = L.slice(0, 30).map(r => { const done = r.steps.filter(x => x.status !== 'skipped').length;
+    return `<details><summary>${fmtDate(r.date)}, ${rtClock(r.start)}: ${esc(r.name)} in ${mmss(r.active * 1000)} <span class="muted">(${done} of ${r.steps.length} steps${r.stopped ? ', stopped early' : ''})</span></summary><table><thead><tr><th>Step</th><th class="num">Planned</th><th class="num">Actual</th><th>How it ended</th></tr></thead><tbody>` +
+      r.steps.map(x => `<tr><td>${esc(x.name)}</td><td class="num">${x.planned}:00</td><td class="num">${mmss(x.actual * 1000)}</td><td class="notes">${esc(x.status)}</td></tr>`).join('') + '</tbody></table></details>'; }).join('');
+  $('rt-log').innerHTML = sum + '<h3>Runs</h3>' + runs + `<p><button class="ghost" data-rt="copylog" type="button">Copy history</button> <button class="ghost" data-rt="clearlog" type="button">Clear history</button></p><p class="muted">History is saved in this browser. To keep it on the site for every device, tap Copy history and paste it to me in the chat.</p>`;
+  $('rt-log').onclick = e => { const a = e.target.dataset && e.target.dataset.rt; if (a === 'clearlog') rtAction('clearlog');
+    if (a === 'copylog') { const txt = 'Routine history:\n' + rtLocalLog().map(r => `${r.date} ${rtClock(r.start)} ${r.name}: ${mmss(r.active * 1000)}${r.stopped ? ' (stopped)' : ''}. ` + r.steps.map(x => `${x.name} ${mmss(x.actual * 1000)} ${x.status}`).join('; ')).join('\n');
+      (navigator.clipboard ? navigator.clipboard.writeText(txt) : Promise.reject()).then(() => { e.target.textContent = 'Copied'; }).catch(() => { prompt('Copy this:', txt); }); } };
 }
 function renderRoutines() {
   const L = db.routines || []; if (!$('rt-list')) return;
@@ -724,7 +768,8 @@ function renderRoutines() {
   $('rt-list').onclick = e => { const g = e.target.dataset && e.target.dataset.rtGo; if (g) rtStart(g); };
   $('rt-run').onclick = e => { const a = e.target.dataset && e.target.dataset.rt; if (a) rtAction(a); };
   if (!RT.swReg && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').then(r => { RT.swReg = r; }).catch(() => { });
-  if (!RT.state) { try { const s = JSON.parse(localStorage.getItem('rtState') || 'null'); if (s && L.find(r => r.id === s.rid)) { RT.state = s; clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick(); if (s.running) rtWake(true); } } catch (e) { } }
+  if (!RT.state) { try { const s = JSON.parse(localStorage.getItem('rtState') || 'null'); if (s && s.log && L.find(r => r.id === s.rid)) { RT.state = s; clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick(); if (s.running) rtWake(true); } } catch (e) { } }
+  renderRtLog();
 }
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];

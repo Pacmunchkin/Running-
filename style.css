@@ -139,3 +139,4 @@ h2.sec{margin:12px 0 0;padding-top:8px;font-size:20px;border-top:1px solid var(-
 .rtdone{background:var(--card);border:1px solid var(--c3);border-radius:12px;padding:18px;display:grid;gap:8px;text-align:center}.rtdone b{font-size:22px}
 [data-panel="routines"]{display:grid;gap:16px}[data-panel="routines"][hidden]{display:none}
 #rt-run{scroll-margin-top:90px}
+.rtbtns button.rtok{min-width:200px;font-size:18px;padding:14px 24px;background:var(--c3);color:#04281f}
