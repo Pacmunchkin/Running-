@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=96">
+<link rel="stylesheet" href="style.css?v=98">
 </head>
 <body>
 <div class="layout">
@@ -20,6 +20,7 @@
     <button data-tab="running">Running</button>
     <button data-tab="health">Health</button>
     <button data-tab="routines">Routines</button>
+    <button data-tab="journal">Journal</button>
     <button data-tab="gear">Gear &amp; fuel</button>
     <button data-tab="meals">Meals</button>
     <button data-tab="shop">Shopping</button>
@@ -457,11 +458,20 @@
     </section>
   </div>
 
+  <div data-panel="journal" hidden>
+    <section class="card">
+      <h2>Future log</h2>
+      <p class="muted">The next 12 months, bullet journal style. Races, running checkpoints, training phases and garden jobs come from the rest of the site. Tell me anything else to add (trips, birthdays, appointments, deadlines).</p>
+      <p class="legend"><span>&#9675; event</span> <span>&bull; task</span> <span>&ndash; note</span> <span>&times; done</span> <span>* priority</span></p>
+      <div id="fl-grid" class="flgrid"></div>
+    </section>
+  </div>
+
 </main>
 
 </div>
 </div>
-<script src="data.js?v=96"></script>
-<script src="app.js?v=96"></script>
+<script src="data.js?v=98"></script>
+<script src="app.js?v=98"></script>
 </body>
 </html>

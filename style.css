@@ -140,3 +140,7 @@ h2.sec{margin:12px 0 0;padding-top:8px;font-size:20px;border-top:1px solid var(-
 [data-panel="routines"]{display:grid;gap:16px}[data-panel="routines"][hidden]{display:none}
 #rt-run{scroll-margin-top:90px}
 .rtbtns button.rtok{min-width:200px;font-size:18px;padding:14px 24px;background:var(--c3);color:#04281f}
+.flgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+.flm{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--bg)}.flm.now{border-color:var(--accent)}.flm h3{margin:0 0 6px}
+.fl{list-style:none;margin:0;padding:0}.fl li{display:grid;grid-template-columns:1.6em 1.8em 1fr;gap:2px;padding:3px 0;font-size:14px;align-items:baseline}.fl li.past{opacity:.55}
+.flb{font-weight:700;color:var(--accent)}.fld{color:var(--muted);font-variant-numeric:tabular-nums}

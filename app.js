@@ -644,6 +644,27 @@ function renderMedia() {
   $('media-search').oninput = renderMedia; $('media-type').onchange = renderMedia; $('media-status').onchange = renderMedia;
   if (!$('media-type').options.length) { $('media-type').innerHTML = '<option value="">All types</option>' + M.types.map(t => `<option>${esc(t)}</option>`).join(''); $('media-status').innerHTML = '<option value="">All</option>' + M.statuses.map(t => `<option>${esc(t)}</option>`).join(''); $('media-type').value = ft; $('media-status').value = fs; }
 }
+// ---------- journal: future log (bullet journal style) ----------
+function renderJournal() {
+  if (!$('fl-grid')) return;
+  const J = db.journal || {}, t = today(), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const items = []; // {d: 'YYYY-MM-DD' or 'YYYY-MM', text, kind: event|task|note, src}
+  (J.future || []).forEach(x => items.push({ d: x.date, text: x.text, kind: x.kind || 'event', src: x.src || '', done: x.done }));
+  (db.goals || []).forEach(g => items.push({ d: g.date, text: `${g.race}: ${g.event}, goal ${g.target}`, kind: 'event', src: 'Race', star: true }));
+  const LP = db.longPlan || {};
+  const raceDays = new Set((db.goals || []).map(g => g.date));
+  (LP.checkpoints || []).filter(c => !raceDays.has(c.date)).forEach(c => items.push({ d: c.date, text: c.what, kind: 'task', src: 'Running checkpoint' }));
+  (LP.phases || []).forEach(p => items.push({ d: p.start, text: `Training phase starts: ${p.name}`, kind: 'note', src: 'Running plan' }));
+  const G = db.garden; if (G) (G.jobs || []).forEach(j => { const m = MON.indexOf(j[0].replace(/^Late /, '').slice(0, 3)); if (m < 0) return;
+    const season = +((G.intro || '').match(/20\d\d/) || [t.slice(0, 4)])[0], y = season + (j[0].startsWith('Nov') ? 0 : 0); items.push({ d: `${y}-${String(m + 1).padStart(2, '0')}`, text: `Garden: ${j[1].split('. ')[0]}`, kind: 'task', src: 'Garden' }); });
+  const start = new Date(+t.slice(0, 4), +t.slice(5, 7) - 1, 1), months = Array.from({ length: 12 }, (_, k) => { const x = new Date(start.getFullYear(), start.getMonth() + k, 1); return `${x.getFullYear()}-${String(x.getMonth() + 1).padStart(2, '0')}`; });
+  const mark = x => x.done ? '&times;' : x.kind === 'task' ? '&bull;' : x.kind === 'note' ? '&ndash;' : '&#9675;';
+  $('fl-grid').innerHTML = months.map(m => {
+    const es = items.filter(x => x.d.slice(0, 7) === m).sort((a, b) => (a.d.length === 7 ? '00' : a.d.slice(8)) < (b.d.length === 7 ? '00' : b.d.slice(8)) ? -1 : 1);
+    const [y, mm] = m.split('-');
+    return `<div class="flm${m === t.slice(0, 7) ? ' now' : ''}"><h3>${MON[+mm - 1]} <span class="muted">${y}</span></h3>${es.length ? '<ul class="fl">' + es.map(x => `<li class="${x.d < t && x.d.length > 7 ? 'past' : ''}"><span class="flb">${x.star ? '*' : ''}${mark(x)}</span><span class="fld">${x.d.length > 7 ? +x.d.slice(8) : ''}</span><span>${esc(x.text)}${x.src ? ` <span class="muted">${esc(x.src)}</span>` : ''}</span></li>`).join('') + '</ul>' : '<p class="muted">Nothing yet.</p>'}</div>`;
+  }).join('');
+}
 // ---------- routines: press Go and it runs step by step ----------
 const RT = { state: null, timer: null, audio: null, lock: null, swReg: null };
 const rtPrefs = () => { try { return Object.assign({ sound: true, vibrate: true, notify: false }, JSON.parse(localStorage.getItem('rtPrefs') || '{}')); } catch (e) { return { sound: true, vibrate: true, notify: false }; } };
@@ -1087,7 +1108,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }
