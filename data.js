@@ -54,10 +54,10 @@ const SEED = {
      "sat": "Easy 8-10 km, Z2",
      "sun": "Pure recovery 5 km (HR under 125)",
      "mon": "Easy 7 km",
-     "wed": "Easy 6 km + 6 x 100 m strides",
+     "wed": "Easy 6 km, Z2 (strides optional)",
      "opt": "Optional easy 5 km Thu/Fri",
      "fuel": "None.",
-     "note": "Recovery week after two big ones: no Z4 or Z5."
+     "note": "All Z2 recovery after two hard sessions in the 24 Oct week (parkrun and 29 Oct intervals). Back to Z3 and Z4 work from 7 Nov."
     },
     {
      "start": "2026-11-07",
@@ -2209,6 +2209,13 @@ const SEED = {
     { id: 's12', date: '2026-10-29', session: 'Intervals: 5 x 1 km (moved from Wed)', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
     { id: 's13', date: '2026-10-28', session: 'Rest', details: 'Intervals moved to Thursday. Half term', fuel: "Normal meals." },
     { id: 's14', date: '2026-10-30', session: 'Easy run', details: 'Easy Z2, keeps Saturday fresh. Half term', fuel: "None." }
+    { id: 's15', date: '2026-10-31', km: 9, session: 'Easy run, Z2', details: '8-10 km, HR 134 or below. Recovery week: all Z2', fuel: "Before: normal breakfast. During: nothing. After: normal meals." },
+    { id: 's16', date: '2026-11-01', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125', fuel: "None." },
+    { id: 's17', date: '2026-11-02', km: 7, session: 'Easy run, Z2', details: 'About 7 km, HR 134 or below', fuel: "None." },
+    { id: 's18', date: '2026-11-03', session: 'Rest', details: '', fuel: "Normal meals." },
+    { id: 's19', date: '2026-11-04', km: 6, session: 'Easy run, Z2', details: 'About 6 km, HR 134 or below. Strides optional', fuel: "None." },
+    { id: 's20', date: '2026-11-05', session: 'Rest, or optional easy 5 km', details: 'Z2 only if you run', fuel: "None." },
+    { id: 's21', date: '2026-11-06', session: 'Rest or yoga', details: 'Long run tomorrow: 14 km, last 15 min in Z3', fuel: "Extra carbs at dinner (rice, pasta or potatoes)." },
   ],
   estimates: [
     { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
@@ -2241,8 +2248,8 @@ const SEED = {
         '5K (26 Sep 2027): 21:15-21:30 vs goal 21:00.',
         'The 29 Oct reps alone would give VDOT 45.2, but I have held the estimate at 46.8: one session after a heavy fortnight, with standing recoveries and one slow rep, is not a fitness drop. If the next reps (7 Nov week) are also around 4:10 at the same HR, I will lower it.'] },
       { heading: 'Next week (Sat 31 Oct - Fri 6 Nov), recovery week', items: [
-        'The plan has this as the first recovery week: Sat easy 8-10 km Z2, Sun recovery 5 km (HR under 125), Mon easy 7 km, Wed easy 6 km with 6 x 100 m strides, optional easy 5 km Thu or Fri. No Z4 or Z5.',
-        'You suggested a longer Saturday. Because the last fortnight was lighter than planned, a 12-14 km Z2 long run with the last 10 min in low Z3 is reasonable instead of the 8-10 km, treating this week as the recovery week. Tell me "go" and I will shift the cycle, otherwise keep it as planned.',
+        'First recovery week: Sat easy 8-10 km Z2, Sun recovery 5 km (HR under 125), Mon easy 7 km, Tue rest, Wed easy 6 km, optional easy 5 km Thu, Fri rest or yoga. All Z2.',
+        'Decision: all Z2 this week, because the 24 Oct week had two hard sessions (Saturday parkrun and Thursday intervals). Strides on Wednesday are optional. The recovery-week cycle stays as planned.',
         'Keep the resting HR rule: 3 bpm or more above 40 for two mornings means an easy day.',
         'From 7 Nov: HM build 1 starts, with Saturday long runs from 14 km and the first split threshold on 21 Nov.'] }
     ] },
