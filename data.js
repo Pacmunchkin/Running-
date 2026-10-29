@@ -2208,7 +2208,7 @@ const SEED = {
     { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None." },
     { id: 's12', date: '2026-10-29', session: 'Intervals: 5 x 1 km (moved from Wed)', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
     { id: 's13', date: '2026-10-28', session: 'Rest', details: 'Intervals moved to Thursday. Half term', fuel: "Normal meals." },
-    { id: 's14', date: '2026-10-30', session: 'Easy run', details: 'Easy Z2, keeps Saturday fresh. Half term', fuel: "None." }
+    { id: 's14', date: '2026-10-30', session: 'Easy run', details: 'Easy Z2, keeps Saturday fresh. Half term', fuel: "None." },
     { id: 's15', date: '2026-10-31', km: 9, session: 'Easy run, Z2', details: '8-10 km, HR 134 or below. Recovery week: all Z2', fuel: "Before: normal breakfast. During: nothing. After: normal meals." },
     { id: 's16', date: '2026-11-01', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125', fuel: "None." },
     { id: 's17', date: '2026-11-02', km: 7, session: 'Easy run, Z2', details: 'About 7 km, HR 134 or below', fuel: "None." },
