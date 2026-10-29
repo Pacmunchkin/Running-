@@ -2168,7 +2168,15 @@ const SEED = {
     run('2026-10-27', '08:58', 'Easy', 8.78, '1:00:01', 124, 137,
       'Planned easy run to keep Wednesday\'s intervals fresh. 8.78 km at 6:50/km, avg HR 124 (98% in Z2, 33 s in Z3), max 137, recovery HR 25. Flat Redcar route (13 m of climbing), so not directly comparable with the hillier Bath easy runs: 7:18/km at HR 127 on 5 Oct and 9:19/km at HR 126 on 19 Oct. Speed per heartbeat about 1.18, back at the marathon-block level of 1.18-1.20',
       '', TOR,
-      { title: 'Running', loc: 'Redcar and Cleveland', asc: 13, cal: 652, sweat: 659, cad: 170, stride: 0.86, moving: '1:00:01', best: '5:49', zones: Z('0:29', '58:59', '0:33', '', '') })
+      { title: 'Running', loc: 'Redcar and Cleveland', asc: 13, cal: 652, sweat: 659, cad: 170, stride: 0.86, moving: '1:00:01', best: '5:49', zones: Z('0:29', '58:59', '0:33', '', '') }),
+    run('2026-10-29', '08:15', 'Repeats', 8.77, '1:01:15', 135, 172,
+      '5 x 1 km with 1 min recoveries, a day later than planned. Reps 4:10, 4:10, 4:06, 4:18, 4:05: average 4:10/km at average HR 153 (rep 5 at HR 160, max 172). 14 Oct was 4:03/km at the same average HR, so about 7 s/km slower. Flat Redcar route. The recoveries were mostly standing (30-60 m covered), and HR stayed at 151-163 through them. Rep 4 (4:18) is the outlier. Warm up 2 km, cool down 1.5 km',
+      'Recoveries were standing rather than jogging, which keeps HR high between reps', TOR,
+      { title: '1k repeats', loc: 'Redcar and Cleveland', asc: 11, cal: 680, sweat: 727, cad: 148, stride: 0.95, moving: '55:24', best: '3:21', zones: Z('0:46', '33:11', '13:26', '6:24', '7:22'), laps: [
+        lap('Warm up', '19:38', 2.00, '9:49', 117, 142, 146), lap('Rep 1', '4:10.1', 1.00, '4:10', 152, 163, 188), lap('Recovery', '1:00', 0.05, '18:55', 154, 159, 44),
+        lap('Rep 2', '4:10.1', 1.00, '4:10', 149, 158, 176), lap('Recovery', '1:00', 0.03, '31:54', 151, 159, 27), lap('Rep 3', '4:06.4', 1.00, '4:06', 151, 165, 181),
+        lap('Recovery', '1:00', 0.04, '22:16', 153, 163, 45), lap('Rep 4', '4:17.9', 1.00, '4:18', 153, 166, 180), lap('Recovery', '1:00', 0.04, '26:17', 153, 164, 29),
+        lap('Rep 5', '4:04.7', 1.00, '4:05', 160, 172, 180), lap('Recovery', '1:00', 0.06, '15:32', 163, 170, 54), lap('Cool down', '15:47', 1.54, '10:15', 125, 156, 139)] })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2198,8 +2206,8 @@ const SEED = {
     { id: 's9', date: '2026-10-25', session: 'Recovery run', details: 'Planned as a rest day. Ran 5.4 km at HR 116 instead, pure recovery. Half term', fuel: "None. Add carbs at lunch and dinner." },
     { id: 's10', date: '2026-10-26', session: 'Rest', details: 'Second rest day. The 5K at Z3 moves to a later week. Half term', fuel: "Normal meals, add carbs at lunch and dinner." },
     { id: 's11', date: '2026-10-27', session: 'Easy run', details: 'Low Z2, keeps Wednesday\'s intervals fresh. Half term', fuel: "None." },
-    { id: 's12', date: '2026-10-28', session: 'Intervals: 5 x 1 km', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
-    { id: 's13', date: '2026-10-29', session: 'Recovery run', details: 'Half term', fuel: "None." },
+    { id: 's12', date: '2026-10-29', session: 'Intervals: 5 x 1 km (moved from Wed)', details: 'About 4:00-4:05/km, 1 min jog recovery. 15-20 min warm-up, 10 min cool-down. Check the HR strap first', fuel: "Before: carb snack 2 h before. During: nothing. After: protein." },
+    { id: 's13', date: '2026-10-28', session: 'Rest', details: 'Intervals moved to Thursday. Half term', fuel: "Normal meals." },
     { id: 's14', date: '2026-10-30', session: 'Easy run', details: 'Easy Z2, keeps Saturday fresh. Half term', fuel: "None." }
   ],
   estimates: [
@@ -2210,9 +2218,34 @@ const SEED = {
     { date: '2026-10-07', vdot: 44.5, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6840, 6960], g2: [2850, 2910], g3: [1330, 1350] },
       basis: '4 x 1 km, avg 4:13/km, 1 min recoveries. Retrospective' },
     { date: '2026-10-14', vdot: 46.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6540, 6660], g2: [2730, 2790], g3: [1275, 1290] },
-      basis: '4 x 1 km, avg 4:03/km, 1 min recoveries. Reps 3-4 HR looks low (strap?), pace-based so unaffected' }
+      basis: '4 x 1 km, avg 4:03/km, 1 min recoveries. Reps 3-4 HR looks low (strap?), pace-based so unaffected' },
+    { date: '2026-10-29', vdot: 46.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6540, 6660], g2: [2730, 2790], g3: [1275, 1290] },
+      basis: '5 x 1 km, avg 4:10/km at the same HR as 14 Oct (VDOT 45.2 from this session alone). Held at 46.8: standing recoveries, one slow rep and a hard fortnight (3 h trail run, parkrun), so not a fitness drop' }
   ],
   reviews: [
+    { id: 'v2', date: '2026-10-29', title: 'Review: 15 - 29 Oct 2026 (Foundation weeks 1 and 2)', sections: [
+      { heading: 'What went well', items: [
+        'Time on feet: the 22 Oct trail run was 20.5 km in 2:59 with 543 m of climbing, at average HR 133, and it felt good with more to give. It is the longest run since the 16 Aug half marathon and the big durability box for the half marathon is ticked.',
+        'Fuelling worked: about 70 g carbs and 450-500 mg sodium an hour from the homemade gels, drinks and bars (with the corrected sodium) for 3 hours, with no problems.',
+        'Recovery is back. Resting HR went 44 (23 Oct), 37, 39, 39, 40, so the one-day rise after the trail run cleared. Easy-run efficiency is the best of the block: 7:26/km at HR 116 (25 Oct recovery) and 6:50/km at HR 124 (27 Oct easy, flat route), about 1.18 m/min per beat, back at the marathon-block level.',
+        'Z4 checkpoint (24 Oct parkrun): 4:49/km at Z4, about 20 s/km faster than the 12 Sep benchmark (5:09/km at HR 157), even though it came two days after the trail run.',
+        'Sensible changes: two rest days when you felt flat, and the plan now uses split threshold sessions (talk test first) from late November.'] },
+      { heading: 'What to watch', items: [
+        'Intervals (29 Oct): 5 x 1 km averaged 4:10/km at HR 153, about 7 s/km slower than 14 Oct at the same HR, even on a flat route. Rep 4 (4:18) was the outlier. Most likely reasons: a hard fortnight and standing rather than jogging recoveries. Next time, jog the minute between reps.',
+        'Tempo control: on 17 Oct the second 10 min ran at HR 166 against a 155-159 target. That is why the plan has moved to split thresholds.',
+        'Carbs: the typical day is about 2.9 g/kg against 4-6 g/kg for this volume. Weight is steady (77.8, 77.6, 77.1, 77.1 kg), so other food covers some of it, but add carbs on long-run and session days.',
+        'Week totals: 41 km (17 Oct week) and about 28 km so far this week, short of the 50 and 53 km plan because of the shortened trail run and two rest days. That was the right call, not a problem.'] },
+      { heading: 'Estimates (if raced now), unchanged', items: [
+        'Half marathon (9 May 2027): 1:49:00-1:51:00 vs goal 1:45:00. Projected 1:44:50 on race day (was 1:44:40: the same fitness now has a week less to improve).',
+        '10K (15 Aug 2027): 45:30-46:30 vs goal 45:00.',
+        '5K (26 Sep 2027): 21:15-21:30 vs goal 21:00.',
+        'The 29 Oct reps alone would give VDOT 45.2, but I have held the estimate at 46.8: one session after a heavy fortnight, with standing recoveries and one slow rep, is not a fitness drop. If the next reps (7 Nov week) are also around 4:10 at the same HR, I will lower it.'] },
+      { heading: 'Next week (Sat 31 Oct - Fri 6 Nov), recovery week', items: [
+        'The plan has this as the first recovery week: Sat easy 8-10 km Z2, Sun recovery 5 km (HR under 125), Mon easy 7 km, Wed easy 6 km with 6 x 100 m strides, optional easy 5 km Thu or Fri. No Z4 or Z5.',
+        'You suggested a longer Saturday. Because the last fortnight was lighter than planned, a 12-14 km Z2 long run with the last 10 min in low Z3 is reasonable instead of the 8-10 km, treating this week as the recovery week. Tell me "go" and I will shift the cycle, otherwise keep it as planned.',
+        'Keep the resting HR rule: 3 bpm or more above 40 for two mornings means an easy day.',
+        'From 7 Nov: HM build 1 starts, with Saturday long runs from 14 km and the first split threshold on 21 Nov.'] }
+    ] },
     { id: 'v1', date: '2026-10-14', title: 'Block review: 1 Sep - 14 Oct 2026 (Phase 1, base building)', sections: [
       { heading: 'What went well', items: [
         'Volume: 125 km in 17 runs (15 h 55 min) over six weeks, excluding an 11 Oct walk. Weekly km: 28, 22, 5 (illness), 21, 24, 24. The five healthy weeks averaged 24 km.',
@@ -2251,7 +2284,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 163.5, asOf: '2026-10-27', notes: 'In use since 11 Sep. Garmin: 21 activities, 163.5 km at 27 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 172.3, asOf: '2026-10-29', notes: 'In use since 11 Sep. Garmin: 22 activities, 172.3 km at 29 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
