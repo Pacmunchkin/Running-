@@ -2170,7 +2170,7 @@ const SEED = {
       '', TOR,
       { title: 'Running', loc: 'Redcar and Cleveland', asc: 13, cal: 652, sweat: 659, cad: 170, stride: 0.86, moving: '1:00:01', best: '5:49', zones: Z('0:29', '58:59', '0:33', '', '') }),
     run('2026-10-29', '08:15', 'Repeats', 8.77, '1:01:15', 135, 172,
-      '5 x 1 km with 1 min recoveries, a day later than planned. Reps 4:10, 4:10, 4:06, 4:18, 4:05: average 4:10/km at average HR 153 (rep 5 at HR 160, max 172). 14 Oct was 4:03/km at the same average HR, so about 7 s/km slower. Flat Redcar route. The recoveries were mostly standing (30-60 m covered), and HR stayed at 151-163 through them. Rep 4 (4:18) is the outlier. Warm up 2 km, cool down 1.5 km',
+      '5 x 1 km with 1 min recoveries, a day later than planned. Reps 4:10, 4:10, 4:06, 4:18, 4:05: average 4:10/km at average HR 153 (rep 5 at HR 160, max 172). 14 Oct was 4:03/km at the same average HR, so about 7 s/km slower. Flat Redcar route. The recoveries were mostly standing (30-60 m covered), and HR stayed at 151-163 through them. Rep 4 (4:18) is the outlier. Five reps against four on 14 Oct, so likely paced to save something for the last one: reps 1-4 averaged 4:11 at HR 151, then the last rep was the fastest (4:05) at HR 160. Warm up 2 km, cool down 1.5 km',
       'Recoveries were standing rather than jogging, which keeps HR high between reps', TOR,
       { title: '1k repeats', loc: 'Redcar and Cleveland', asc: 11, cal: 680, sweat: 727, cad: 148, stride: 0.95, moving: '55:24', best: '3:21', zones: Z('0:46', '33:11', '13:26', '6:24', '7:22'), laps: [
         lap('Warm up', '19:38', 2.00, '9:49', 117, 142, 146), lap('Rep 1', '4:10.1', 1.00, '4:10', 152, 163, 188), lap('Recovery', '1:00', 0.05, '18:55', 154, 159, 44),
@@ -2227,7 +2227,7 @@ const SEED = {
     { date: '2026-10-14', vdot: 46.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6540, 6660], g2: [2730, 2790], g3: [1275, 1290] },
       basis: '4 x 1 km, avg 4:03/km, 1 min recoveries. Reps 3-4 HR looks low (strap?), pace-based so unaffected' },
     { date: '2026-10-29', vdot: 46.8, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [6540, 6660], g2: [2730, 2790], g3: [1275, 1290] },
-      basis: '5 x 1 km, avg 4:10/km at the same HR as 14 Oct (VDOT 45.2 from this session alone). Held at 46.8: standing recoveries, one slow rep and a hard fortnight (3 h trail run, parkrun), so not a fitness drop' }
+      basis: '5 x 1 km, avg 4:10/km at the same HR as 14 Oct (VDOT 45.2 from this session alone). Held at 46.8: five reps instead of four (paced for the extra rep, with the last one the fastest), standing recoveries, one slow rep and a hard fortnight, so not a fitness drop' }
   ],
   reviews: [
     { id: 'v2', date: '2026-10-29', title: 'Review: 15 - 29 Oct 2026 (Foundation weeks 1 and 2)', sections: [
@@ -2238,7 +2238,7 @@ const SEED = {
         'Z4 checkpoint (24 Oct parkrun): 4:49/km at Z4, about 20 s/km faster than the 12 Sep benchmark (5:09/km at HR 157), even though it came two days after the trail run.',
         'Sensible changes: two rest days when you felt flat, and the plan now uses split threshold sessions (talk test first) from late November.'] },
       { heading: 'What to watch', items: [
-        'Intervals (29 Oct): 5 x 1 km averaged 4:10/km at HR 153, about 7 s/km slower than 14 Oct at the same HR, even on a flat route. Rep 4 (4:18) was the outlier. Most likely reasons: a hard fortnight and standing rather than jogging recoveries. Next time, jog the minute between reps.',
+        'Intervals (29 Oct): 5 x 1 km averaged 4:10/km at HR 153, about 7 s/km slower than 14 Oct at the same HR, even on a flat route. Rep 4 (4:18) was the outlier. Likely reasons: five reps instead of four, so you held back for the last one (reps 1-4 averaged 4:11 at HR 151, then the last was the fastest at 4:05), a hard fortnight, and standing rather than jogging recoveries. Next time, jog the minute between reps.',
         'Tempo control: on 17 Oct the second 10 min ran at HR 166 against a 155-159 target. That is why the plan has moved to split thresholds.',
         'Carbs: the typical day is about 2.9 g/kg against 4-6 g/kg for this volume. Weight is steady (77.8, 77.6, 77.1, 77.1 kg), so other food covers some of it, but add carbs on long-run and session days.',
         'Week totals: 41 km (17 Oct week) and about 28 km so far this week, short of the 50 and 53 km plan because of the shortened trail run and two rest days. That was the right call, not a problem.'] },
