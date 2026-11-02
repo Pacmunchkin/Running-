@@ -840,13 +840,14 @@ function renderShop() {
     { refs: [{ v: avg, label: `Average ${gbp(avg)}` }], fmt: gbp, axisFmt: v => '£' + v, steps: [20, 50], label: 'Weekly shop, amount paid' });
   const nonFood = O.map(o => sum(o.items, i => i[3] === 'home' || i[3] === 'supp')), food = O.map((o, k) => sum(o.items) - nonFood[k]);
   const foodAvg = food.reduce((a, b) => a + b, 0) / n;
-  $('shop-note').textContent = `${n} Sainsbury's orders, ${fmtDate(O[0].date)} to ${fmtDate(O[n - 1].date)}. ${gbp(total)} paid in total, average ${gbp(avg)} a week (range ${gbp(Math.min(...paid))} to ${gbp(Math.max(...paid))}). Food and drink alone averages ${gbp(foodAvg)} a week before coupons.`;
+  const wkSpan = Math.round((parseD(O[n - 1].date) - parseD(O[0].date)) / (7 * 864e5)) + 1;
+  $('shop-note').textContent = `${n} Sainsbury's orders, ${fmtDate(O[0].date)} to ${fmtDate(O[n - 1].date)}. ${gbp(total)} paid in total, average ${gbp(avg)} an order (range ${gbp(Math.min(...paid))} to ${gbp(Math.max(...paid))}). Across all ${wkSpan} weeks, including ${wkSpan - n} without a shop, that is ${gbp(total / wkSpan)} a week. Food and drink alone averages ${gbp(foodAvg)} an order before coupons.`;
   const catRows = S.cats.map(c => {
     const v = O.map(o => sum(o.items, i => i[3] === c.id)), t = v.reduce((a, b) => a + b, 0);
     return { c, v, t };
   }), grand = catRows.reduce((a, r) => a + r.t, 0);
   const td = x => `<td class="num">${x ? gbp(x) : '<span class="muted">-</span>'}</td>`;
-  $('shop-cats').innerHTML = `<table><thead><tr><th>Category</th>${O.map(o => `<th class="num">${shortD(o.date)}</th>`).join('')}<th class="num">Total</th><th class="num">Per week</th><th class="num">Share</th></tr></thead><tbody>` +
+  $('shop-cats').innerHTML = `<table><thead><tr><th>Category</th>${O.map(o => `<th class="num">${shortD(o.date)}</th>`).join('')}<th class="num">Total</th><th class="num">Per order</th><th class="num">Share</th></tr></thead><tbody>` +
     catRows.map(r => `<tr><td><b>${esc(r.c.label)}</b></td>${r.v.map(td).join('')}<td class="num"><b>${gbp(r.t)}</b></td><td class="num">${gbp(r.t / n)}</td><td class="num">${(100 * r.t / grand).toFixed(0)}%</td></tr>`).join('') +
     `<tr><td><b>Items</b></td>${O.map(o => td(sum(o.items))).join('')}<td class="num"><b>${gbp(grand)}</b></td><td class="num">${gbp(grand / n)}</td><td></td></tr>` +
     `<tr><td>Coupons</td>${O.map(o => o.coupons ? `<td class="num">-${gbp(o.coupons)}</td>` : '<td class="num"><span class="muted">-</span></td>').join('')}<td class="num">-${gbp(O.reduce((a, o) => a + o.coupons, 0))}</td><td></td><td></td></tr>` +
