@@ -81,7 +81,7 @@ const SEED = {
      "long": 15,
      "sat": "Long run 15 km: Z2 (HR 134 or lower), then the last 20 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Steady high Z2, 8-9 km",
+     "mon": "Progression run 8-9 km: start easy Z2, move up to steady Z3, last 2 km at about HM pace (5:05-5:10/km now)",
      "wed": "6 x 800 m @ about 3:55, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
@@ -137,7 +137,7 @@ const SEED = {
      "long": 18,
      "sat": "Long run 18 km: Z2 (HR 134 or lower), then the last 25 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Steady high Z2, 8-9 km",
+     "mon": "Progression run 9 km: start easy Z2, move up to steady Z3, last 2 km at about HM pace (5:05-5:10/km now)",
      "wed": "6 x 800 m @ about 3:55, 1 min jog",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
@@ -235,7 +235,7 @@ const SEED = {
      "long": 20,
      "sat": "Long run 20 km: Z2 (HR 134 or lower), then the last 30 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Split threshold: 30 min total, jog 1-3 min whenever you feel yourself going over",
+     "mon": "Steady state 10 km at about 5:05-5:15/km (between marathon and HM effort, HR about 145-152, you can still say a few sentences)",
      "wed": "5 x 1.2 km @ about 4:15 (10K effort)",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2 h before. During: 2 gels (at about 45 and 90 min). After: carbs + protein.",
@@ -249,7 +249,7 @@ const SEED = {
      "long": 22,
      "sat": "Long run 22 km: Z2 (HR 134 or lower), then the last 35 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Split threshold: 35 min total, jog 1-3 min whenever you feel yourself going over",
+     "mon": "Over/under 10 km continuous: alternate 1 km \"over\" at about 4:50 and 1 km \"under\" at about 5:15",
      "wed": "8 x 400 m @ about 3:50",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
@@ -263,7 +263,7 @@ const SEED = {
      "long": 22,
      "sat": "Long run 22 km: Z2 (HR 134 or lower), then the last 35 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Split threshold: 35 min total, jog 1-3 min whenever you feel yourself going over",
+     "mon": "Steady state 10 km at about 5:05-5:15/km (between marathon and HM effort, HR about 145-152, you can still say a few sentences)",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
@@ -292,7 +292,7 @@ const SEED = {
      "sat": "Long run 22 km: Z2, then 3 x 2 km @ about 5:05 inside the long run (Z3-Z4 effort)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
      "mon": "Split threshold: 35 min total, jog 1-3 min whenever you feel yourself going over",
-     "wed": "4 x 2 km @ about 4:30",
+     "wed": "3 x 3 km @ goal HM pace (4:59/km), 3 min jog",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
      "note": ""
@@ -305,7 +305,7 @@ const SEED = {
      "long": 23,
      "sat": "Long run 23 km: 2 x 5 km @ HM pace (4:59-5:05) (Z3-Z4 effort)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Split threshold: 30 min total, jog 1-3 min whenever you feel yourself going over, with 4 x 30 s surges",
+     "mon": "Over/under 12 km continuous: alternate 1 km \"over\" at about 4:50 and 1 km \"under\" at about 5:15",
      "wed": "6 x 1 km @ about 4:00",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2-3 h before. During: 1 gel + 1 drink every hour from about 40 min. After: carbs + protein.",
@@ -320,7 +320,7 @@ const SEED = {
      "sat": "Long run 21 km: 8 km @ HM pace (Z3-Z4 effort)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
      "mon": "Split threshold: 35 min total, jog 1-3 min whenever you feel yourself going over",
-     "wed": "5 x 1.6 km @ about 4:25",
+     "wed": "4 x 3 km @ goal HM pace (4:59/km), 3 min jog",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
      "note": ""
@@ -347,7 +347,7 @@ const SEED = {
      "long": 22,
      "sat": "Long run 22 km: 10 km @ HM pace (peak) (Z3-Z4 effort)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Split threshold: 35 min total, jog 1-3 min whenever you feel yourself going over (uphill threshold instead if it has stalled)",
+     "mon": "Over/under 14 km continuous: alternate 1 km \"over\" at about 4:50 and 1 km \"under\" at about 5:15, up to 16 km if it is going well",
      "wed": "4 x 2 km @ about 4:30",
      "opt": "Optional Thu: easy 5 km. Optional 10K tune-up race around 27-28 Mar",
      "fuel": "Race rehearsal. Before: breakfast 2-3 h before. During: 2 race gels + 1 race drink every hour. After: carbs + protein.",
@@ -359,7 +359,7 @@ const SEED = {
      "type": "build",
      "km": 44,
      "long": 20,
-     "sat": "Long run 20 km: Rehearsal: 16 km with 10 km @ HM pace, race fuelling (Z3-Z4 effort)",
+     "sat": "Race readiness test: 3 km easy, 2 x 5 km @ goal HM pace (4:59/km) with 4 min rest, 2-3 km easy. Race-day breakfast, kit and fuelling",
      "sun": "Pure recovery 5-6 km (HR under 125)",
      "mon": "Split threshold: 30 min total, jog 1-3 min whenever you feel yourself going over",
      "wed": "6 x 1 km @ about 4:00",
@@ -473,7 +473,7 @@ const SEED = {
      "long": 12,
      "sat": "Long run 12 km: Z2 (HR 134 or lower), then the last 20 min in Z3 (HR 135-154)",
      "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Z3 steady 6 km (HR 135-154)",
+     "mon": "Progression run 8 km: start easy Z2, move up to steady Z3, last 2 km at about HM pace (5:05-5:10/km now)",
      "wed": "3 x 2 km @ about 4:30 (10K pace)",
      "opt": "Optional Thu: easy 5 km.",
      "fuel": "None. Breakfast 2 h before.",
@@ -734,7 +734,7 @@ const SEED = {
     {
      "id": "hm1",
      "name": "HM build 1: aerobic base",
-     "focus": "Long run 14 to 19 km with a Z3 finish most weeks, Z3 steady Mondays with split threshold (15 to 25 min) from late November, 1k reps, 3:1 weeks.",
+     "focus": "Long run 14 to 19 km with a Z3 finish most weeks, Z3 steady Mondays with split threshold (15 to 25 min) from late November, progression runs, 1k reps, 3:1 weeks.",
      "start": "2026-11-07",
      "end": "2027-01-01",
      "weeks": 8,
@@ -746,7 +746,7 @@ const SEED = {
     {
      "id": "hm2",
      "name": "HM build 2: threshold and long run",
-     "focus": "Long run 18 to 22 km with 25 to 35 min of Z3, split threshold on Mondays (25 to 35 min total).",
+     "focus": "Long run 18 to 22 km with 25 to 35 min of Z3, split threshold on Mondays (25 to 35 min total), a 10 km steady state and the first over/under.",
      "start": "2027-01-02",
      "end": "2027-02-26",
      "weeks": 8,
@@ -758,7 +758,7 @@ const SEED = {
     {
      "id": "hms",
      "name": "HM specific",
-     "focus": "Long runs with HM-pace blocks, rehearsal run, optional 10K tune-up.",
+     "focus": "Long runs with HM-pace blocks, 3-4 x 3 km at goal pace, over/unders of 12 to 16 km, the 2 x 5 km race readiness test on 3 Apr, optional 10K tune-up.",
      "start": "2027-02-27",
      "end": "2027-04-23",
      "weeks": 8,
@@ -899,8 +899,8 @@ const SEED = {
     },
     {
      "date": "2027-04-03",
-     "what": "HM-pace rehearsal",
-     "target": "10 km at 5:00-5:05/km with race fuelling. It should feel controlled; if not, reset the goal to 1:46-1:47."
+     "what": "Race readiness test",
+     "target": "2 x 5 km at 4:59/km with 4 min rest, even splits and HR under control on both. If that is comfortable, 1:45:00 is on; if the second 5 km fades, aim nearer 1:46-1:47."
     },
     {
      "date": "2027-05-09",
@@ -954,7 +954,8 @@ const SEED = {
       "Pace the reps by pace, not HR (HR lags and the strap has dropped out once). Check the strap fit before every quality session.",
       "Threshold runs are split threshold sessions (after Steve Magness, The Science of Running, 2014). Each has a total time at threshold. Run until you feel yourself going over the edge or slowing, jog 1 to 3 minutes, and carry on until the total is done. Usually one break for 25 minutes or less, two for 30, three for more. Finish feeling invigorated, not torn down.",
       "Threshold intensity is set by feel first: comfortably hard, breathing harder but not laboured, and able to say one or two short sentences. As a check, that is probably about 4:45 to 5:05/km and HR about 150 to 156 for you now, below the top of Z4. If HR climbs past 160, you are over: ease off or take a break.",
-      "Threshold progresses by adding a few minutes of total time (15, 20, 25 and so on). About 35 minutes is the ceiling. If it stalls, use an uphill threshold (treadmill at 3 to 4% and rising) or add 20 to 60 s surges inside the threshold."
+      "Threshold progresses by adding a few minutes of total time (15, 20, 25 and so on). About 35 minutes is the ceiling. If it stalls, use an uphill threshold (treadmill at 3 to 4% and rising) or add 20 to 60 s surges inside the threshold.",
+      "Half marathon sessions: progression runs start easy and finish around HM pace. Steady state is a continuous run just slower than HM pace (about 5:05-5:15/km now). Over/unders alternate 1 km just faster than threshold (about 4:50) with 1 km just slower (about 5:15), with no rest, to teach the body to clear lactate while still running. Goal-pace work is 4:59/km. The 2 x 5 km on 3 Apr is the race readiness test. All of these paces move with the Wednesday updates."
      ]
     },
     {
@@ -983,7 +984,7 @@ const SEED = {
      "name": "Great Bristol Run, half marathon, Sun 9 May 2027",
      "items": [
       "Target 1:45:00 (4:59/km). Km 1 to 3 at 5:03-5:05 (hold back), km 4 to 15 at 4:59, then hold on and finish as strong as you can.",
-      "Past HMs: 1:46:50 (5:04/km, avg HR 180 in the older zones). If the rehearsal on 3 Apr cannot hold 5:00-5:05 under control, plan on 1:46-1:47.",
+      "Past HMs: 1:46:50 (5:04/km, avg HR 180 in the older zones). If the 2 x 5 km race readiness test on 3 Apr cannot hold 4:59 under control, plan on 1:46-1:47.",
       "Fuel: your plan of 2 gels and 1 drink an hour, practised in training."
      ]
     },
