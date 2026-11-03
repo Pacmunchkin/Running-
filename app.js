@@ -792,6 +792,26 @@ function renderRoutines() {
   if (!RT.state) { try { const s = JSON.parse(localStorage.getItem('rtState') || 'null'); if (s && s.log && L.find(r => r.id === s.rid)) { RT.state = s; clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick(); if (s.running) rtWake(true); } } catch (e) { } }
   renderRtLog();
 }
+function renderFoodLog() {
+  const F = db.foodLog || [], N = (db.meals || {}).nutrition; if (!$('food-log') || !N) return;
+  if (!F.length) { $('food-log').innerHTML = '<p class="muted">No days logged yet.</p>'; return; }
+  const K = N.keys, ix = k => 2 + K.indexOf(k), wt = (db.weight || []).slice(-1)[0], kg = wt ? wt.kg : 77;
+  const r1 = v => v >= 100 ? Math.round(v) : v.toFixed(1).replace(/\.0$/, '');
+  const cols = [['kcal', 'kcal'], ['p', 'Protein g'], ['c', 'Carbs g'], ['f', 'Fat g'], ['fib', 'Fibre g']];
+  $('food-log').innerHTML = F.slice().sort((a, b) => a.date < b.date ? 1 : -1).map((day, n) => {
+    const sum = k => day.items.reduce((a, i) => a + i[ix(k)], 0), T = sum('kcal');
+    const rng = k => { const r = (N.ranges || []).find(x => x.k === k); if (!r) return null; let lo, hi;
+      if (r.perKg) { lo = r.perKg[0] * kg; hi = r.perKg[1] * kg; } else if (r.pctEnergy) { lo = r.pctEnergy[0] / 900 * T; hi = r.pctEnergy[1] / 900 * T; } else { lo = r.min; hi = Infinity; }
+      const v = sum(k); return { txt: hi === Infinity ? `${lo} g+` : `${Math.round(lo)}-${Math.round(hi)} g`, st: v < lo ? 'Low' : v > hi ? 'High' : 'OK' }; };
+    const micro = Object.keys(N.targets).map(k => { const s = (N.supplements || {})[k] || 0, v = sum(k) + s, t = N.targets[k][0]; return `<span class="chip ${v >= t ? 'ok' : v >= 0.7 * t ? 'watch' : 'low'}">${esc(N.labels[k])} ${Math.round(100 * v / t)}%</span>`; }).join(' ');
+    return `<details${n ? '' : ' open'}><summary>${fmtDate(day.date)}: ${Math.round(T)} kcal, ${Math.round(sum('p'))} g protein, ${Math.round(sum('c'))} g carbs${day.note ? ` <span class="muted">${esc(day.note)}</span>` : ''}</summary>` +
+      `<table><thead><tr><th>Food</th>${cols.map(c => `<th class="num">${c[1]}</th>`).join('')}</tr></thead><tbody>` +
+      day.items.map(i => `<tr><td>${esc(i[1])} <span class="muted">${esc(i[0])}</span></td>${cols.map(([k]) => `<td class="num">${r1(i[ix(k)])}</td>`).join('')}</tr>`).join('') +
+      `<tr><td><b>Total</b></td>${cols.map(([k]) => `<td class="num"><b>${r1(sum(k))}</b></td>`).join('')}</tr>` +
+      `<tr><td>Healthy day</td>${cols.map(([k]) => { const r = rng(k); return `<td class="num">${r ? r.txt + ` <span class="st st-${r.st}">${r.st}</span>` : '<span class="muted">-</span>'}</td>`; }).join('')}</tr></tbody></table>` +
+      `<p class="muted">Vitamins and minerals so far, with the B12 and D tablets: ${micro}</p></details>`;
+  }).join('');
+}
 function renderFuelRecipes() {
   const R = db.fuelRecipes || [];
   $('c-fuelrec').innerHTML = R.map(r => `<h3>${esc(r.name)} <span class="muted">${esc(r.per)}</span></h3><p class="muted">Targets: ${esc(r.targets)}</p><h4>Ingredients</h4><ul>${r.ingredients.map(i => `<li>${esc(i)}</li>`).join('')}</ul><h4>Method</h4><ol>${r.method.map(i => `<li>${esc(i)}</li>`).join('')}</ol>${r.notes ? `<p class="muted">${esc(r.notes)}</p>` : ''}`).join('');
@@ -1110,7 +1130,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderFoodLog(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }
