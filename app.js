@@ -457,9 +457,12 @@ function renderWeight() {
   const wts = [...(db.weight || [])].sort((a, b) => a.date < b.date ? -1 : 1);
   if (!wts.length) { $('chart-weight').innerHTML = '<p class="muted">No weigh-ins yet.</p>'; return; }
   const first = wts[0], last = wts[wts.length - 1], change = last.kg - first.kg;
-  lineChart($('chart-weight'), [{ kind: 'line', cls: 'c0', endLabel: `${last.kg} kg`, pts: wts.map(w => ({ t: parseD(w.date).getTime(), v: w.kg, tip: `${fmtDate(w.date)}: ${w.kg} kg${w.note ? '. ' + w.note : ''}` })) }],
+  const WG = db.weightGoal, goalRef = WG ? [{ kind: 'ref', name: `Goal ${WG.kg} kg`, pts: [{ t: 0, v: WG.kg }] }] : [];
+  lineChart($('chart-weight'), [...goalRef, { kind: 'line', cls: 'c0', endLabel: `${last.kg} kg`, pts: wts.map(w => ({ t: parseD(w.date).getTime(), v: w.kg, tip: `${fmtDate(w.date)}: ${w.kg} kg${w.note ? '. ' + w.note : ''}` })) }],
     { t0: parseD(first.date).getTime() - 14 * 864e5, minSpan: 4, steps: [0.5, 1, 2], fmt: v => v.toFixed(1), faster: 'up', label: 'Body weight over time' });
+  const wkLeft = WG ? Math.max(1, (parseD(WG.by) - parseD(today())) / (7 * 864e5)) : 0;
   $('weight-note').textContent = wts.length > 1 ? `${wts.length} weigh-ins since ${fmtDate(first.date)}. Change: ${change > 0 ? '+' : ''}${change.toFixed(1)} kg.` : `One weigh-in so far: ${last.kg} kg on ${fmtDate(last.date)}.`;
+  if (WG) $('weight-note').textContent += ` Goal ${WG.kg} kg by ${fmtDate(WG.by)}: ${(last.kg - WG.kg).toFixed(1)} kg to go, about ${((last.kg - WG.kg) / wkLeft).toFixed(2)} kg a week. ${WG.note}`;
 }
 function renderBp() {
   const bp = [...(db.bp || [])].sort((a, b) => a.date < b.date ? -1 : 1);

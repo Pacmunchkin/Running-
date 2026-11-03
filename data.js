@@ -1950,6 +1950,7 @@ const SEED = {
     }
    ]
   },
+  weightGoal: { kg: 75, by: '2027-02-26', note: 'Gradual loss of about 0.25-0.35 kg a week from a small deficit on easy and rest days, never on long-run or session days. Start once the current fatigue has cleared.' },
   weight: [
     { date: '2026-10-16', kg: 77.8, note: 'First entry' },
     { date: '2026-10-18', kg: 77.6, note: '' },
