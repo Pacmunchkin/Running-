@@ -2196,7 +2196,11 @@ const SEED = {
     run('2026-10-30', '08:13', 'Recovery', 6.73, '59:29', 125, 151,
       'Recovery run the day after the intervals. HR kept creeping up, so the end was walked to keep it down. 8:50/km at avg HR 125 (16% in Z3, max 151), against 7:26/km at HR 116 on 25 Oct and 6:50/km at HR 124 on 27 Oct on the same flat Redcar routes: about 0.91 m/min per beat against 1.16-1.18. Residual fatigue from the 29 Oct reps. Resting HR 41 this morning',
       '', TOR,
-      { title: 'Running', loc: 'Redcar and Cleveland', asc: 6, cal: 602, sweat: 410, cad: 149, stride: 0.76, moving: '59:29', best: '6:41', zones: Z('0:54', '49:01', '9:33', '', '') })
+      { title: 'Running', loc: 'Redcar and Cleveland', asc: 6, cal: 602, sweat: 410, cad: 149, stride: 0.76, moving: '59:29', best: '6:41', zones: Z('0:54', '49:01', '9:33', '', '') }),
+    run('2026-11-04', '18:52', 'Recovery', 5.71, '1:01:32', 113, 143,
+      'Evening recovery run back in Bath after three missed days for fatigue. 5.71 km in 1:01 at 10:47/km, avg HR 113 (max 143), 62 m of climbing. Cadence 142 and stride 0.65 m suggest a lot of walking. Resting HR 40 that morning',
+      'Time in zones not recorded', TOR,
+      { title: 'Running', asc: 62, cal: 501, sweat: 369, cad: 142, stride: 0.65, moving: '1:01:32', best: '8:26' })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2312,7 +2316,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 179.0, asOf: '2026-10-30', notes: 'In use since 11 Sep. Garmin: 23 activities, 179.0 km at 30 Oct (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 184.7, asOf: '2026-11-04', notes: 'In use since 11 Sep. Garmin: 24 activities, 184.7 km at 4 Nov (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
