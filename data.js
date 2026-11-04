@@ -63,15 +63,15 @@ const SEED = {
      "start": "2026-11-07",
      "phase": "hm1",
      "type": "build",
-     "km": 36,
-     "long": 14,
-     "sat": "Long run 14 km: Z2 (HR 134 or lower), then the last 15 min in Z3 (HR 135-154)",
-     "sun": "Pure recovery 5-6 km (HR under 125)",
-     "mon": "Z3 steady 5-6 km (HR 135-154)",
-     "wed": "6 x 1 km @ about 4:03, 1 min jog",
+     "km": 31,
+     "long": 12,
+     "sat": "Rest (busy). Long run on Sunday: 12 km, all Z2 (HR 134 or lower), no Z3 finish",
+     "sun": "Long run 12 km, all Z2",
+     "mon": "Recovery about 5 km (HR under 125)",
+     "wed": "5 x 1 km @ about 4:05-4:10, jog recoveries, only if ready",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
-     "note": ""
+     "note": "Gentle start to HM build 1 after the fatigue at the end of October: long run moved to Sunday, all Z2, Monday recovery instead of Z3 steady, and lighter reps. The 14 Nov week goes back to the plan."
     },
     {
      "start": "2026-11-14",
@@ -2198,9 +2198,9 @@ const SEED = {
       '', TOR,
       { title: 'Running', loc: 'Redcar and Cleveland', asc: 6, cal: 602, sweat: 410, cad: 149, stride: 0.76, moving: '59:29', best: '6:41', zones: Z('0:54', '49:01', '9:33', '', '') }),
     run('2026-11-04', '18:52', 'Recovery', 5.71, '1:01:32', 113, 143,
-      'Evening recovery run back in Bath after three missed days for fatigue. 5.71 km in 1:01 at 10:47/km, avg HR 113 (max 143), 62 m of climbing. Cadence 142 and stride 0.65 m suggest a lot of walking. Resting HR 40 that morning',
-      'Time in zones not recorded', TOR,
-      { title: 'Running', asc: 62, cal: 501, sweat: 369, cad: 142, stride: 0.65, moving: '1:01:32', best: '8:26' })
+      'Evening recovery run back in Bath after three missed days for fatigue. 5.71 km in 1:01 at 10:47/km, avg HR 113 (max 143), 62 m of climbing: 80% in Z2, 15% in Z1, 4% in Z3. Cadence 142 and stride 0.65 m suggest a lot of walking. Legs tired at the start but warmed up towards the end. Resting HR 40 that morning',
+      '', TOR,
+      { title: 'Running', asc: 62, cal: 501, sweat: 369, cad: 142, stride: 0.65, moving: '1:01:32', best: '8:26', zones: Z('9:40', '49:22', '2:30', '', '') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2239,7 +2239,14 @@ const SEED = {
     { id: 's18', date: '2026-11-03', session: 'Rest', details: '', fuel: "Normal meals." },
     { id: 's19', date: '2026-11-04', km: 5, session: 'Recovery run (evening)', details: 'About 30-40 min, HR under 125, walk if it creeps up. Resting HR 40 this morning, so it is a go', fuel: "Dinner at least 2 h before, or run first and eat after. Water with you is optional." },
     { id: 's20', date: '2026-11-05', session: 'Rest, or optional easy 5 km', details: 'Z2 only if you run', fuel: "None." },
-    { id: 's21', date: '2026-11-06', session: 'Rest or yoga', details: 'Long run tomorrow: 14 km, last 15 min in Z3', fuel: "Extra carbs at dinner (rice, pasta or potatoes)." },
+    { id: 's21', date: '2026-11-06', session: 'Rest or yoga', details: 'Long run is on Sunday this week', fuel: "Normal meals." },
+    { id: 's22', date: '2026-11-07', session: 'Rest (busy)', details: 'Long run moves to Sunday', fuel: "Normal meals, extra carbs at dinner (rice, pasta or potatoes)." },
+    { id: 's23', date: '2026-11-08', km: 12, session: 'Long run, all Z2', details: '12 km at HR 134 or below, no Z3 finish this week. A gentle start to HM build 1 after the fatigue. Walk the steep bits if HR climbs', fuel: "Before: breakfast 2-3 h before. During: water; 1 gel or bar if it goes past 75 min. After: carbs + protein." },
+    { id: 's24', date: '2026-11-09', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125', fuel: "None." },
+    { id: 's25', date: '2026-11-10', session: 'Rest', details: '', fuel: "Normal meals." },
+    { id: 's26', date: '2026-11-11', km: 9, session: 'Intervals: 5 x 1 km, only if ready', details: 'About 4:05-4:10/km, jog the 1 min between reps. 15-20 min warm-up, 10 min cool-down. Run them only if resting HR is 42 or under and the legs feel fresh; otherwise an easy 6 km', fuel: "Before: carb snack 2 h before. During: nothing. After: protein + carbs." },
+    { id: 's27', date: '2026-11-12', session: 'Rest, or optional easy 5 km', details: 'Z2 only if you run', fuel: "None." },
+    { id: 's28', date: '2026-11-13', session: 'Rest or yoga', details: '', fuel: "Normal meals, extra carbs at dinner before the weekend long run." },
   ],
   estimates: [
     { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
