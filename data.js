@@ -1962,7 +1962,8 @@ const SEED = {
   peakflow: {
     best: null,
     readings: [
-      { date: '2026-10-23', lpm: 460, note: 'First entry, timing not recorded' }
+      { date: '2026-10-23', lpm: 460, note: 'First entry, timing not recorded' },
+      { date: '2026-11-04', lpm: 500, note: 'Timing not recorded' }
     ]
   },
   bp: [
