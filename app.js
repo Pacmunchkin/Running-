@@ -849,7 +849,14 @@ function renderGarden() {
 function renderMeals() {
   const M = db.meals; if (!M) return;
   $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
-  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`).join('');
+  const card = (w, x, idx) => {
+    const r = (M.recipes || []).filter(q => q.week === w.week)[idx];
+    if (!r || !r.method) return `<li>${esc(x)}</li>`;
+    const ings = r.ing.map(g => g[0]).join(', ');
+    return `<li><details><summary>${esc(x)}</summary><p class="muted">Serves ${esc(r.serves)}. Prep ${esc(r.prep)}, cook ${esc(r.cook)}, oven ${esc(r.oven)}.</p><p><b>Ingredients:</b> ${esc(ings)}.</p><p><b>Method:</b> ${esc(r.method)}</p></details></li>`;
+  };
+  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map((x, idx) => card(w, x, idx)).join('')}</ul>`).join('') +
+    '<p class="muted">Summaries in my own words from The Quick Roasting Tin by Rukmini Iyer. See the book for quantities and the full method.</p>';
   $('meals-standing').innerHTML = '<table><thead><tr><th>Meal</th><th>What</th></tr></thead><tbody>' + M.standing.map(m => `<tr><td><b>${esc(m.meal)}</b></td><td class="notes">${esc(m.what)}</td></tr>`).join('') + '</tbody></table>';
 }
 const gbp = v => '£' + v.toFixed(2);
