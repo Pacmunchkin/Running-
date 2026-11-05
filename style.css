@@ -146,3 +146,4 @@ h2.sec{margin:12px 0 0;padding-top:8px;font-size:20px;border-top:1px solid var(-
 .flb{font-weight:700;color:var(--accent)}.fld{color:var(--muted);font-variant-numeric:tabular-nums}
 .chip{display:inline-block;padding:1px 7px;border-radius:6px;font-size:12px;margin:2px 0}.chip.ok{background:#20c99733;color:#5fd07a}.chip.watch{background:#fcc41933;color:#fcc419}.chip.low{background:#e0313133;color:#ff6b6b}
 .rcard{list-style:none;margin-left:-18px}.rcard summary{font-weight:400;padding:4px 0}.rtag{display:inline-block;margin-left:6px;padding:0 7px;border-radius:6px;background:var(--accent);color:#fff;font-size:11px;font-weight:600}.rcard details[open]{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin:4px 0}
+.buy{margin:4px 0 8px;padding-left:20px}.buy li{padding:1px 0}.wklist{margin:6px 0 14px}.wklist summary{color:var(--accent)}

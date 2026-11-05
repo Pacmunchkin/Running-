@@ -849,14 +849,22 @@ function renderGarden() {
 function renderMeals() {
   const M = db.meals; if (!M) return;
   $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
+  const recipeOf = (w, idx) => (M.recipes || []).filter(q => q.week === w.week)[idx];
   const card = (w, x, idx) => {
-    const r = (M.recipes || []).filter(q => q.week === w.week)[idx];
-    if (!r || !r.method) return `<li>${esc(x)}</li>`;
-    const ings = r.ing.map(g => g[0]).join(', ');
-    return `<li class="rcard"><details><summary>${esc(x)} <span class="rtag">Recipe</span></summary><p class="muted">Serves ${esc(r.serves)}. Prep ${esc(r.prep)}, cook ${esc(r.cook)}, oven ${esc(r.oven)}.</p><p><b>Ingredients:</b> ${esc(ings)}.</p><p><b>Method:</b> ${esc(r.method)}</p></details></li>`;
+    const r = recipeOf(w, idx);
+    if (!r || (!r.method && !r.buy)) return `<li>${esc(x)}</li>`;
+    const buy = r.buy ? `<p><b>To buy:</b></p><ul class="buy">${r.buy.map(b => `<li>${esc(b[0])} <span class="muted">${esc(b[1])}</span></li>`).join('')}</ul>` : '';
+    const cup = r.cupboard && r.cupboard.length ? `<p><b>From the cupboard:</b> ${esc(r.cupboard.join(', '))}</p>` : '';
+    return `<li class="rcard"><details><summary>${esc(x)} <span class="rtag">Recipe</span></summary>${r.serves ? `<p class="muted">Serves ${esc(r.serves)}${r.prep ? `. Prep ${esc(r.prep)}, cook ${esc(r.cook)}, oven ${esc(r.oven)}` : ''}.</p>` : ''}${buy}${cup}${r.method ? `<p><b>Method:</b> ${esc(r.method)}</p>` : ''}</details></li>`;
   };
-  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map((x, idx) => card(w, x, idx)).join('')}</ul>`).join('') +
-    '<p class="muted">Summaries in my own words from The Quick Roasting Tin by Rukmini Iyer. See the book for quantities and the full method.</p>';
+  const weekList = w => {
+    const items = {}, cups = new Set();
+    w.dishes.forEach((x, idx) => { const r = recipeOf(w, idx); if (!r) return; (r.buy || []).forEach(([n, q]) => { (items[n] = items[n] || []).push(q); }); (r.cupboard || []).forEach(c => cups.add(c)); });
+    const names = Object.keys(items); if (!names.length) return '';
+    return `<details class="wklist"><summary>Shopping list for week ${w.week}</summary><ul class="buy">${names.map(n => `<li>${esc(n)} <span class="muted">${esc(items[n].every(q => /^\d+$/.test(q)) ? String(items[n].reduce((s, q) => s + +q, 0)) : items[n].join(' + '))}</span></li>`).join('')}</ul>${cups.size ? `<p><b>Check the cupboard for:</b> ${esc([...cups].join(', '))}</p>` : ''}</details>`;
+  };
+  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map((x, idx) => card(w, x, idx)).join('')}</ul>${weekList(w)}`).join('') +
+    '<p class="muted">Shopping amounts and method summaries in my own words, based on The Quick Roasting Tin by Rukmini Iyer. Amounts are rounded to what you would buy. See the book for the exact quantities and full method.</p>';
   $('meals-standing').innerHTML = '<table><thead><tr><th>Meal</th><th>What</th></tr></thead><tbody>' + M.standing.map(m => `<tr><td><b>${esc(m.meal)}</b></td><td class="notes">${esc(m.what)}</td></tr>`).join('') + '</tbody></table>';
 }
 const gbp = v => '£' + v.toFixed(2);
