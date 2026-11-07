@@ -596,7 +596,7 @@ function renderHome() {
   if (N) {
     const K = N.keys, sum = k => N.items.reduce((a, i) => a + i[2 + K.indexOf(k)], 0), kg = wt ? wt.kg : 77, cr = (N.ranges || []).find(r => r.k === 'c'), cv = sum('c');
     const cl = cr && cr.perKg ? (cv < cr.perKg[0] * kg ? 'Low' : cv > cr.perKg[1] * kg ? 'High' : 'OK') : '';
-    const wkLast = M.weeks.filter(w => w.order && w.order <= t).slice(-1)[0];
+    const wkLast = M.weeks.filter(w => w.order && w.order <= t).sort((x, y) => x.order < y.order ? -1 : 1).slice(-1)[0];
     cards.push(card('meals', 'Meals', kv([['Typical day', `${Math.round(sum('kcal'))} kcal, ${Math.round(sum('p'))} g protein`], ['Carbs', `${Math.round(cv)} g ${cl ? `<span class="st st-${cl}">${cl}</span>` : ''}`],
       wkLast && ['Latest week', `Week ${wkLast.week}: ${wkLast.dishes.length} dishes`]])));
   }
@@ -849,7 +849,7 @@ function renderGarden() {
 function renderMeals() {
   const M = db.meals; if (!M) return;
   $('meals-intro').textContent = `From the book ${M.source}. ${M.method}`;
-  const recipeOf = (w, idx) => (M.recipes || []).filter(q => q.week === w.week)[idx];
+  const recipeOf = (w, idx) => (M.recipes || []).find(q => q.dish === w.dishes[idx]) || (M.recipes || []).filter(q => q.week === w.week)[idx];
   const card = (w, x, idx) => {
     const r = recipeOf(w, idx);
     if (!r || (!r.method && !r.buy)) return `<li>${esc(x)}</li>`;
@@ -903,7 +903,7 @@ function renderShop() {
       for (const [b, f] of ing[5] || []) { const it = find(o, b); if (it) return { it, cost: it[2] * f, d: o.date }; }
       return null;
     };
-    const dishesFor = w => M.recipes.filter(r => r.week === w.week).map(r => {
+    const dishesFor = w => w.dishes.map((x, idx) => M.recipes.find(q => q.dish === x) || M.recipes.filter(q => q.week === w.week)[idx]).filter(Boolean).map(r => {
       const rows = r.ing.map(g => ({ g, m: price(r, g, w) })), cost = rows.reduce((a, x) => a + (x.m ? x.m.cost : 0), 0);
       return { r, rows, cost, miss: rows.filter(x => !x.m).length };
     });
