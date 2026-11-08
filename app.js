@@ -656,7 +656,8 @@ function yearGoalRows(y) {
   const runsIn = () => (H.runsAll || []).filter(r => +r[0].slice(0, 4) === y).length + db.runs.filter(r => r.date > (H.exportEnd || '') && +r.date.slice(0, 4) === y).length;
   const pagesIn = () => { const its = ((db.media || {}).items || []).filter(i => i.pages); const fin = its.filter(i => i.status === 'Finished' && i.finished && +i.finished.slice(0, 4) === y);
     return { n: fin.reduce((a, i) => a + i.pages, 0), books: fin.length }; };
-  const yogaIn = g => (((H.other || {})[y] || {}).Yoga || 0) + (g.log || []).filter(x => x[0] > (H.exportEnd || '')).length;
+  const yogaIn = g => { const logged = new Set((g.log || []).filter(x => x[0] > (H.exportEnd || '')).map(x => x[0])), ry = rtAllLog().filter(r => /^yoga/.test(r.rid) && !r.stopped && r.date > (H.exportEnd || '') && +r.date.slice(0, 4) === y && !logged.has(r.date));
+    return (((H.other || {})[y] || {}).Yoga || 0) + logged.size + ry.length; };
   const frac = y < cur ? 1 : y > cur ? 0 : (parseD(t) - new Date(y, 0, 1)) / (new Date(y + 1, 0, 1) - new Date(y, 0, 1));
   return (((db.yearGoals || []).find(x => x.year === y) || {}).goals || []).map(g => {
     let v = null, extra = '';
@@ -704,13 +705,43 @@ function renderJournal() {
     return `<div class="flm${m === t.slice(0, 7) ? ' now' : ''}"><h3>${MON[+mm - 1]} <span class="muted">${y}</span></h3>${es.length ? '<ul class="fl">' + es.map(x => `<li class="${x.d < t && x.d.length > 7 ? 'past' : ''}"><span class="flb">${x.star ? '*' : ''}${mark(x)}</span><span class="fld">${x.d.length > 7 ? +x.d.slice(8) : ''}</span><span>${esc(x.text)}${x.src ? ` <span class="muted">${esc(x.src)}</span>` : ''}</span></li>`).join('') + '</ul>' : '<p class="muted">Nothing yet.</p>'}</div>`;
   }).join('');
 }
+// ---------- yoga pose figures (own simple line drawings) ----------
+// each pose: h head, n neck, p pelvis, c optional spine bend, a/A near/far arm [elbow, hand], l/L near/far leg [knee, foot]
+const POSES = {
+  seat: { name: 'Easy seat', h: [56, 33], n: [57, 42], p: [58, 74], a: [[64, 58], [80, 70]], A: [[60, 58], [76, 68]], l: [[84, 75], [64, 80]], L: [[80, 71], [60, 77]] },
+  cat: { name: 'Cat-cow', h: [33, 58], n: [40, 50], p: [78, 50], c: [59, 38], a: [[40, 65], [40, 80]], A: [[43, 65], [44, 80]], l: [[78, 80], [100, 80]], L: [[81, 80], [102, 79]] },
+  child: { name: "Child's pose", h: [44, 75], n: [52, 72], p: [82, 72], c: [66, 62], a: [[34, 78], [20, 79]], A: [[36, 76], [22, 77]], l: [[62, 79], [88, 80]], L: [[64, 78], [90, 79]] },
+  dog: { name: 'Downward dog', h: [43, 65], n: [46, 58], p: [68, 32], a: [[36, 69], [26, 80]], A: [[39, 69], [30, 80]], l: [[79, 56], [90, 80]], L: [[82, 56], [94, 80]] },
+  lunge: { name: 'Low lunge', h: [56, 22], n: [56, 31], p: [57, 61], a: [[55, 18], [54, 4]], A: [[58, 18], [58, 4]], l: [[36, 62], [36, 80]], L: [[76, 79], [98, 80]] },
+  halfsplit: { name: 'Half splits', h: [38, 52], n: [46, 49], p: [72, 56], c: [58, 42], a: [[45, 64], [44, 80]], A: [[48, 64], [48, 80]], l: [[52, 66], [28, 74]], L: [[72, 80], [94, 80]] },
+  fold: { name: 'Standing forward fold', h: [51, 73], n: [53, 64], p: [66, 36], c: [48, 40], a: [[52, 72], [56, 80]], A: [[55, 72], [59, 80]], l: [[65, 58], [64, 80]], L: [[68, 58], [68, 80]] },
+  mountain: { name: 'Mountain', h: [60, 9], n: [60, 18], p: [60, 46], a: [[57, 32], [57, 46]], A: [[63, 32], [63, 46]], l: [[58, 63], [58, 80]], L: [[62, 63], [62, 80]] },
+  warrior2: { name: 'Warrior II', h: [61, 16], n: [62, 25], p: [62, 52], a: [[46, 25], [30, 25]], A: [[78, 25], [94, 25]], l: [[41, 56], [37, 80]], L: [[77, 66], [93, 80]] },
+  triangle: { name: 'Triangle', h: [33, 31], n: [40, 36], p: [62, 50], a: [[38, 48], [36, 61]], A: [[42, 22], [44, 7]], l: [[49, 65], [36, 80]], L: [[76, 65], [90, 80]] },
+  sphinx: { name: 'Sphinx', h: [40, 54], n: [44, 62], p: [72, 77], c: [56, 74], a: [[44, 79], [30, 79]], A: [[47, 78], [33, 78]], l: [[90, 79], [108, 79]], L: [[91, 78], [109, 77]] },
+  pigeon: { name: 'Pigeon', h: [60, 35], n: [60, 44], p: [62, 72], a: [[57, 60], [52, 79]], A: [[63, 60], [68, 79]], l: [[44, 77], [62, 79]], L: [[82, 79], [103, 79]] },
+  bridge: { name: 'Bridge', h: [16, 73], n: [27, 76], p: [52, 58], c: [40, 62], a: [[40, 79], [54, 80]], A: [[41, 78], [55, 79]], l: [[70, 55], [73, 80]], L: [[72, 54], [76, 79]] },
+  fig4: { name: 'Figure four', h: [14, 73], n: [25, 76], p: [54, 76], a: [[40, 63], [60, 58]], A: [[42, 66], [62, 60]], l: [[78, 46], [66, 56]], L: [[64, 55], [84, 56]] },
+  twist: { name: 'Lying twist', top: true, h: [60, 13], n: [60, 23], p: [60, 52], a: [[45, 23], [29, 24]], A: [[75, 23], [91, 24]], l: [[80, 58], [77, 75]], L: [[78, 61], [72, 74]] },
+  knees: { name: 'Knees to chest', h: [14, 73], n: [25, 76], p: [54, 76], a: [[36, 66], [48, 56]], A: [[38, 68], [50, 58]], l: [[44, 56], [61, 51]], L: [[46, 58], [63, 54]] },
+  savasana: { name: 'Savasana', h: [14, 73], n: [25, 77], p: [56, 77], a: [[40, 79], [54, 80]], A: [[41, 78], [55, 78]], l: [[76, 78], [96, 78]], L: [[77, 77], [97, 76]] }
+};
+function poseSVG(key, cls) {
+  const [k, side] = String(key || '').split(':'), P = POSES[k]; if (!P) return '';
+  const seg = (a, b, c) => `M${a[0]} ${a[1]}L${b[0]} ${b[1]}L${c[0]} ${c[1]}`;
+  const far = [P.A && seg(P.n, P.A[0], P.A[1]), P.L && seg(P.p, P.L[0], P.L[1])].filter(Boolean).join(''), near = [seg(P.p, P.l[0], P.l[1]), seg(P.n, P.a[0], P.a[1])].join('');
+  const spine = P.c ? `M${P.n[0]} ${P.n[1]}Q${P.c[0]} ${P.c[1]} ${P.p[0]} ${P.p[1]}` : `M${P.n[0]} ${P.n[1]}L${P.p[0]} ${P.p[1]}`;
+  const g = `<path class="pf" d="${far}"/><path class="pb" d="${spine}"/><path class="pb" d="${near}"/><circle class="ph" cx="${P.h[0]}" cy="${P.h[1]}" r="6"/>`;
+  return `<svg class="pose ${cls || ''}" viewBox="0 0 120 88" role="img" aria-label="${esc(P.name)}${side ? ', ' + (side === 'L' ? 'left' : 'right') + ' side' : ''}">${P.top ? '<rect class="pmat" x="20" y="4" width="80" height="80" rx="4"/>' : '<line class="pfl" x1="4" y1="84" x2="116" y2="84"/>'}<g transform="${side === 'L' ? 'translate(120 0) scale(-1 1)' : ''} translate(0 3)">${g}</g></svg>`;
+}
 // ---------- routines: press Go and it runs step by step ----------
 const RT = { state: null, timer: null, audio: null, lock: null, swReg: null };
-const rtPrefs = () => { try { return Object.assign({ sound: true, vibrate: true, notify: false }, JSON.parse(localStorage.getItem('rtPrefs') || '{}')); } catch (e) { return { sound: true, vibrate: true, notify: false }; } };
+const rtPrefs = () => { try { return Object.assign({ sound: true, vibrate: true, notify: false, speak: true }, JSON.parse(localStorage.getItem('rtPrefs') || '{}')); } catch (e) { return { sound: true, vibrate: true, notify: false }; } };
 const rtSavePrefs = p => { try { localStorage.setItem('rtPrefs', JSON.stringify(p)); } catch (e) { } };
 const rtSave = () => { try { RT.state ? localStorage.setItem('rtState', JSON.stringify(RT.state)) : localStorage.removeItem('rtState'); } catch (e) { } };
 const rtLocalLog = () => { try { return JSON.parse(localStorage.getItem('rtLog') || '[]'); } catch (e) { return []; } };
 const rtAllLog = () => { const seen = new Set(), out = []; [...(db.routineLog || []), ...rtLocalLog()].forEach(r => { if (!seen.has(r.start)) { seen.add(r.start); out.push(r); } }); return out.sort((a, b) => b.start - a.start); };
+const fmtMin = m => m < 1 ? Math.round(m * 60) + ' s' : (Number.isInteger(m) ? m : m.toFixed(1)) + ' min';
 const mmss = ms => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const rtClock = ms => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
 function rtRoutine() { return RT.state && (db.routines || []).find(r => r.id === RT.state.rid); }
@@ -747,10 +778,11 @@ function rtFinish() {
   RT.state = null; rtSave(); rtWake(false); clearInterval(RT.timer); rtChime();
   const done = rec.steps.filter(x => x.status !== 'skipped').length;
   rtNotify(`${R.name} routine done`, `${done} of ${rec.steps.length} steps in ${mmss(rec.active * 1000)}.`);
-  $('rt-run').innerHTML = `<div class="rtdone"><b>${esc(R.name)} done</b><span>${done} of ${rec.steps.length} steps in ${mmss(rec.active * 1000)} (planned ${rec.planned}:00)</span><button class="ghost" data-rt="close">Close</button></div>`;
+  $('rt-run').innerHTML = `<div class="rtdone"><b>${esc(R.name)} done</b><span>${done} of ${rec.steps.length} steps in ${mmss(rec.active * 1000)} (planned ${mmss(rec.planned * 60000)})</span><button class="ghost" data-rt="close">Close</button></div>`;
   renderRtLog();
 }
-function rtAnnounce() { const R = rtRoutine(), s = RT.state, st = R.steps[s.i], nx = R.steps[s.i + 1]; rtChime(); rtNotify(`${st[0]} (${st[1]} min)`, nx ? `Next: ${nx[0]}` : 'Last step'); }
+function rtSpeak(txt) { try { if (!rtPrefs().speak || !('speechSynthesis' in window)) return; speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(txt); u.lang = 'en-GB'; u.rate = 0.95; speechSynthesis.speak(u); } catch (e) { } }
+function rtAnnounce() { const R = rtRoutine(), s = RT.state, st = R.steps[s.i], nx = R.steps[s.i + 1]; rtChime(); rtNotify(`${st[0]} (${fmtMin(st[1])})`, nx ? `Next: ${nx[0]}` : 'Last step'); if (st[2]) setTimeout(() => rtSpeak(`${st[0]}. ${st[3] || ''}`), 600); }
 function rtTick() {
   const s = RT.state; if (!s) return;
   const R = rtRoutine();
@@ -760,8 +792,8 @@ function rtTick() {
   }
   const st = R.steps[s.i], dur = st[1] * 60000, left = s.running ? s.end - Date.now() : s.left;
   const restMs = R.steps.slice(s.i + 1).reduce((a, x) => a + x[1] * 60000, 0) + Math.max(0, left), totMs = R.steps.reduce((a, x) => a + x[1] * 60000, 0);
-  $('rt-run').innerHTML = `<div class="rtrun"><div class="muted">${esc(R.name)}, step ${s.i + 1} of ${R.steps.length}</div><div class="rtname">${esc(st[0])}</div><div class="rtclock">${mmss(Math.ceil(Math.max(0, left) / 1000) * 1000)}</div>` +
-    `<div class="rtbar"><i style="width:${Math.min(100, 100 * (1 - left / dur)).toFixed(1)}%"></i></div><div class="muted">${R.steps[s.i + 1] ? 'Next: ' + esc(R.steps[s.i + 1][0]) + ` (${R.steps[s.i + 1][1]} min)` : 'Last step'}</div>` +
+  $('rt-run').innerHTML = `<div class="rtrun"><div class="muted">${esc(R.name)}, step ${s.i + 1} of ${R.steps.length}</div><div class="rtname">${esc(st[0])}</div>${st[2] ? poseSVG(st[2], 'big') : ''}${st[3] ? `<p class="rtcue">${esc(st[3])}</p>` : ''}<div class="rtclock">${mmss(Math.ceil(Math.max(0, left) / 1000) * 1000)}</div>` +
+    `<div class="rtbar"><i style="width:${Math.min(100, 100 * (1 - left / dur)).toFixed(1)}%"></i></div><div class="muted">${R.steps[s.i + 1] ? 'Next: ' + esc(R.steps[s.i + 1][0]) + ` (${fmtMin(R.steps[s.i + 1][1])})` : 'Last step'}</div>` +
     `<div class="rtbar thin"><i style="width:${(100 * (1 - restMs / totMs)).toFixed(1)}%"></i></div><div class="muted">${mmss(restMs)} left in total</div>` +
     `<div class="rtbtns"><button class="rtok" data-rt="complete">Complete</button></div>` +
     `<div class="rtbtns"><button class="ghost" data-rt="back">Back</button><button class="ghost" data-rt="${s.running ? 'pause' : 'resume'}">${s.running ? 'Pause' : 'Resume'}</button><button class="ghost" data-rt="skip">Skip</button><button class="ghost" data-rt="plus">+1 min</button><button class="ghost" data-rt="stop">Stop</button></div></div>`;
@@ -806,10 +838,10 @@ function renderRtLog() {
   const by = {}; L.forEach(r => (by[r.name] = by[r.name] || []).push(r));
   const sum = '<table><thead><tr><th>Routine</th><th class="num">Runs</th><th class="num">Average</th><th class="num">Fastest</th><th class="num">Planned</th><th>Last</th></tr></thead><tbody>' +
     Object.entries(by).map(([n, rs]) => { const full = rs.filter(r => !r.stopped), av = full.length ? full.reduce((a, r) => a + r.active, 0) / full.length : 0;
-      return `<tr><td><b>${esc(n)}</b></td><td class="num">${rs.length}</td><td class="num">${full.length ? mmss(av * 1000) : '-'}</td><td class="num">${full.length ? mmss(Math.min(...full.map(r => r.active)) * 1000) : '-'}</td><td class="num">${rs[0].planned}:00</td><td>${fmtDate(rs[0].date)}</td></tr>`; }).join('') + '</tbody></table>';
+      return `<tr><td><b>${esc(n)}</b></td><td class="num">${rs.length}</td><td class="num">${full.length ? mmss(av * 1000) : '-'}</td><td class="num">${full.length ? mmss(Math.min(...full.map(r => r.active)) * 1000) : '-'}</td><td class="num">${mmss(rs[0].planned * 60000)}</td><td>${fmtDate(rs[0].date)}</td></tr>`; }).join('') + '</tbody></table>';
   const runs = L.slice(0, 30).map(r => { const done = r.steps.filter(x => x.status !== 'skipped').length;
     return `<details><summary>${fmtDate(r.date)}, ${rtClock(r.start)}: ${esc(r.name)} in ${mmss(r.active * 1000)} <span class="muted">(${done} of ${r.steps.length} steps${r.stopped ? ', stopped early' : ''})</span></summary><table><thead><tr><th>Step</th><th class="num">Planned</th><th class="num">Actual</th><th>How it ended</th></tr></thead><tbody>` +
-      r.steps.map(x => `<tr><td>${esc(x.name)}</td><td class="num">${x.planned}:00</td><td class="num">${mmss(x.actual * 1000)}</td><td class="notes">${esc(x.status)}</td></tr>`).join('') + '</tbody></table></details>'; }).join('');
+      r.steps.map(x => `<tr><td>${esc(x.name)}</td><td class="num">${mmss(x.planned * 60000)}</td><td class="num">${mmss(x.actual * 1000)}</td><td class="notes">${esc(x.status)}</td></tr>`).join('') + '</tbody></table></details>'; }).join('');
   $('rt-log').innerHTML = sum + '<h3>Runs</h3>' + runs + `<p><button class="ghost" data-rt="copylog" type="button">Copy history</button> <button class="ghost" data-rt="clearlog" type="button">Clear history</button></p><p class="muted">History is saved in this browser. To keep it on the site for every device, tap Copy history and paste it to me in the chat.</p>`;
   $('rt-log').onclick = e => { const a = e.target.dataset && e.target.dataset.rt; if (a === 'clearlog') rtAction('clearlog');
     if (a === 'copylog') { const txt = 'Routine history:\n' + rtLocalLog().map(r => `${r.date} ${rtClock(r.start)} ${r.name}: ${mmss(r.active * 1000)}${r.stopped ? ' (stopped)' : ''}. ` + r.steps.map(x => `${x.name} ${mmss(x.actual * 1000)} ${x.status}`).join('; ')).join('\n');
@@ -819,8 +851,8 @@ function renderRoutines() {
   const L = db.routines || []; if (!$('rt-list')) return;
   const p = rtPrefs();
   $('rt-list').innerHTML = L.map(r => { const tot = r.steps.reduce((a, s) => a + s[1], 0);
-    return `<section class="card"><div class="row"><h2>${esc(r.name)} <small>${r.steps.length} steps, ${tot} min</small></h2><button data-rt-go="${esc(r.id)}">Go</button></div><ol class="rtsteps">${r.steps.map(s => `<li><span>${esc(s[0])}</span><span class="muted">${s[1]} min</span></li>`).join('')}</ol></section>`; }).join('');
-  $('rt-prefs').innerHTML = `<label><input type="checkbox" data-rp="sound"${p.sound ? ' checked' : ''}> Chime</label> <label><input type="checkbox" data-rp="vibrate"${p.vibrate ? ' checked' : ''}> Vibrate</label> <label><input type="checkbox" data-rp="notify"${p.notify ? ' checked' : ''}> Notifications</label>` +
+    return `<section class="card"><div class="row"><h2>${esc(r.name)} <small>${r.steps.length} steps, ${fmtMin(tot)}</small></h2><button data-rt-go="${esc(r.id)}">Go</button></div>${r.intro ? `<p class="muted">${esc(r.intro)}</p>` : ''}<ol class="rtsteps${r.steps.some(s => s[2]) ? ' yoga' : ''}">${r.steps.map(s => `<li>${s[2] ? poseSVG(s[2], 'thumb') : ''}<span>${esc(s[0])}${s[3] ? `<br><span class="muted small">${esc(s[3])}</span>` : ''}</span><span class="muted">${fmtMin(s[1])}</span></li>`).join('')}</ol></section>`; }).join('');
+  $('rt-prefs').innerHTML = `<label><input type="checkbox" data-rp="sound"${p.sound ? ' checked' : ''}> Chime</label> <label><input type="checkbox" data-rp="vibrate"${p.vibrate ? ' checked' : ''}> Vibrate</label> <label><input type="checkbox" data-rp="notify"${p.notify ? ' checked' : ''}> Notifications</label> <label><input type="checkbox" data-rp="speak"${p.speak ? ' checked' : ''}> Spoken cues (yoga)</label>` +
     (('Notification' in window) ? (Notification.permission === 'denied' ? ' <span class="muted">Notifications are blocked for this site in the browser settings.</span>' : '') : ' <span class="muted">This browser does not support notifications.</span>');
   $('rt-prefs').onchange = async e => { const k = e.target.dataset.rp; if (!k) return; const q = rtPrefs(); q[k] = e.target.checked;
     if (k === 'notify' && q.notify && 'Notification' in window && Notification.permission !== 'granted') { const res = await Notification.requestPermission(); q.notify = res === 'granted'; }
