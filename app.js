@@ -629,6 +629,8 @@ function renderHome() {
     const now = MD.items.filter(i => i.status === 'Now'), done = MD.items.filter(i => i.status === 'Finished'), rt = done.filter(i => i.rating);
     cards.push(card('media', 'Media', kv([['Now', now.length ? now.map(i => esc(i.title)).join(', ') : (MD.items.length ? 'Nothing' : 'Nothing logged yet')], ['Finished', MD.items.length ? `${done.length}${rt.length ? `, average ${(rt.reduce((a, i) => a + i.rating, 0) / rt.length).toFixed(1)} / 5` : ''}` : '']])));
   }
+  const ygY = +t.slice(0, 4), ygR = yearGoalRows(ygY);
+  if (ygR.length) cards.push(card('journal', `${ygY} goals`, kv(ygR.map(x => [x.g.label, goalLine(x, ygY).text]))));
   $('home-grid').innerHTML = cards.join('');
 }
 function renderMedia() {
@@ -648,6 +650,39 @@ function renderMedia() {
   if (!$('media-type').options.length) { $('media-type').innerHTML = '<option value="">All types</option>' + M.types.map(t => `<option>${esc(t)}</option>`).join(''); $('media-status').innerHTML = '<option value="">All</option>' + M.statuses.map(t => `<option>${esc(t)}</option>`).join(''); $('media-type').value = ft; $('media-status').value = fs; }
 }
 // ---------- journal: future log (bullet journal style) ----------
+// ---------- yearly goals: progress worked out from the rest of the site where it can be ----------
+function yearGoalRows(y) {
+  const H = db.history || {}, t = today(), cur = +t.slice(0, 4);
+  const runsIn = () => (H.runsAll || []).filter(r => +r[0].slice(0, 4) === y).length + db.runs.filter(r => r.date > (H.exportEnd || '') && +r.date.slice(0, 4) === y).length;
+  const pagesIn = () => { const its = ((db.media || {}).items || []).filter(i => i.pages); const fin = its.filter(i => i.status === 'Finished' && i.finished && +i.finished.slice(0, 4) === y);
+    return { n: fin.reduce((a, i) => a + i.pages, 0), books: fin.length }; };
+  const yogaIn = g => (((H.other || {})[y] || {}).Yoga || 0) + (g.log || []).filter(x => x[0] > (H.exportEnd || '')).length;
+  const frac = y < cur ? 1 : y > cur ? 0 : (parseD(t) - new Date(y, 0, 1)) / (new Date(y + 1, 0, 1) - new Date(y, 0, 1));
+  return (((db.yearGoals || []).find(x => x.year === y) || {}).goals || []).map(g => {
+    let v = null, extra = '';
+    if (g.auto === 'runs') v = runsIn();
+    else if (g.auto === 'pages') { const p = pagesIn(); v = p.n; extra = `${p.books} finished`; }
+    else if (g.auto === 'yoga') v = yogaIn(g);
+    else if (g.unit === 'kg' && g.log && g.log.length) v = g.log.reduce((a, x) => a + x[1], 0);
+    const exp = g.target ? g.target * frac : null;
+    return { g, v, extra, exp, frac };
+  });
+}
+function goalLine(x, y) {
+  const { g, v, extra, exp } = x, cur = +today().slice(0, 4), f0 = n => Math.round(n).toLocaleString('en-GB');
+  if (!g.target || v == null) return { bar: '', text: esc(g.result || g.status || (g.target ? 'Nothing logged yet' : '')) };
+  const pct = Math.min(100, 100 * v / g.target), ep = exp != null ? Math.min(100, 100 * exp / g.target) : null;
+  const st = g.result ? g.result : v >= g.target ? 'Done' : y === cur ? (v >= exp ? 'On pace' : 'Behind') : '';
+  const cls = /Pass|Done|On pace/.test(st) ? 'OK' : /Fail|Behind/.test(st) ? 'High' : 'Watch';
+  const left = y === cur && v < g.target ? `. ${f0(g.target - v)} to go, about ${((w => w >= 20 ? f0(w) : w.toFixed(1)))(7 * (g.target - v) / Math.max(1, (new Date(y + 1, 0, 1) - parseD(today())) / 864e5))} a week` : '';
+  return { bar: `<div class="ygbar"><span style="width:${pct.toFixed(1)}%"></span>${y === cur && ep != null ? `<i style="left:${ep.toFixed(1)}%"></i>` : ''}</div>`,
+    text: `<b>${f0(v)}</b> of ${f0(g.target)} ${esc(g.unit)}${extra ? ` <span class="muted">(${esc(extra)})</span>` : ''}${y === cur && !g.result ? ` <span class="muted">(pace line ${f0(exp)})</span>` : ''}${left} ${st ? `<span class="st st-${cls}">${esc(st)}</span>` : ''}` };
+}
+function renderYearGoals() {
+  if (!$('yg')) return;
+  const ys = (db.yearGoals || []).map(x => x.year).sort((a, b) => b - a);
+  $('yg').innerHTML = ys.map(y => `<h3>${y}</h3><ul class="yg">` + yearGoalRows(y).map(x => { const l = goalLine(x, y); return `<li><div><b>${esc(x.g.label)}</b> <span class="muted">${esc(x.g.why || '')}</span></div>${l.bar}<div class="small">${l.text}</div></li>`; }).join('') + '</ul>').join('');
+}
 function renderJournal() {
   if (!$('fl-grid')) return;
   const J = db.journal || {}, t = today(), MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -1148,7 +1183,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderFoodLog(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderFoodLog(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal(); renderYearGoals();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }
