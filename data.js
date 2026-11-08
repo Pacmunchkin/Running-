@@ -2085,7 +2085,7 @@ const SEED = {
     { year: 2026, goals: [
       { id: 'read', label: 'Read 5,500 pages', why: 'Be a reader', target: 5500, unit: 'pages', auto: 'pages' },
       { id: 'run', label: 'Run 150 times', why: 'Be a runner', target: 150, unit: 'runs', auto: 'runs' },
-      { id: 'charm', label: 'Top 20 in the charm bracelet', why: 'Be a runner', status: 'Not tracked yet' },
+      { id: 'charm', label: 'Top 20 in the charm bracelet', why: 'Be a runner', status: 'Charm Bracelet Marathon, Redcar, 12 Apr 2026: 5:26:35, 46th of 191 overall, 35th man, 19th of the M (under 40) group. Top 20 in the age group, not overall' },
       { id: 'grow', label: 'Grow 100 kg of food', why: 'Be a gardener', target: 100, unit: 'kg', log: [] },
       { id: 'yoga', label: 'Yoga 50 times', target: 50, unit: 'sessions', auto: 'yoga', log: [] }
     ] }
@@ -2248,6 +2248,7 @@ const SEED = {
     { id: 'p6', event: '1 km (fastest)', place: 'Bath', time: '3:56.9', when: '14 Oct 2026', notes: 'Garmin PR during the 1k repeats. Previous best 4:08.9 on 7 Oct 2026' },
     { id: 'p7', event: '1 mile (fastest)', place: 'Bath', time: '6:59.7', when: '14 Oct 2026', notes: 'Garmin PR, same session' },
     { id: 'p8', event: 'Marathon', place: 'Bath', time: '4:41:04', when: '18 Aug 2024', notes: 'Road, 42.64 km at 6:35/km' },
+    { id: 'p9', event: 'Charm Bracelet Marathon', place: 'Redcar', time: '5:26:35', when: '12 Apr 2026', notes: 'Coastal course. 46th of 191 marathon finishers, 35th man, 19th in the M group. Garmin: 45.28 km, avg HR 153, 804 m of climbing' },
     { id: 'p9', event: 'Longest run', place: 'Redcar and Cleveland', time: '5:26:24', when: '12 Apr 2026', notes: 'Trail marathon, 45.28 km, 804 m ascent, avg HR 153' },
     { id: 'p4', event: 'Half marathon (not a PB)', place: 'Bath', time: '2:11:33', when: '16 Aug 2026', notes: '22.11 km, avg 5:57/km, avg HR 159. Ultra block' }
   ],
