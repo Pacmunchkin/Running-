@@ -623,7 +623,7 @@ function renderHome() {
     cards.push(card('nt', 'National Trust', kv([['Visited', `${vs.length} of ${all.length}`], lv && ['Latest', `${esc(lv[0])}${lv[1] ? ` <span class="muted">${fd(lv[1])}</span>` : ''}`]])));
   }
   if ((db.routines || []).length) { const lg = rtAllLog(), lr = lg[0];
-    cards.push(card('routines', 'Routines', kv([...db.routines.map(r => [r.name, `${r.steps.length} steps, ${r.steps.reduce((a, s) => a + s[1], 0)} min`]), ['Last run', lr ? `${esc(lr.name)} ${fmtDate(lr.date)}, ${mmss(lr.active * 1000)}` : 'None yet'], ['Runs logged', String(lg.length)]]))); }
+    cards.push(card('routines', 'Routines', kv([...db.routines.map(r0 => { const r = rtBuild(r0); return [r.name, `${r.steps.length} steps, ${fmtMin(r.steps.reduce((a, s) => a + s[1], 0))}`]; }), ['Last run', lr ? `${esc(lr.name)} ${fmtDate(lr.date)}, ${mmss(lr.active * 1000)}` : 'None yet'], ['Runs logged', String(lg.length)]]))); }
   const MD = db.media;
   if (MD) {
     const now = MD.items.filter(i => i.status === 'Now'), done = MD.items.filter(i => i.status === 'Finished'), rt = done.filter(i => i.rating);
@@ -741,10 +741,28 @@ const rtSavePrefs = p => { try { localStorage.setItem('rtPrefs', JSON.stringify(
 const rtSave = () => { try { RT.state ? localStorage.setItem('rtState', JSON.stringify(RT.state)) : localStorage.removeItem('rtState'); } catch (e) { } };
 const rtLocalLog = () => { try { return JSON.parse(localStorage.getItem('rtLog') || '[]'); } catch (e) { return []; } };
 const rtAllLog = () => { const seen = new Set(), out = []; [...(db.routineLog || []), ...rtLocalLog()].forEach(r => { if (!seen.has(r.start)) { seen.add(r.start); out.push(r); } }); return out.sort((a, b) => b.start - a.start); };
-const fmtMin = m => m < 1 ? Math.round(m * 60) + ' s' : (Number.isInteger(m) ? m : m.toFixed(1)) + ' min';
+const fmtMin = m => { const s = Math.round(m * 60); return s < 60 ? s + ' s' : s % 60 ? `${Math.floor(s / 60)} min ${s % 60} s` : s / 60 + ' min'; };
 const mmss = ms => { const s = Math.max(0, Math.round(ms / 1000)); return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, '0')}`; };
 const rtClock = ms => new Date(ms).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
-function rtRoutine() { return RT.state && (db.routines || []).find(r => r.id === RT.state.rid); }
+// a routine with a "build" picks blocks by priority to fit the chosen length, then scales the holds
+const rtLens = () => { try { return JSON.parse(localStorage.getItem('rtLen') || '{}'); } catch (e) { return {}; } };
+function rtBuild(R, mins) {
+  const B = R.build; if (!B) return R;
+  const len = mins || rtLens()[R.id] || B.default, rest = R.steps[B.rest];
+  const sav = Math.min(6, Math.max(2, Math.round(len * 0.1 * 2) / 2)), budget = len - sav;
+  const order = B.blocks.map((b, k) => ({ p: b[0], idx: b[1], k })).sort((a, b) => a.p - b.p || a.k - b.k), pick = new Set();
+  let tot = 0; for (const b of order) { if (tot >= budget) break; b.idx.forEach(i => pick.add(i)); tot += b.idx.reduce((a, i) => a + R.steps[i][1], 0); }
+  const f = budget / tot, steps = [...pick].sort((a, b) => a - b).map(i => { const s = R.steps[i].slice(), raw = s[1] * f; s[1] = Math.max(0.25, Math.floor(raw * 4) / 4); s.r = raw - s[1]; return s; });
+  // hand out the spare 15 s slots; right and left sides of a pose always get the same time
+  let q = Math.round((budget - steps.reduce((a, s) => a + s[1], 0)) * 4);
+  const G = {}; steps.forEach(s => { const k = s[0].replace(/, (right|left)$/, '') + '|' + s[2].split(':')[0]; (G[k] = G[k] || []).push(s); });
+  const gs = Object.values(G).sort((a, b) => b[0].r - a[0].r);
+  for (let pass = 0, gave = true; q > 0 && gave; pass++) { gave = false; for (const g of gs) if (q >= g.length) { g.forEach(s => { s[1] += 0.25; }); q -= g.length; gave = true; } }
+  steps.forEach(s => delete s.r);
+  const last = rest.slice(); last[1] = Math.round((len - steps.reduce((a, s) => a + s[1], 0)) * 4) / 4; steps.push(last);
+  return Object.assign({}, R, { name: `${R.name} (${len} min)`, steps, len });
+}
+function rtRoutine() { if (!RT.state) return null; const R = (db.routines || []).find(r => r.id === RT.state.rid); return R && RT.state.steps ? Object.assign({}, R, { name: RT.state.name || R.name, steps: RT.state.steps }) : R; }
 function rtChime() {
   const p = rtPrefs();
   if (p.vibrate && navigator.vibrate) navigator.vibrate([300, 150, 300]);
@@ -799,10 +817,11 @@ function rtTick() {
     `<div class="rtbtns"><button class="ghost" data-rt="back">Back</button><button class="ghost" data-rt="${s.running ? 'pause' : 'resume'}">${s.running ? 'Pause' : 'Resume'}</button><button class="ghost" data-rt="skip">Skip</button><button class="ghost" data-rt="plus">+1 min</button><button class="ghost" data-rt="stop">Stop</button></div></div>`;
 }
 function rtStart(rid) {
-  const R = (db.routines || []).find(r => r.id === rid); if (!R) return;
+  const R0 = (db.routines || []).find(r => r.id === rid); if (!R0) return; const R = rtBuild(R0);
   try { RT.audio = RT.audio || new (window.AudioContext || window.webkitAudioContext)(); RT.audio.resume(); } catch (e) { }
   const now = Date.now();
   RT.state = { rid, i: 0, running: true, started: now, from: now, acc: 0, end: now + R.steps[0][1] * 60000, log: [] };
+  if (R0.build) { RT.state.steps = R.steps; RT.state.name = R.name; }
   rtSave(); rtWake(true); rtAnnounce(); clearInterval(RT.timer); RT.timer = setInterval(rtTick, 250); rtTick();
   $('rt-run').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
@@ -850,13 +869,14 @@ function renderRtLog() {
 function renderRoutines() {
   const L = db.routines || []; if (!$('rt-list')) return;
   const p = rtPrefs();
-  $('rt-list').innerHTML = L.map(r => { const tot = r.steps.reduce((a, s) => a + s[1], 0);
-    return `<section class="card"><div class="row"><h2>${esc(r.name)} <small>${r.steps.length} steps, ${fmtMin(tot)}</small></h2><button data-rt-go="${esc(r.id)}">Go</button></div>${r.intro ? `<p class="muted">${esc(r.intro)}</p>` : ''}<ol class="rtsteps${r.steps.some(s => s[2]) ? ' yoga' : ''}">${r.steps.map(s => `<li>${s[2] ? poseSVG(s[2], 'thumb') : ''}<span>${esc(s[0])}${s[3] ? `<br><span class="muted small">${esc(s[3])}</span>` : ''}</span><span class="muted">${fmtMin(s[1])}</span></li>`).join('')}</ol></section>`; }).join('');
+  $('rt-list').innerHTML = L.map(r0 => { const r = rtBuild(r0), tot = r.steps.reduce((a, s) => a + s[1], 0), lens = r0.build ? r0.build.lengths : null;
+    return `<section class="card"><div class="row"><h2>${esc(r0.name)} <small>${r.steps.length} steps, ${fmtMin(tot)}</small></h2>${lens ? `<select data-rt-len="${esc(r.id)}" aria-label="Length">${lens.map(m => `<option value="${m}"${m === r.len ? ' selected' : ''}>${m} min</option>`).join('')}</select>` : ''}<button data-rt-go="${esc(r.id)}">Go</button></div>${r.intro ? `<p class="muted">${esc(r.intro)}</p>` : ''}<ol class="rtsteps${r.steps.some(s => s[2]) ? ' yoga' : ''}">${r.steps.map(s => `<li>${s[2] ? poseSVG(s[2], 'thumb') : ''}<span>${esc(s[0])}${s[3] ? `<small class="rtcue2">${esc(s[3])}</small>` : ''}</span><span class="muted">${fmtMin(s[1])}</span></li>`).join('')}</ol></section>`; }).join('');
   $('rt-prefs').innerHTML = `<label><input type="checkbox" data-rp="sound"${p.sound ? ' checked' : ''}> Chime</label> <label><input type="checkbox" data-rp="vibrate"${p.vibrate ? ' checked' : ''}> Vibrate</label> <label><input type="checkbox" data-rp="notify"${p.notify ? ' checked' : ''}> Notifications</label> <label><input type="checkbox" data-rp="speak"${p.speak ? ' checked' : ''}> Spoken cues (yoga)</label>` +
     (('Notification' in window) ? (Notification.permission === 'denied' ? ' <span class="muted">Notifications are blocked for this site in the browser settings.</span>' : '') : ' <span class="muted">This browser does not support notifications.</span>');
   $('rt-prefs').onchange = async e => { const k = e.target.dataset.rp; if (!k) return; const q = rtPrefs(); q[k] = e.target.checked;
     if (k === 'notify' && q.notify && 'Notification' in window && Notification.permission !== 'granted') { const res = await Notification.requestPermission(); q.notify = res === 'granted'; }
     rtSavePrefs(q); renderRoutines(); };
+  $('rt-list').onchange = e => { const id = e.target.dataset && e.target.dataset.rtLen; if (!id) return; const m = rtLens(); m[id] = +e.target.value; try { localStorage.setItem('rtLen', JSON.stringify(m)); } catch (x) { } renderRoutines(); };
   $('rt-list').onclick = e => { const g = e.target.dataset && e.target.dataset.rtGo; if (g) rtStart(g); };
   $('rt-run').onclick = e => { const a = e.target.dataset && e.target.dataset.rt; if (a) rtAction(a); };
   if (!RT.swReg && 'serviceWorker' in navigator && location.protocol === 'https:') navigator.serviceWorker.register('sw.js').then(r => { RT.swReg = r; }).catch(() => { });
