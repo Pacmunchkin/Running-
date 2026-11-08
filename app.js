@@ -670,7 +670,8 @@ function yearGoalRows(y) {
 }
 function goalLine(x, y) {
   const { g, v, extra, exp } = x, cur = +today().slice(0, 4), f0 = n => Math.round(n).toLocaleString('en-GB');
-  if (!g.target || v == null) return { bar: '', text: esc(g.result || g.status || (g.target ? 'Nothing logged yet' : '')) };
+  if (!g.target || v == null) { const r = g.result, c = /Pass|Done/.test(r) ? 'OK' : /Fail/.test(r) ? 'High' : 'Watch';
+    return { bar: '', text: g.status ? esc(g.status) + (r ? ` <span class="st st-${c}">${esc(r)}</span>` : '') : esc(r || (g.target ? 'Nothing logged yet' : '')) }; }
   const pct = Math.min(100, 100 * v / g.target), ep = exp != null ? Math.min(100, 100 * exp / g.target) : null;
   const st = g.result ? g.result : v >= g.target ? 'Done' : y === cur ? (v >= exp ? 'On pace' : 'Behind') : '';
   const cls = /Pass|Done|On pace/.test(st) ? 'OK' : /Fail|Behind/.test(st) ? 'High' : 'Watch';

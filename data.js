@@ -2085,7 +2085,7 @@ const SEED = {
     { year: 2026, goals: [
       { id: 'read', label: 'Read 5,500 pages', why: 'Be a reader', target: 5500, unit: 'pages', auto: 'pages' },
       { id: 'run', label: 'Run 150 times', why: 'Be a runner', target: 150, unit: 'runs', auto: 'runs' },
-      { id: 'charm', label: 'Top 20 in the charm bracelet', why: 'Be a runner', status: 'Charm Bracelet Marathon, Redcar, 12 Apr 2026: 5:26:35, 46th of 191 overall, 35th man, 19th of the M (under 40) group. Top 20 in the age group, not overall' },
+      { id: 'charm', label: 'Top 20 in the charm bracelet', why: 'Be a runner', result: 'Failed', status: 'Charm Bracelet Marathon, Redcar, 12 Apr 2026: 5:26:35, 46th of 191 overall (20th was 5:06:37). 35th man and 19th in the M (under 40) group' },
       { id: 'grow', label: 'Grow 100 kg of food', why: 'Be a gardener', target: 100, unit: 'kg', log: [] },
       { id: 'yoga', label: 'Yoga 50 times', target: 50, unit: 'sessions', auto: 'yoga', log: [] }
     ] }
