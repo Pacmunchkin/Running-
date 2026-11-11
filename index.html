@@ -9,7 +9,7 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#12151c">
 <!-- bump ?v= on every deploy so browsers never mix old and new files -->
-<link rel="stylesheet" href="style.css?v=157">
+<link rel="stylesheet" href="style.css?v=158">
 </head>
 <body>
 <div class="layout">
@@ -448,6 +448,11 @@
       <p><input id="media-search" type="search" placeholder="Search titles, authors, genres and thoughts" aria-label="Search"> <select id="media-type" aria-label="Type"></select> <select id="media-status" aria-label="Status"></select></p>
       <div id="media-list"></div>
     </section>
+    <section class="card">
+      <h2 id="cur-title">Reading course</h2>
+      <p id="cur-intro" class="muted"></p>
+      <div id="cur-units"></div>
+    </section>
   </div>
 
   <div data-panel="routines" hidden>
@@ -482,7 +487,7 @@
 
 </div>
 </div>
-<script src="data.js?v=157"></script>
-<script src="app.js?v=157"></script>
+<script src="data.js?v=158"></script>
+<script src="app.js?v=158"></script>
 </body>
 </html>

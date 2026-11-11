@@ -633,6 +633,18 @@ function renderHome() {
   if (ygR.length) cards.push(card('journal', `${ygY} goals`, kv(ygR.map(x => [x.g.label, goalLine(x, ygY).text]))));
   $('home-grid').innerHTML = cards.join('');
 }
+function renderCurriculum() {
+  const C = (db.media || {}).curriculum; if (!C || !$('cur-units')) return;
+  const norm = s => String(s || '').toLowerCase().replace(/^the /, '').replace(/[^a-z0-9]/g, '');
+  const find = t => (db.media.items || []).find(i => norm(i.title) === norm(t) || norm(i.title).startsWith(norm(t).slice(0, 18)));
+  const all = C.units.flatMap(u => u.plays), done = all.filter(p => { const m = find(p[0]); return m && m.status === 'Finished'; }).length;
+  const next = all.find(p => { const m = find(p[0]); return !m || m.status !== 'Finished'; });
+  $('cur-title').textContent = `Reading course: ${C.name}`;
+  $('cur-intro').innerHTML = `${esc(C.intro)} <b>${done} of ${all.length} read.</b>${next ? ` Next up: <i>${esc(next[0])}</i> by ${esc(next[1])}.` : ''}`;
+  $('cur-units').innerHTML = C.units.map(u => `<h3>${esc(u.name)}</h3><ol class="cur">` + u.plays.map(p => { const m = find(p[0]), st = m ? m.status : '';
+    const tag = st === 'Finished' ? `<span class="st st-OK">Read${m.rating ? ' ' + m.rating + '/5' : ''}</span>` : st === 'Now' ? '<span class="st st-Watch">Reading</span>' : '';
+    return `<li class="${st === 'Finished' ? 'curdone' : ''}"><b>${esc(p[0])}</b> <span class="muted">${esc(p[1])}, ${p[2]}</span> ${tag}<br><span class="small muted">${esc(p[3])}</span></li>`; }).join('') + '</ol>').join('');
+}
 function renderMedia() {
   const M = db.media; if (!M) return;
   const items = M.items.slice().sort((a, b) => (b.finished || b.started || '') < (a.finished || a.started || '') ? -1 : 1), yr = today().slice(0, 4);
@@ -1236,7 +1248,7 @@ document.addEventListener('click', e => {
 
 function render() {
   document.querySelectorAll('.u').forEach(e => e.textContent = units);
-  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderFoodLog(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderRoutines(); renderJournal(); renderYearGoals();
+  renderStats(); renderNext(); renderChart(); renderTable(); renderProfile(); renderReview(); renderTrends(); renderHistory(); renderAnnual(); renderPlan(); renderMeals(); renderNutrition(); renderFoodLog(); renderShop(); renderFuelRecipes(); renderSupplements(); renderGarden(); renderPacking(); renderNT(); renderMedia(); renderCurriculum(); renderRoutines(); renderJournal(); renderYearGoals();
   renderHome();
   Object.keys(COLS).forEach(renderCol);
 }
