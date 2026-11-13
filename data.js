@@ -2095,7 +2095,7 @@ const SEED = {
       { id: 'run', label: 'Run 150 times', why: 'Be a runner', target: 150, unit: 'runs', auto: 'runs' },
       { id: 'charm', label: 'Top 20 in the charm bracelet', why: 'Be a runner', result: 'Failed', status: 'Charm Bracelet Marathon, Redcar, 12 Apr 2026: 5:26:35, 46th of 191 overall (20th was 5:06:37). 35th man and 19th in the M (under 40) group' },
       { id: 'grow', label: 'Grow 100 kg of food', why: 'Be a gardener', target: 100, unit: 'kg', log: [] },
-      { id: 'yoga', label: 'Yoga 50 times', target: 50, unit: 'sessions', auto: 'yoga', log: [] }
+      { id: 'yoga', label: 'Yoga 50 times', target: 50, unit: 'sessions', auto: 'yoga', log: [['2026-11-13', 30, 'Evening, 29:53. Avg HR 58 (max 78), breathing 18 a minute (12-24). Garmin stress 67 at the start, 24 at the end']] }
     ] }
   ],
   journal: { future: [] },
@@ -2292,7 +2292,7 @@ const SEED = {
     { id: 's25', date: '2026-11-10', session: 'Rest', details: '', fuel: "Normal meals." },
     { id: 's26', date: '2026-11-11', km: 6, session: 'Easy run, Z2 (flat road)', details: 'About 6 km at HR 115-130 on the flat, minimal walking. Reps postponed: still not 100% and easy-run efficiency is down since the fatigue. Note the pace at that HR: about 7:30-8:00/km means you are back', fuel: "Before: normal meal 2 h before, or run first and eat after. During: water optional." },
     { id: 's27', date: '2026-11-12', session: 'Rest', details: 'Rest before the weekend long run', fuel: "None." },
-    { id: 's28', date: '2026-11-13', session: 'Rest or yoga', details: '', fuel: "Normal meals, extra carbs at dinner before the weekend long run." },
+    { id: 's28', date: '2026-11-13', session: 'Rest or yoga', details: 'Done: 30 min yoga in the evening', fuel: "Normal meals, extra carbs at dinner before the weekend long run." },
     { id: 's29', date: '2026-11-14', km: 13, session: 'Long run, all Z2', details: '12-13 km at HR 134 or below on a flat or gently rolling route, no Z3 finish yet. Run by feel: stop at 10 km if the legs are heavy. Only if resting HR on Saturday morning is 42 or under; at 43-44 run an easy 6-8 km instead, above 44 rest', fuel: "Before: breakfast 2-3 h before. During: water; 1 gel at about 50 min. After: carbs + protein." },
     { id: 's30', date: '2026-11-15', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125. Rest instead if still tired from Saturday', fuel: "None." },
     { id: 's31', date: '2026-11-16', km: 7, session: 'Easy run, Z2', details: 'About 7 km at HR 120-134 on the flat. Progression run postponed', fuel: "None during. Normal meals." },
