@@ -80,7 +80,7 @@ const SEED = {
      "km": 34,
      "long": 13,
      "sat": "Long run 12-13 km, all Z2 (HR 134 or lower). Z3 finish held back until fully recovered. Ran 10.9 km at HR 108, 8:19/km",
-     "sun": "Pure recovery 5 km (HR under 125), or rest",
+     "sun": "Pure recovery 5 km (HR under 125), or rest. Ran 5.3 km on a hilly route at HR 133",
      "mon": "Easy 7 km Z2 (progression run postponed)",
      "wed": "5 x 1 km @ about 4:05-4:10, jog recoveries, only if ready (moved from 11 Nov)",
      "opt": "Optional Thu: easy 5 km",
@@ -2249,7 +2249,11 @@ const SEED = {
     run('2026-11-14', '06:52', 'Long', 10.87, '1:30:27', 108, 132,
       'Planned 12-13 km all Z2, conditional on resting HR (41 this morning, so a go). 10.87 km in 1:30 at 8:19/km with no stops, 65 m of climbing. Avg HR 108 (max 132): 91% in Z2, 8% in Z1, nothing in Z3. Cadence 165 and stride 0.73 m: steady running, not walk-run. About 1.11 m per heartbeat, the best since 27 Oct (1.18) and up from 0.93 on Wednesday and 0.73 last Sunday. Stopped short of 12 km, but 90 min on feet at a very easy effort',
       '', TOR,
-      { title: 'Bath and North East Somerset Running', asc: 65, cal: 755, sweat: 430, cad: 165, stride: 0.73, moving: '1:30:27', best: '5:46', zones: Z('7:28', '1:22:43', '0:00', '0:00', '0:00') })
+      { title: 'Bath and North East Somerset Running', asc: 65, cal: 755, sweat: 430, cad: 165, stride: 0.73, moving: '1:30:27', best: '5:46', zones: Z('7:28', '1:22:43', '0:00', '0:00', '0:00') }),
+    run('2026-11-15', '08:26', 'Recovery', 5.32, '47:47', 133, 157,
+      'Planned recovery 5 km at HR under 125, the day after the 10.9 km long run. 5.32 km in 47:47 at 8:59/km with 94 m of climbing (about 18 m a km, a hilly route for a recovery run). Avg HR 133, max 157: 52% in Z2, 45% in Z3, 9 s in Z4. So well above the recovery cap, more a steady Z2/Z3 run than recovery. About 0.84 m per heartbeat: down from 1.11 yesterday on the flat, but close to earlier hilly runs (0.86-0.89 on 3 and 22 Oct), so most of the gap is the hills. Recovery HR 32',
+      'HR above the recovery cap (avg 133 vs under 125), mainly on the climbs', TOR,
+      { title: 'Bath and North East Somerset Running', asc: 94, cal: 574, sweat: 351, cad: 155, stride: 0.72, moving: '47:46', best: '7:28', zones: Z('0:26', '25:06', '21:46', '0:09', '0:00') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2298,7 +2302,7 @@ const SEED = {
     { id: 's27', date: '2026-11-12', session: 'Rest', details: 'Rest before the weekend long run', fuel: "None." },
     { id: 's28', date: '2026-11-13', session: 'Rest or yoga', details: 'Done: 30 min yoga in the evening', fuel: "Normal meals, extra carbs at dinner before the weekend long run." },
     { id: 's29', date: '2026-11-14', km: 13, session: 'Long run, all Z2', details: '12-13 km at HR 134 or below on a flat or gently rolling route, no Z3 finish yet. Run by feel: stop at 10 km if the legs are heavy. Only if resting HR on Saturday morning is 42 or under; at 43-44 run an easy 6-8 km instead, above 44 rest. Done: 10.9 km in 1:30, HR 108, all Z2', fuel: "Before: breakfast 2-3 h before. During: water; 1 gel at about 50 min. After: carbs + protein." },
-    { id: 's30', date: '2026-11-15', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125. Rest instead if still tired from Saturday', fuel: "None." },
+    { id: 's30', date: '2026-11-15', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125. Rest instead if still tired from Saturday. Done: 5.3 km on a hilly route, HR 133 (45% Z3), so harder than planned', fuel: "None." },
     { id: 's31', date: '2026-11-16', km: 7, session: 'Easy run, Z2', details: 'About 7 km at HR 120-134 on the flat. Progression run postponed', fuel: "None during. Normal meals." },
     { id: 's32', date: '2026-11-17', session: 'Rest', details: '', fuel: "Normal meals." },
     { id: 's33', date: '2026-11-18', km: 9, session: 'Intervals: 5 x 1 km, only if ready', details: 'About 4:05-4:10/km, jog the 1 min between reps. 15-20 min warm-up, 10 min cool-down. Only if resting HR is 42 or under, you feel 100%, and the weekend runs felt normal; otherwise an easy 6 km', fuel: "Before: carb snack 2 h before. During: water. After: carbs + protein within an hour." },
@@ -2379,7 +2383,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 209.9, asOf: '2026-11-14', notes: 'In use since 11 Sep. Garmin: 27 activities, 209.9 km at 14 Nov (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 215.3, asOf: '2026-11-15', notes: 'In use since 11 Sep. Garmin: 28 activities, 215.3 km at 15 Nov (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
