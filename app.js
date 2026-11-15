@@ -963,7 +963,7 @@ function renderMeals() {
     const names = Object.keys(items); if (!names.length) return '';
     return `<details class="wklist"><summary>Shopping list for week ${w.week}</summary><ul class="buy">${names.map(n => `<li>${esc(n)} <span class="muted">${esc(items[n].every(q => /^\d+$/.test(q)) ? String(items[n].reduce((s, q) => s + +q, 0)) : items[n].join(' + '))}</span></li>`).join('')}</ul>${cups.size ? `<p><b>Check the cupboard for:</b> ${esc([...cups].join(', '))}</p>` : ''}</details>`;
   };
-  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4><ul>${w.dishes.map((x, idx) => card(w, x, idx)).join('')}</ul>${weekList(w)}`).join('') +
+  $('meals-weeks').innerHTML = M.weeks.map(w => `<h4>Week ${w.week}${w.cycle > 1 ? ` (round ${w.cycle})` : ''}${w.order ? ` <span class="muted">(order ${parseD(w.order).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })})</span>` : ''}</h4>${w.note ? `<p class="muted">${esc(w.note)}</p>` : ''}<ul>${w.dishes.map((x, idx) => card(w, x, idx)).join('')}</ul>${weekList(w)}`).join('') +
     '<p class="muted">Shopping amounts and method summaries in my own words, based on The Quick Roasting Tin by Rukmini Iyer. Amounts are rounded to what you would buy. See the book for the exact quantities and full method.</p>';
   $('meals-standing').innerHTML = '<table><thead><tr><th>Meal</th><th>What</th></tr></thead><tbody>' + M.standing.map(m => `<tr><td><b>${esc(m.meal)}</b></td><td class="notes">${esc(m.what)}</td></tr>`).join('') + '</tbody></table>';
 }

@@ -2037,8 +2037,10 @@ const SEED = {
      "week": 3,
      "cycle": 2,
      "order": "2026-11-14",
+     "note": "Tinned pomodorini, red lentils and tomatoes from the cupboard",
      "dishes": [
       "Roasted halloumi with aubergines, tomatoes and pine nuts",
+      "All-in-one nigella-spiced whole tomato dhal",
       "Burgers"
      ]
     },
