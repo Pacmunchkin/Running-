@@ -955,7 +955,7 @@ function renderMeals() {
     if (!r || (!r.method && !r.buy)) return `<li>${esc(x)}</li>`;
     const buy = r.buy ? `<p><b>To buy:</b></p><ul class="buy">${r.buy.map(b => `<li>${esc(b[0])} <span class="muted">${esc(b[1])}</span></li>`).join('')}</ul>` : '';
     const cup = r.cupboard && r.cupboard.length ? `<p><b>From the cupboard:</b> ${esc(r.cupboard.join(', '))}</p>` : '';
-    return `<li class="rcard"><details><summary>${esc(x)} <span class="rtag">Recipe</span></summary>${r.serves ? `<p class="muted">Serves ${esc(r.serves)}${r.prep ? `. Prep ${esc(r.prep)}, cook ${esc(r.cook)}, oven ${esc(r.oven)}` : ''}.</p>` : ''}${buy}${cup}${r.method ? `<p><b>Method:</b> ${esc(r.method)}</p>` : ''}</details></li>`;
+    return `<li class="rcard"><details><summary>${esc(x)} <span class="rtag">Recipe</span></summary>${r.serves ? `<p class="muted">Serves ${esc(r.serves)}${r.prep ? `. Prep ${esc(r.prep)}, cook ${esc(r.cook)}, oven ${esc(r.oven)}` : ''}.</p>` : ''}${buy}${cup}${r.method ? `<p><b>Method:</b> ${esc(r.method)}</p>` : ''}${r.ahead ? `<p><b>Make ahead:</b> ${esc(r.ahead)}</p>` : ''}</details></li>`;
   };
   const weekList = w => {
     const items = {}, cups = new Set();
