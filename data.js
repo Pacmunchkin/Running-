@@ -81,8 +81,8 @@ const SEED = {
      "long": 13,
      "sat": "Long run 12-13 km, all Z2 (HR 134 or lower). Z3 finish held back until fully recovered. Ran 10.9 km at HR 108, 8:19/km",
      "sun": "Pure recovery 5 km (HR under 125), or rest. Ran 5.3 km on a hilly route at HR 133",
-     "mon": "Easy 7 km Z2 (progression run postponed)",
-     "wed": "5 x 1 km @ about 4:05-4:10, jog recoveries, only if ready (moved from 11 Nov)",
+     "mon": "Easy 7 km Z2 (progression run postponed). Ran 7.5 km at HR 119, 10:31/km moving, heavy legs",
+     "wed": "Easy 5 km or rest (5 x 1 km postponed again)",
      "opt": "Optional Thu: easy 5 km",
      "fuel": "Before: breakfast 2 h before. During: 1 gel at about 50 min. After: carbs + protein.",
      "note": "Eased after a slow return from the late October fatigue: shorter all-Z2 long run, easy Monday, and the 5 x 1 km moved here from 11 Nov. Back to the full plan from 21 Nov if this week goes well."
@@ -1950,7 +1950,7 @@ const SEED = {
     }
    ]
   },
-  weightGoal: { kg: 75, by: '2027-02-26', note: 'Gradual loss of about 0.25-0.35 kg a week from a small deficit on easy and rest days, never on long-run or session days. Started Mon 9 Nov, paused 12-16 Nov when resting HR went back up to 44, restarted Tue 17 Nov with resting HR 39-42 since.' },
+  weightGoal: { kg: 75, by: '2027-02-26', note: 'Gradual loss of about 0.25-0.35 kg a week from a small deficit on easy and rest days, never on long-run or session days. Started Mon 9 Nov, paused 12-16 Nov when resting HR went back up to 44, kept paused after heavy-legged runs on 15-16 Nov. Restart once runs feel normal again.' },
   weight: [
     { date: '2026-10-16', kg: 77.8, note: 'First entry' },
     { date: '2026-10-18', kg: 77.6, note: '' },
@@ -2266,7 +2266,11 @@ const SEED = {
     run('2026-11-15', '08:26', 'Recovery', 5.32, '47:47', 133, 157,
       'Planned recovery 5 km at HR under 125, the day after the 10.9 km long run. 5.32 km in 47:47 at 8:59/km with 94 m of climbing (about 18 m a km, a hilly route for a recovery run). Avg HR 133, max 157: 52% in Z2, 45% in Z3, 9 s in Z4. So well above the recovery cap, more a steady Z2/Z3 run than recovery. About 0.84 m per heartbeat: down from 1.11 yesterday on the flat, but close to earlier hilly runs (0.86-0.89 on 3 and 22 Oct), so most of the gap is the hills. Recovery HR 32',
       'HR above the recovery cap (avg 133 vs under 125), mainly on the climbs', TOR,
-      { title: 'Bath and North East Somerset Running', asc: 94, cal: 574, sweat: 351, cad: 155, stride: 0.72, moving: '47:46', best: '7:28', zones: Z('0:26', '25:06', '21:46', '0:09', '0:00') })
+      { title: 'Bath and North East Somerset Running', asc: 94, cal: 574, sweat: 351, cad: 155, stride: 0.72, moving: '47:46', best: '7:28', zones: Z('0:26', '25:06', '21:46', '0:09', '0:00') }),
+    run('2026-11-16', '19:33', 'Easy', 7.5, '1:20:14', 119, 146,
+      'Planned easy 7 km Z2 on the flat. 7.50 km in 1:20 at 10:42/km (10:31 moving), 80 m of climbing. Avg HR 119 (max 146): 80% in Z2, 11% in Z3, 7% in Z1. Cadence 146, stride 0.64 m and a best pace of only 8:19 point to a lot of walking and heavy legs. About 0.80 m per heartbeat, down from 1.11 on Saturday and back to the level of early November. Recovery HR 22. Resting HR 42 that morning',
+      '', TOR,
+      { title: 'Bath and North East Somerset Running', asc: 80, cal: 711, sweat: 502, cad: 146, stride: 0.64, moving: '1:18:51', best: '8:19', zones: Z('5:57', '1:04:13', '9:08', '0:00', '0:00') })
   ],
   goals: [
     { id: 'g1', event: 'Half marathon', distKm: 21.0975, race: 'Great Bristol Run', date: '2027-05-09', target: '1:45:00', notes: '' },
@@ -2318,7 +2322,10 @@ const SEED = {
     { id: 's30', date: '2026-11-15', km: 5, session: 'Recovery run', details: 'About 5 km, HR under 125. Rest instead if still tired from Saturday. Done: 5.3 km on a hilly route, HR 133 (45% Z3), so harder than planned', fuel: "None." },
     { id: 's31', date: '2026-11-16', km: 7, session: 'Easy run, Z2', details: 'About 7 km at HR 120-134 on the flat. Progression run postponed', fuel: "None during. Normal meals." },
     { id: 's32', date: '2026-11-17', session: 'Rest', details: '', fuel: "Normal meals." },
-    { id: 's33', date: '2026-11-18', km: 9, session: 'Intervals: 5 x 1 km, only if ready', details: 'About 4:05-4:10/km, jog the 1 min between reps. 15-20 min warm-up, 10 min cool-down. Only if resting HR is 42 or under, you feel 100%, and the weekend runs felt normal; otherwise an easy 6 km', fuel: "Before: carb snack 2 h before. During: water. After: carbs + protein within an hour." },
+    { id: 's33', date: '2026-11-18', km: 5, session: 'Easy run, Z2, or rest', details: 'About 5 km very easy on the flat, HR under 130, or rest if the legs are still heavy. 5 x 1 km postponed again: Saturday looked like a turning point but Sunday and Monday were back to heavy legs and walking', fuel: "Normal meals. Nothing needed during." },
+    { id: 's34', date: '2026-11-19', session: 'Rest', details: '', fuel: "Normal meals." },
+    { id: 's35', date: '2026-11-20', session: 'Rest or yoga', details: 'Gentle yoga, 15-20 min', fuel: "Normal meals, extra carbs at dinner if Saturday's run is on." },
+    { id: 's36', date: '2026-11-21', km: 10, session: 'Long run, all Z2, only if ready', details: '8-10 km at HR 134 or below on the flat. Only if resting HR is 42 or under and you feel OK; otherwise an easy 5 km or rest', fuel: "Before: breakfast 2-3 h before. During: water; 1 gel at about 50 min. After: carbs + protein." },
   ],
   estimates: [
     { date: '2026-09-09', vdot: 43.1, gap: { g1: 1.136, g2: 1.052, g3: 1.014 }, est: { g1: [7020, 7140], g2: [2925, 3000], g3: [1370, 1385] },
@@ -2396,7 +2403,7 @@ const SEED = {
   ],
   shoes: [
     { id: 'h1', name: 'Altra Olympus 275', status: 'Retired', km: 1004.9, asOf: '2026-10-14', notes: 'Garmin: 110 activities, 1,004.9 km (Garmin limit 1,000, exceeded). Earlier note said retired at ~1,013 km' },
-    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 215.3, asOf: '2026-11-15', notes: 'In use since 11 Sep. Garmin: 28 activities, 215.3 km at 15 Nov (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
+    { id: 'h2', name: 'Altra Torin 9', status: 'In use', km: 222.8, asOf: '2026-11-16', notes: 'In use since 11 Sep. Garmin: 29 activities, 222.8 km at 16 Nov (Garmin limit 1,000). Includes a 6.61 km walk on 11 Oct that is not logged as a run' },
     { id: 'h5', name: 'Vivobarefoot Primus Lite', status: 'Earlier', km: 527, asOf: '2026-10-14', notes: 'Garmin: 45 activities, 527.0 of 1,200 km, first use 12 Jan 2025. Worn for the 2025 PBs' },
     { id: 'h3', name: 'Altra Olympus 7', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' },
     { id: 'h4', name: 'Altra Timp 6', status: 'Considered', km: null, asOf: '', notes: 'Not chosen' }
