@@ -1020,7 +1020,7 @@ function renderShop() {
     const wks = M.weeks.filter(w => O.find(o => o.date === w.order)).length || 1;
     $('shop-tin-note').textContent = `Across ${dishes.length} cooked dishes (including repeats) the matched ingredients come to ${gbp(tot)}, about ${gbp(tot / wks)} a week and ${gbp(per)} a portion on average.`;
   }
-  $('shop-orders').innerHTML = O.slice().reverse().map(o => `<details><summary>${fmtDate(o.date)}: ${gbp(o.paid)} (${o.items.reduce((a, i) => a + i[0], 0)} items)</summary>${o.notes ? `<p class="muted">${esc(o.notes)}</p>` : ''}<table><thead><tr><th>Qty</th><th>Item</th><th>Category</th><th class="num">Price</th></tr></thead><tbody>` +
+  $('shop-orders').innerHTML = O.slice().reverse().map(o => `<details><summary>${fmtDate(o.date)}: ${gbp(o.paid)} (${o.items.reduce((a, i) => a + i[0], 0)} items)${o.store ? ` <span class="muted">${esc(o.store)}</span>` : ''}</summary>${o.notes ? `<p class="muted">${esc(o.notes)}</p>` : ''}<table><thead><tr><th>Qty</th><th>Item</th><th>Category</th><th class="num">Price</th></tr></thead><tbody>` +
     o.items.map(i => `<tr><td>${i[0]}</td><td>${esc(i[1])}</td><td class="notes">${esc(catName(i[3]))}</td><td class="num">${gbp(i[2])}</td></tr>`).join('') + '</tbody></table></details>').join('');
 }
 function renderRhr() {
