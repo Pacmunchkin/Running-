@@ -603,7 +603,7 @@ function renderHome() {
   // shopping
   const S = db.shop;
   if (S && S.orders.length) {
-    const os = S.orders.slice().sort((a, b) => a.date < b.date ? -1 : 1), lo = last(os), avg = os.reduce((a, o) => a + o.paid, 0) / os.length;
+    const os = S.orders.filter(o => !o.store).sort((a, b) => a.date < b.date ? -1 : 1), lo = last(os), avg = os.reduce((a, o) => a + o.paid, 0) / os.length;
     cards.push(card('shop', 'Shopping', kv([['Last order', `£${lo.paid.toFixed(2)} <span class="muted">${fd(lo.date)}</span>`], ['Average a week', `£${avg.toFixed(2)} over ${os.length} orders`]])));
   }
   // garden
